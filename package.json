@@ -8,9 +8,9 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@tonaljs/tonal": "^4.6.2",
     "core-js": "^3.6.5",
     "reflect-metadata": "^0.1.13",
-    "tonal": "^2.2.2",
     "typescript-ioc": "^3.2.2",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
