@@ -1,4 +1,4 @@
-import { Mode, Note, Scale } from '@tonaljs/tonal';
+import { Key, Mode, Note, Scale } from '@tonaljs/tonal';
 import 'reflect-metadata';
 import { Container, Inject, InjectValue, Singleton } from 'typescript-ioc';
 import { createApp } from 'vue';
@@ -24,15 +24,6 @@ class BeanB {
 }
 
 console.log(new BeanB());
-
-
-let keys = ['Major', 'Minor'];
-
-// Majors
-let modes = Mode.all();
-
-
-console.log(modes);
 
 
 let scale = Scale.get('C minor');

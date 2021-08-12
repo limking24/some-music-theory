@@ -1,26 +1,61 @@
 <template>
 	<form>
 		<label for="scale">Scale</label>
-		<select v-bind:value="scale.type" id="scale">
-			<option>Major</option>
-			<option>Minor</option>
+		<select v-model="model.type" id="scale">
+			<option v-for="type in typeOptions" v-bind:key="type">
+				{{type}}
+			</option>
 		</select>
 
-		{{scale}}
+		<label for="mode">{{modeOptions.label}}</label>
+		<select v-model="model.mode" id="mode">
+			<option v-for="mode in modeOptions.value" v-bind:key="mode">
+				{{mode}}
+			</option>
+		</select>
+
+		{{model}}
 	</form>
 </template>
 
 <script lang="ts">
 import Scale from '@/models/scale';
 import { Vue } from 'vue-class-component';
-import { PropSync } from 'vue-property-decorator';
+import { Emit, Prop, Watch } from 'vue-property-decorator';
 
 export default class ScalePicker extends Vue {
 
-//https://stackoverflow.com/questions/40915436/vuejs-update-parent-data-from-child-component
-//https://v3.vuejs.org/guide/migration/v-model.html#_3-x-syntax
-	@PropSync('scale', {required: true})
-	private syncedScale!: Scale;
+	@Prop()
+	private type!: String;
+
+	@Prop()
+	private mode!: String;
+
+	@Prop()
+	private tonic!: String;
+
+	private model = new Scale(this.type, this.mode, this.tonic);
+
+	public get typeOptions(): String[] {
+		return Scale.types;
+	}
+
+	public get modeOptions(): { label: String, value: String[] } {
+		return Scale.isMinor(this.model) ?
+				{ label: 'Type', value: Scale.minorTypes } :
+				{ label: 'Mode', value: Scale.majorModes };
+	}
+
+	@Watch('model', {immediate: true, deep: true})
+	public onModelChanged(current: Scale, previous: Scale) {
+		// Validate here
+		this.picked();
+	}
+
+	@Emit()
+	public picked() {
+		return this.model;
+	}
 
 }
 </script>

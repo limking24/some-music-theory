@@ -1,8 +1,7 @@
 <template>
   <div class="about">
     <h1>This is an about page</h1>
-	<scale-picker v-model:scale="scale"></scale-picker>
-	{{scale}}
+	<scale-picker :type="'Minor'" @picked="onScalePicked"></scale-picker>
   </div>
 </template>
 
@@ -16,7 +15,9 @@ import { Options, Vue } from 'vue-class-component';
 })
 export default class About extends Vue {
 
-	private scale = new Scale('Major', 'Ionian', 'C');
+	public onScalePicked(scale: Scale): void {
+		console.log(scale);
+	}
 
 }
 </script>
