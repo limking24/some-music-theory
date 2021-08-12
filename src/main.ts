@@ -1,4 +1,5 @@
-import { ChordDictionary, ChordType, Key, Mode, Note, Scale, ScaleType } from '@tonaljs/tonal';
+import { Mode, Note, Scale } from '@tonaljs/tonal';
+import 'reflect-metadata';
 import { Container, Inject, InjectValue, Singleton } from 'typescript-ioc';
 import { createApp } from 'vue';
 import App from './App.vue';
@@ -49,6 +50,35 @@ console.log([...intervals.slice(intervals.length - offset), ...intervals, ...int
 
 /*
 
+major
+	mode
+		ionian (major)
+				Cb, Gb, Db, Ab, Eb, Bb, F, [C], G, D, A, E, B, F#, C#
+		dorian
+						Db, Ab, Eb, Bb, F, C, G, [D], A, E, B, F#, C#, G#, D#
+		phrygian
+								Eb, Bb, F, C, G, D, A, [E], B, F#, C#, G#, D#, A#, E#
+		lydian
+			Fb, Cb, Gb, Db, Ab, Eb, Bb, [F], C, G, D, A, E, B, F#
+		mixolydian (melodic-minor-descending)
+					Gb, Db, Ab, Eb, Bb, F, C, [G], D, A, E, B, F#, C#, G#
+		aeolian (natural-minor)
+							Ab, Eb, Bb, F, C, G, D, [A], E, B, F#, C#, G#, D#, A#
+		locrian
+									Bb, F, C, G, D, A, E, [B], F#, C#, G#, D#, A#, E#, B#
+
+			
+			Fb, Cb, Gb, Db, Ab, Eb, Bb, F, C, G, D, A, E, B, F#, C#, G#, D#, A#, E#, B#
+
+
+minor
+	type
+		natural
+				Cb, Gb, Db, Ab, Eb, Bb, F, [C], G, D, A, E, B, F#, C#
+		harmonic
+				Cb, Gb, Db, Ab, Eb, Bb, F, [C], G, D, A, E, B, F#, C#
+		melodic
+				Cb, Gb, Db, Ab, Eb, Bb, F, [C], G, D, A, E, B, F#, C#
 
 
 
