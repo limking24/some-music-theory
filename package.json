@@ -12,7 +12,7 @@
     "core-js": "^3.6.5",
     "reflect-metadata": "^0.1.13",
     "typescript-ioc": "^3.2.2",
-    "vue": "^3.0.0",
+    "vue": "^3.2.2",
     "vue-class-component": "^8.0.0-0",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^4.0.0-0"
