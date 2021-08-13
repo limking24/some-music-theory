@@ -1,10 +1,8 @@
-import { Mode } from '@tonaljs/tonal';
-
 export default class Scale {
 
 	public static readonly types = ['Major', 'Minor'];
 
-	public static readonly majorModes = Mode.names().map(name => name.charAt(0).toUpperCase() + name.slice(1));
+	public static readonly majorModes = ['Ionian', 'Dorian', 'Phrygian', 'Lydian', 'Mixolydian', 'Aeolian', 'Locrian'];
 
 	public static readonly minorTypes = ['Natural', 'Harmonic', 'Melodic'];
 
