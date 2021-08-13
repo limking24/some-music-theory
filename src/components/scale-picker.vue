@@ -32,13 +32,13 @@ import { Emit, Prop, Watch } from 'vue-property-decorator';
 
 export default class ScalePicker extends Vue {
 
-	@Prop({default: 'Major'})
+	@Prop({default: ''})
 	type!: string;
 
-	@Prop({default: 'Ionian'})
+	@Prop({default: ''})
 	mode!: string;
 
-	@Prop({default: 'C'})
+	@Prop({default: ''})
 	tonic!: string;
 
 	@Prop({default: true})
