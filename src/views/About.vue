@@ -1,12 +1,12 @@
 <template>
   <div class="about">
     <h1>This is an about page</h1>
-	<scale-picker :type="'Minor'" @picked="onScalePicked"></scale-picker>
+	<scale-picker @picked="onScalePicked"></scale-picker>
   </div>
 </template>
 
 <script lang="ts">
-import ScalePicker from '@/components/ScalePicker.vue';
+import ScalePicker from '@/components/scale-picker.vue';
 import Scale from '@/models/scale';
 import { Options, Vue } from 'vue-class-component';
 
@@ -15,7 +15,7 @@ import { Options, Vue } from 'vue-class-component';
 })
 export default class About extends Vue {
 
-	public onScalePicked(scale: Scale): void {
+	onScalePicked(scale: Scale): void {
 		console.log(scale);
 	}
 
