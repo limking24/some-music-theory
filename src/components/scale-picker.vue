@@ -68,28 +68,51 @@ export default class ScalePicker extends Vue {
 		return Scale.getTonicRange(this.model.mode);
 	}
 
-	@Watch('model.tonic')
-	onTonicChanged(current: string, previous: string): void {
-		this.picked();
-	}
-
+	/**
+	 * Triggered when scale type changed, causing scale mode to change.
+	 */
 	@Watch('modeOptions.value')
 	onModeOptionsChanged(current: string[], previous: string[]): void {
 		this.model.mode = current[0];
 	}
 
+	/**
+	 * Triggered when scale mode changed, causing scale tonic to change
+	 * to the equivalent tonic with the same number of flats or sharps
+	 * in the key signature.
+	 * 
+	 * For example, F Ionian and G Dorian each has one flat in the key
+	 * signature, so switching from Ionian to Dorian when scale tonic 
+	 * is F, the new tonic value will be G.
+	 * 
+	 * In other cases, scale tonic will not be changed even when scale 
+	 * mode is changed. For instance, C Natural Minor and C Harmonic 
+	 * Minor both have no flats or sharps, so changing the mode from 
+	 * Natural to Harmonic when scale tonic is C, the value will remain 
+	 * the same.
+	 */
 	@Watch('tonicOptions')
 	onTonicOptionsChanged(current: string[], previous: string[]): void {
 		let index = previous.indexOf(this.model.tonic);
 		if (current[index] == previous[index]) {
-			// Major mode / minor type changed but tonic hasn't
 			this.picked();
 		} else {
-			// Switch to the equivalent tonic with the same number of flats or sharps
 			this.model.tonic = current[index];
 		}
 	}
 
+	/**
+	 * Triggered when scale tonic changed.
+	 */
+	@Watch('model.tonic')
+	onTonicChanged(current: string, previous: string): void {
+		this.picked();
+	}
+
+	/**
+	 * Triggered when scale tonic changed, or when scale mode changed
+	 * but scale tonic has not.
+	 */
 	@Emit()
 	picked() {
 		return this.model;
