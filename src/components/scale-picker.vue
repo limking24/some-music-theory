@@ -1,27 +1,25 @@
 <template>
 	<form>
 		<label for="scale">Scale</label>
-		<select v-model="model.type" id="scale">
-			<option v-for="type in typeOptions" :key="type">
-				{{type}}
+		<select v-model="type" id="scale">
+			<option v-for="option in typeOptions">
+				{{option}}
 			</option>
 		</select>
 
 		<label for="mode">{{modeOptions.label}}</label>
-		<select v-model="model.mode" id="mode">
-			<option v-for="mode in modeOptions.value" :key="mode">
-				{{mode}}
+		<select v-model="mode" id="mode">
+			<option v-for="option in modeOptions.value">
+				{{option}}
 			</option>
 		</select>
 
 		<label for="tonic">Tonic</label>
-		<select v-model="model.tonic" id="tonic">
-			<option v-for="(tonic, index) in tonicOptions" :key="tonic" :value="tonic">
-				{{tonic}} {{tonicKeySignatures[index]}}
+		<select v-model="tonic" id="tonic">
+			<option v-for="(option, index) in tonicOptions" :value="option">
+				{{option}} {{tonicKeySignatures[index]}}
 			</option>
 		</select>
-
-		{{model}}
 	</form>
 </template>
 
@@ -32,32 +30,21 @@ import { Emit, Prop, Watch } from 'vue-property-decorator';
 
 export default class ScalePicker extends Vue {
 
-	@Prop({default: ''})
-	type!: string;
+	@Prop({required: true})
+	scale!: Scale;
 
-	@Prop({default: ''})
-	mode!: string;
+	type = this.scale.type;
 
-	@Prop({default: ''})
-	tonic!: string;
+	mode = this.scale.mode;
 
-	@Prop({default: true})
-	fireImmediately!: boolean;
-
-	model = Scale.create(this.type, this.mode, this.tonic);
+	tonic = this.scale.tonic;
 
 	typeOptions = Scale.types;
 
 	tonicKeySignatures = ['(bbbbbbb)', '(bbbbbb)', '(bbbbb)', '(bbbb)', '(bbb)', '(bb)', '(b)', '', '(#)', '(##)', '(###)', '(####)', '(#####)', '(######)', '(#######)'];
 
-	created(): void {
-		if (this.fireImmediately) {
-			this.picked();
-		}
-	}
-
 	get modeOptions(): { label: string, value: string[] } {
-		let options = Scale.getModes(this.model.type);
+		let options = Scale.getModes(this.type);
 		return {
 			label: (options == Scale.minorTypes) ? 'Type' : 'Mode',
 			value: options
@@ -65,7 +52,7 @@ export default class ScalePicker extends Vue {
 	}
 
 	get tonicOptions(): string[] {
-		return Scale.getTonicRange(this.model.mode);
+		return Scale.getTonicRange(this.mode);
 	}
 
 	/**
@@ -73,7 +60,7 @@ export default class ScalePicker extends Vue {
 	 */
 	@Watch('modeOptions.value')
 	onModeOptionsChanged(current: string[], previous: string[]): void {
-		this.model.mode = current[0];
+		this.mode = current[0];
 	}
 
 	/**
@@ -93,18 +80,18 @@ export default class ScalePicker extends Vue {
 	 */
 	@Watch('tonicOptions')
 	onTonicOptionsChanged(current: string[], previous: string[]): void {
-		let index = previous.indexOf(this.model.tonic);
+		let index = previous.indexOf(this.tonic);
 		if (current[index] == previous[index]) {
 			this.picked();
 		} else {
-			this.model.tonic = current[index];
+			this.tonic = current[index];
 		}
 	}
 
 	/**
 	 * Triggered when scale tonic changed.
 	 */
-	@Watch('model.tonic')
+	@Watch('tonic')
 	onTonicChanged(current: string, previous: string): void {
 		this.picked();
 	}
@@ -113,9 +100,8 @@ export default class ScalePicker extends Vue {
 	 * Triggered when scale tonic changed, or when scale mode changed
 	 * but scale tonic has not.
 	 */
-	@Emit()
-	picked() {
-		return this.model;
+	picked(): void {
+		this.$emit('update:scale', new Scale(this.type, this.mode, this.tonic));
 	}
 
 }
