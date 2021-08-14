@@ -14,7 +14,7 @@ export default class ScaleTriads extends Vue {
 	scale!: Scale;
 
 	mounted(): void {
-		let notes = '(A3 C4 E4)/w, (B3 D4 F4), (C4 E4 G4), (D4 F4 A4), (E4 G4 B4), (F4 A4 C5), (G4 B4 D5), (A4 C5 E5), (B4 D5 F5), (C5 E5 G5), (D5 F5 A5)';
+		let triads = '(A3 C4 E4)/w, (B3 D4 F4), (C4 E4 G4), (D4 F4 A4), (E4 G4 B4), (F4 A4 C5), (G4 B4 D5), (A4 C5 E5), (B4 D5 F5), (C5 E5 G5), (D5 F5 A5)';
 		let vf = new Vex.Flow.Factory({renderer: {elementId: 'scale-triads-score', width: 715}});
 		let score = vf.EasyScore();
 		let system = vf.System({width: 700});
@@ -36,8 +36,9 @@ export default class ScaleTriads extends Vue {
 		chordNames.forEach(name => name
 									.setJustification(Vex.Flow.TextNote.Justification.CENTER)
 									.setLine(12));
+
 		let voices = [
-			score.voice(score.notes(notes), {time: '11/1'}),
+			score.voice(score.notes(triads), {time: '11/1'}),
 			score.voice(chordNames, {time: '11/1'})
 		];
 
@@ -62,6 +63,18 @@ export default class ScaleTriads extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
+#scale-triads-score g.vf-stavenote:nth-of-type(1),
+#scale-triads-score g.vf-stavenote:nth-of-type(2),
+#scale-triads-score g.vf-stavenote:nth-of-type(10),
+#scale-triads-score g.vf-stavenote:nth-of-type(11) {
+	opacity: 0.5;
+}
 
+#scale-triads-score text:nth-of-type(1),
+#scale-triads-score text:nth-of-type(2),
+#scale-triads-score text:nth-of-type(10),
+#scale-triads-score text:nth-of-type(11) {
+	opacity: 0.5;
+}
 </style>
