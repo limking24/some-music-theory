@@ -100,8 +100,9 @@ export default class ScalePicker extends Vue {
 	 * Triggered when scale tonic changed, or when scale mode changed
 	 * but scale tonic has not.
 	 */
-	picked(): void {
-		this.$emit('update:scale', new Scale(this.type, this.mode, this.tonic));
+	@Emit('update:scale')
+	picked(): Scale {
+		return new Scale(this.type, this.mode, this.tonic);
 	}
 
 }
