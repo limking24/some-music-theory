@@ -1,29 +1,24 @@
-import { Key, Mode, Note, Scale } from '@tonaljs/tonal';
+import { Note, Scale } from '@tonaljs/tonal';
 import 'reflect-metadata';
-import { Container, Inject, InjectValue, Singleton } from 'typescript-ioc';
+import { Container, Inject } from 'typescript-ioc';
 import { createApp } from 'vue';
 import App from './App.vue';
+import serviceConfig from './config/service.config';
 import router from './router';
+import { ScaleTriadsScoreDrawer } from './services/scale-triads-score-drawer';
 
+Container.configure(...serviceConfig);
 createApp(App).use(router).mount('#app')
 
-Container.bindName('str').to('abc');
+console.log('test');
 
-@Singleton
-class BeanA {
-	@InjectValue('str')
-	public str?: string;
-}
-
-@Singleton
-class BeanB {
-
+class Test {
 	@Inject
-	private beanA?: BeanA;
-
+	drawer!: ScaleTriadsScoreDrawer;
 }
 
-console.log(new BeanB());
+console.log(new Test());
+
 
 
 let scale = Scale.get('C minor');
