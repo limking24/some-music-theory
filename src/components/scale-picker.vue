@@ -2,21 +2,21 @@
 	<form>
 		<label for="scale">Scale</label>
 		<select v-model="type" id="scale">
-			<option v-for="option in typeOptions">
+			<option v-for="option in typeOptions" :key="option">
 				{{option}}
 			</option>
 		</select>
 
 		<label for="mode">{{modeOptions.label}}</label>
 		<select v-model="mode" id="mode">
-			<option v-for="option in modeOptions.value">
+			<option v-for="option in modeOptions.value" :key="option">
 				{{option}}
 			</option>
 		</select>
 
 		<label for="tonic">Tonic</label>
 		<select v-model="tonic" id="tonic">
-			<option v-for="(option, index) in tonicOptions" :value="option">
+			<option v-for="(option, index) in tonicOptions" :value="option" :key="option">
 				{{option}} {{tonicKeySignatures[index]}}
 			</option>
 		</select>
