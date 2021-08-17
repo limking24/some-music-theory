@@ -7,7 +7,7 @@ export function getScale(model: ScaleModel): Scale {
 
 	if (ScaleModel.isMinor(model)) {
 		args = (model.mode == 'Natural') ? 
-				`${model.tonic} aeolian` :
+				`${model.tonic} ${model.type}` :
 				`${model.tonic} ${model.mode} ${model.type}`
 	} else {
 		args = `${model.tonic} ${model.mode}`;
