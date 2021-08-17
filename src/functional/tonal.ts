@@ -1,8 +1,8 @@
 import { default as ScaleModel } from '@/models/scale';
-import { Scale } from '@tonaljs/scale';
+import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Scale as ScaleUtil } from '@tonaljs/tonal';
 
-export function getScale(model: ScaleModel): Scale {
+export function getScaleInfo(model: ScaleModel): ScaleInfo {
 	let args;
 
 	if (ScaleModel.isMinor(model)) {
