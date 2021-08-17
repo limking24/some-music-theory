@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { default as ScaleModel } from '@/models/scale';
-import { getScaleInfo } from '@/functional/tonal';
+import { getScaleInfo } from '@/functional/music-theory';
 
 describe('Tonaljs', () => {
 
