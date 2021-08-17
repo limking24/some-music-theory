@@ -4,6 +4,7 @@ import { Container } from 'typescript-ioc';
 import { createApp } from 'vue';
 import App from './App.vue';
 import serviceConfig from './config/service.config';
+import {default as ScaleModel } from './models/scale';
 import router from './router';
 
 Container.configure(...serviceConfig);
@@ -11,11 +12,10 @@ createApp(App).use(router).mount('#app')
 
 let key = `C ionian`.toLowerCase();
 let fifthNote = Scale.get(key).notes[5];
-let startPitch = fifthNote.toUpperCase().charCodeAt(0) <= 66 ? 3 : 4; // A/B = 3, C/D/E/F/G = 4
-let endPitch = startPitch + 2;
-console.log(Scale.rangeOf(key)(fifthNote + startPitch, fifthNote + endPitch));
-
-
+let pitch =  [65, 66, 97, 98].includes(fifthNote.charCodeAt(0)) ? 3 : 4; // A/B = 3, C/D/E/F/G = 4
+let fromNote = fifthNote + pitch; // e.g. A3
+let toNote = fifthNote + (pitch + 2); // e.g. A5
+let notes = Scale.rangeOf(key)(fromNote, toNote);
 
 console.log(Chord.detect(['A3', 'C4', 'E4']));
 
