@@ -1,25 +1,26 @@
-import { Note, Scale } from '@tonaljs/tonal';
+import { Chord, Scale } from '@tonaljs/tonal';
 import 'reflect-metadata';
-import { Container, Inject } from 'typescript-ioc';
+import { Container } from 'typescript-ioc';
 import { createApp } from 'vue';
 import App from './App.vue';
 import serviceConfig from './config/service.config';
 import router from './router';
-import { ScaleTriadsScoreDrawer } from './services/scale-triads-score-drawer';
 
 Container.configure(...serviceConfig);
 createApp(App).use(router).mount('#app')
 
-console.log('test');
-
-class Test {
-	@Inject
-	drawer!: ScaleTriadsScoreDrawer;
-}
-
-console.log(new Test());
+let key = `C ionian`.toLowerCase();
+let fifthNote = Scale.get(key).notes[5];
+let startPitch = fifthNote.toUpperCase().charCodeAt(0) <= 66 ? 3 : 4; // A/B = 3, C/D/E/F/G = 4
+let endPitch = startPitch + 2;
+console.log(Scale.rangeOf(key)(fifthNote + startPitch, fifthNote + endPitch));
 
 
+
+console.log(Chord.detect(['A3', 'C4', 'E4']));
+
+
+/*
 
 let scale = Scale.get('C minor');
 console.log('Scale');
@@ -34,7 +35,15 @@ let offset = 2;
 console.log([...intervals.slice(intervals.length - offset), ...intervals, ...intervals.slice(0, offset)].map(Note.transposeFrom('C')));
 
 
-/*
+Mode.get('ionian')
+Mode.get('ionian').intervals;
+
+
+Mode.triads("major", "C");
+// => ["C", "Dm", "Em", "F", "G", "Am", "Bdim"];
+
+
+
 
 major
 	mode
@@ -67,13 +76,4 @@ minor
 				Cb, Gb, Db, Ab, Eb, Bb, F, [C], G, D, A, E, B, F#, C#
 
 
-
-Mode.get('ionian')
-Mode.get('ionian').intervals;
-
-
-Mode.triads("major", "C");
-// => ["C", "Dm", "Em", "F", "G", "Am", "Bdim"];
-
-Mode.relativeTonic("minor", "major", "C"); // => "A"
 */
