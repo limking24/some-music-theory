@@ -16,15 +16,17 @@ export function getScaleInfo(model: ScaleModel): ScaleInfo {
 	return ScaleUtil.get(args.toLowerCase());
 }
 
-const harmonicMinorTriadSuffixes = ['m', 'dim', 'aug', 'm', '', '', 'dim'];
-const melodicMinorTriadSuffixes = ['m', 'm', 'aug', '', '', 'dim', 'dim'];
+const TriadSuffixes = {
+	HarmonicMinor: ['m', 'dim', 'aug', 'm', '', '', 'dim'],
+	MelodicMinor: ['m', 'm', 'aug', '', '', 'dim', 'dim']
+}
 
 export function getScaleTriadNames(model: ScaleModel): string[] {
 	if (ScaleModel.isMinor(model)) {
 		if (model.mode == 'Natural') {
 			return Mode.triads(model.type, model.tonic);
 		} else {
-			let suffixes = model.mode == 'Harmonic' ? harmonicMinorTriadSuffixes : melodicMinorTriadSuffixes;
+			let suffixes = (model.mode == 'Harmonic') ? TriadSuffixes.HarmonicMinor : TriadSuffixes.MelodicMinor;
 			return getScaleInfo(model)
 					.notes
 					.map((note, index) => note + suffixes[index]);
