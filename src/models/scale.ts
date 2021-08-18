@@ -23,7 +23,13 @@ export default class Scale {
 	}
 
 	public static getModes(type: string): string[] {
-		return Scale.isMinor(type) ? Scale.minorTypes : Scale.majorModes;
+		if (Scale.isMajor(type)) {
+			return Scale.majorModes;
+		} else if (Scale.isMinor(type)) {
+			return Scale.minorTypes;
+		} else {
+			return [];
+		}
 	}
 
 	public static detectType(mode: string): string {
@@ -37,21 +43,21 @@ export default class Scale {
 	}
 
 	public static getTonicRange(mode: string): string[] {
-		let index;
+		let tonicIndex;
 		switch(mode.toLowerCase()) {
-			case 'ionian':		index = 8;		break;
-			case 'dorian':		index = 10;		break;
-			case 'phrygian':	index = 12;		break;
-			case 'lydian':		index = 7;		break;
-			case 'mixolydian':	index = 9;		break;
-			case 'aeolian':		index = 11;		break;
-			case 'locrian':		index = 13;		break;
-			case 'natural':		index = 8;		break;
-			case 'harmonic':	index = 8;		break;
-			case 'melodic':		index = 8;		break;
-			default:			index = 8;		break;
+			case 'ionian':		tonicIndex = 8;		break;
+			case 'dorian':		tonicIndex = 10;	break;
+			case 'phrygian':	tonicIndex = 12;	break;
+			case 'lydian':		tonicIndex = 7;		break;
+			case 'mixolydian':	tonicIndex = 9;		break;
+			case 'aeolian':		tonicIndex = 11;	break;
+			case 'locrian':		tonicIndex = 13;	break;
+			case 'natural':		tonicIndex = 8;		break;
+			case 'harmonic':	tonicIndex = 8;		break;
+			case 'melodic':		tonicIndex = 8;		break;
+			default:			return [];
 		}
-		return Scale.tonicRange.slice(index - 7, index + 8);
+		return Scale.tonicRange.slice(tonicIndex - 7, tonicIndex + 8);
 	}
 
 	/**
