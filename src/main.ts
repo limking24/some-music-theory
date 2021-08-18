@@ -10,14 +10,21 @@ import router from './router';
 Container.configure(...serviceConfig);
 createApp(App).use(router).mount('#app')
 
-let key = `C ionian`.toLowerCase();
+let key = `C harmonic minor`.toLowerCase();
 let fifthNote = Scale.get(key).notes[5];
-let pitch =  [65, 66, 97, 98].includes(fifthNote.charCodeAt(0)) ? 3 : 4; // A/B = 3, C/D/E/F/G = 4
+let pitch =  ([65, 66, 97, 98].includes(fifthNote.charCodeAt(0))) ? 3 : 4; // A/B = 3, C/D/E/F/G = 4
 let fromNote = fifthNote + pitch; // e.g. A3
 let toNote = fifthNote + (pitch + 2); // e.g. A5
 let notes = Scale.rangeOf(key)(fromNote, toNote);
+let triads = [];
+for (let i = 0; i < notes.length - 4; i++) {
+	triads.push(`${notes[i]} ${notes[i + 2]} ${notes[i + 4]}`);
+}
+console.log(`(${triads[0]})/w, ${triads.slice(1).map(triad => `(${triad})`).join(', ')}`);
 
-console.log(Chord.detect(['A3', 'C4', 'E4']));
+let chordNames = triads.map(triad => triad.split(' ')).map(triad => Chord.detect(triad)[0].replace('M', ''));
+console.log(chordNames);
+
 
 
 /*
