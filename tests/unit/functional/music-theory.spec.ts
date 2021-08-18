@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { default as ScaleModel } from '@/models/scale';
-import { getScaleInfo } from '@/functional/music-theory';
+import { getScaleInfo, getScaleTriadNames } from '@/functional/music-theory';
 
-describe('Tonaljs', () => {
+describe('functional/music-theory', () => {
 
 	it('getScale', () => {
 		expect(getScaleInfo(ScaleModel.create('Major', 'Ionian', 'C')).name).to.equal('C major');
@@ -15,6 +15,13 @@ describe('Tonaljs', () => {
 		expect(getScaleInfo(ScaleModel.create('Minor', 'Natural', 'C')).name).to.equal('C aeolian');
 		expect(getScaleInfo(ScaleModel.create('Minor', 'Harmonic', 'C')).name).to.equal('C harmonic minor');
 		expect(getScaleInfo(ScaleModel.create('Minor', 'Melodic', 'C')).name).to.equal('C melodic minor');
+	});
+
+	it('getScaleTriadNames', () => {
+		expect(getScaleTriadNames(ScaleModel.create('Major', 'Ionian', 'C'))).to.deep.equal(['C', 'Dm', 'Em', 'F', 'G', 'Am', 'Bdim']);
+		expect(getScaleTriadNames(ScaleModel.create('Minor', 'Natural', 'C'))).to.deep.equal(['Cm', 'Ddim', 'Eb', 'Fm', 'Gm', 'Ab', 'Bb']);
+		expect(getScaleTriadNames(ScaleModel.create('Minor', 'Harmonic', 'C'))).to.deep.equal(['Cm', 'Ddim', 'Ebaug', 'Fm', 'G', 'Ab', 'Bdim']);
+		expect(getScaleTriadNames(ScaleModel.create('Minor', 'Melodic', 'C'))).to.deep.equal(['Cm', 'Dm', 'Ebaug', 'F', 'G', 'Adim', 'Bdim']);
 	});
 
 });
