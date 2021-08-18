@@ -1,9 +1,9 @@
 import Scale from '@/models/scale';
 import { expect } from 'chai';
 
-describe('Scale', () => {
+describe('model/scale', () => {
 
-	describe('Static', () => {
+	describe('static', () => {
 
 		it('create', () => {
 			let cIonian = new Scale('Major', 'Ionian', 'C');
