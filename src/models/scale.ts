@@ -1,24 +1,22 @@
-import { includesIgnoreCase, toTitleCase } from '@/functional/string';
-
 const Type = {
-	'major': 'Major', 
-	'minor': 'Minor'
+	major: 'Major', 
+	minor: 'Minor'
 }
 
 const Mode = {
-	Major: {
-		'ionian':		'Ionian', 
-		'dorian':		'Dorian', 
-		'phrygian':		'Phrygian', 
-		'lydian':		'Lydian', 
-		'mixolydian':	'Mixolydian', 
-		'aeolian':		'Aeolian', 
-		'locrian':		'Locrian'
+	major: {
+		ionian:			'Ionian', 
+		dorian:			'Dorian', 
+		phrygian:		'Phrygian', 
+		lydian:			'Lydian', 
+		mixolydian:		'Mixolydian', 
+		aeolian:		'Aeolian', 
+		locrian:		'Locrian'
 	},
-	Minor: {
-		'natural':		'Natural', 
-		'harmonic':		'Harmonic', 
-		'melodic':		'Melodic'
+	minor: {
+		natural:		'Natural', 
+		harmonic:		'Harmonic', 
+		melodic:		'Melodic'
 	}
 }
 
@@ -46,10 +44,10 @@ const TonicRange = {
 	'b-sharp':		'B#'
 }
 
-type arg0 = keyof typeof Type;
-type arg1 = keyof typeof Mode.Major;
-type arg1_2 = keyof typeof Mode.Minor;
-type arg2 = keyof typeof TonicRange;
+type TypeKey = keyof typeof Type;
+type ModeKey = keyof typeof Mode.major | keyof typeof Mode.minor;
+type TonicKey = keyof typeof TonicRange;
+type Modes = typeof Mode.major | typeof Mode.minor;
 
 export default class Scale {
 
@@ -63,52 +61,43 @@ export default class Scale {
 										  'F',  'C',  'G',  'D',  'A',  'E',  'B', 
 										  'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'];
 
-	public static isMajor(scale: string | Scale): boolean {
-		let type = (scale instanceof Scale) ? scale.type : scale;
-		return type.toLowerCase() === 'major';
+	public static isMajor(scale: TypeKey | Scale): boolean {
+		let type = (scale instanceof Scale) ? scale.typeKey : scale;
+		return type === 'major';
 	}
 
-	public static isMinor(scale: string | Scale): boolean {
-		let type = (scale instanceof Scale) ? scale.type : scale;
-		return type.toLowerCase() === 'minor';
+	public static isMinor(scale: TypeKey | Scale): boolean {
+		let type = (scale instanceof Scale) ? scale.typeKey : scale;
+		return type === 'minor';
 	}
 
-	public static getModes(type: string): string[] {
-		if (Scale.isMajor(type)) {
-			return Scale.majorModes;
-		} else if (Scale.isMinor(type)) {
-			return Scale.minorTypes;
+	public static getModes(typeKey: TypeKey): Modes {
+		if (this.isMajor(typeKey)) {
+			return Mode.major;
 		} else {
-			return [];
+			return Mode.minor;
 		}
 	}
 
-	public static detectType(mode: string): string {
-		if (includesIgnoreCase(this.majorModes, mode)) {
-			return 'Major';
-		} else if (includesIgnoreCase(this.minorTypes, mode)) {
-			return 'Minor';
-		} else {
-			return '';
+	public static getTonicRange(modeKey: ModeKey): TonicKey[] {
+		let startAt;
+		switch(modeKey) {
+			case 'ionian':		startAt = 1;		break;
+			case 'dorian':		startAt = 3;		break;
+			case 'phrygian':	startAt = 5;		break;
+			case 'lydian':		startAt = 0;		break;
+			case 'mixolydian':	startAt = 2;		break;
+			case 'aeolian':		startAt = 4;		break;
+			case 'locrian':		startAt = 6;		break;
+			case 'natural':		startAt = 1;		break;
+			case 'harmonic':	startAt = 1;		break;
+			case 'melodic':		startAt = 1;		break;
 		}
-	}
-
-	public static getTonicRange(mode: string): string[] {
-		let tonicIndex;
-		switch(mode.toLowerCase()) {
-			case 'ionian':		tonicIndex = 8;		break;
-			case 'dorian':		tonicIndex = 10;	break;
-			case 'phrygian':	tonicIndex = 12;	break;
-			case 'lydian':		tonicIndex = 7;		break;
-			case 'mixolydian':	tonicIndex = 9;		break;
-			case 'aeolian':		tonicIndex = 11;	break;
-			case 'locrian':		tonicIndex = 13;	break;
-			case 'natural':		tonicIndex = 8;		break;
-			case 'harmonic':	tonicIndex = 8;		break;
-			case 'melodic':		tonicIndex = 8;		break;
-			default:			return [];
+		let keys = [];
+		for (let i = startAt; i < startAt + 15; i++) {
+			keys.push(Object.keys(TonicRange)[i]);
 		}
-		return Scale.tonicRange.slice(tonicIndex - 7, tonicIndex + 8);
+		return keys as TonicKey[];
 	}
 
 	/**
@@ -128,27 +117,40 @@ export default class Scale {
 	 * 
 	 * @returns a valid Scale
 	 */
-	public static create(type: string, mode: string, tonic: string): Scale {
+	public static create(typeKey: string, modeKey: string, tonicKey: string): Scale {
+		typeKey = typeKey.toLowerCase();
+		modeKey = modeKey.toLowerCase();
+		tonicKey = tonicKey.toLowerCase();
+
 		// Scale type
-		if (!includesIgnoreCase(Scale.types, type)) {
-			type = Scale.detectType(mode);
-			if (type == '') {
-				type = 'Major';
-			}
+		if (!(typeKey in Type)) {
+			typeKey = (modeKey in Mode.minor) ? 'minor' : 'major';
 		}
 		// Major mode / minor type
-		let modeOptions = Scale.getModes(type);
-		if (!includesIgnoreCase(modeOptions, mode)) {
-			mode = modeOptions[0];
+		let modeOptions = this.getModes(typeKey as TypeKey);
+		if (!(modeKey in modeOptions)) {
+			modeKey = Object.keys(modeOptions)[0];
 		}
 		// Tonic
-		let tonicOptions = Scale.getTonicRange(mode);
-		if (!includesIgnoreCase(tonicOptions, tonic)) {
-			tonic = tonicOptions[7];
+		let tonicOptions = this.getTonicRange(modeKey as ModeKey) as string[];
+		if (!tonicOptions.includes(tonicKey)) {
+			tonicKey = tonicOptions[7];
 		}
-		return new Scale(toTitleCase(type), toTitleCase(mode), toTitleCase(tonic));
+		return new Scale(typeKey as TypeKey, modeKey as ModeKey, tonicKey as TonicKey);
 	}
 
-	public constructor(public type: string, public mode: string, public tonic: string) {}
+	public constructor(public typeKey: TypeKey, public modeKey: ModeKey, public tonicKey: TonicKey) {}
+
+	public get type(): string {
+		return Type[this.typeKey];
+	}
+
+	public get mode(): string {
+		return (Mode as any)[this.typeKey][this.modeKey];
+	}
+
+	public get tonic(): string {
+		return TonicRange[this.tonicKey];
+	}
 
 }

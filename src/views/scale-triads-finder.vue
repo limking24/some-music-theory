@@ -20,7 +20,7 @@ import { Options, Vue } from 'vue-class-component';
 })
 export default class ScaleTriadsFinder extends Vue {
 
-	scale = new Scale('Minor', 'Natural', 'C');
+	scale = new Scale('minor', 'natural', 'c');
 
 }
 </script>
