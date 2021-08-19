@@ -45,7 +45,9 @@ const TonicRange = {
 }
 
 type TypeKey = keyof typeof Type;
-type ModeKey = keyof typeof Mode.major | keyof typeof Mode.minor;
+type MajorModeKey = keyof typeof Mode.major;
+type MinorModeKey = keyof typeof Mode.minor;
+type ModeKey = MajorModeKey | MinorModeKey;
 type TonicKey = keyof typeof TonicRange;
 type Modes = typeof Mode.major | typeof Mode.minor;
 
@@ -146,7 +148,11 @@ export default class Scale {
 	}
 
 	public get mode(): string {
-		return (Mode as any)[this.typeKey][this.modeKey];
+		if (this.modeKey in Mode.major) {
+			return Mode.major[this.modeKey as MajorModeKey];
+		} else {
+			return Mode.minor[this.modeKey as MinorModeKey];
+		}
 	}
 
 	public get tonic(): string {
