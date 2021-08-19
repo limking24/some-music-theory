@@ -1,5 +1,56 @@
 import { includesIgnoreCase, toTitleCase } from '@/functional/string';
 
+const Type = {
+	'major': 'Major', 
+	'minor': 'Minor'
+}
+
+const Mode = {
+	Major: {
+		'ionian':		'Ionian', 
+		'dorian':		'Dorian', 
+		'phrygian':		'Phrygian', 
+		'lydian':		'Lydian', 
+		'mixolydian':	'Mixolydian', 
+		'aeolian':		'Aeolian', 
+		'locrian':		'Locrian'
+	},
+	Minor: {
+		'natural':		'Natural', 
+		'harmonic':		'Harmonic', 
+		'melodic':		'Melodic'
+	}
+}
+
+const TonicRange = {
+	'f-flat':		'Fb',
+	'c-flat':		'Cb',
+	'g-flat':		'Gb',
+	'd-flat':		'Db',
+	'a-flat':		'Ab',
+	'e-flat':		'Eb',
+	'b-flat':		'Bb',
+	'f':			'F',
+	'c':			'C',
+	'g':			'G',
+	'd':			'D',
+	'a':			'A',
+	'e':			'E',
+	'b':			'B',
+	'f-sharp':		'F#',
+	'c-sharp':		'C#',
+	'g-sharp':		'G#',
+	'd-sharp':		'D#',
+	'a-sharp':		'A#',
+	'e-sharp':		'E#',
+	'b-sharp':		'B#'
+}
+
+type arg0 = keyof typeof Type;
+type arg1 = keyof typeof Mode.Major;
+type arg1_2 = keyof typeof Mode.Minor;
+type arg2 = keyof typeof TonicRange;
+
 export default class Scale {
 
 	public static readonly types = ['Major', 'Minor'];
