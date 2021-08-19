@@ -95,11 +95,7 @@ export default class Scale {
 			case 'harmonic':	startAt = 1;		break;
 			case 'melodic':		startAt = 1;		break;
 		}
-		let keys = [];
-		for (let i = startAt; i < startAt + 15; i++) {
-			keys.push(Object.keys(TonicRange)[i]);
-		}
-		return keys as TonicKey[];
+		return Object.keys(TonicRange).slice(startAt, startAt + 15) as TonicKey[];
 	}
 
 	/**
@@ -157,6 +153,18 @@ export default class Scale {
 
 	public get tonic(): string {
 		return TonicRange[this.tonicKey];
+	}
+
+}
+
+class AutocorrectScale extends Scale {
+
+	public get mode(): string {
+		return '';
+	}
+
+	public get tonic(): string {
+		return '';
 	}
 
 }
