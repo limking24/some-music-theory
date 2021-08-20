@@ -1,38 +1,12 @@
-import { Chord, Scale } from '@tonaljs/tonal';
 import 'reflect-metadata';
 import { Container } from 'typescript-ioc';
 import { createApp } from 'vue';
 import App from './App.vue';
 import serviceConfig from './config/service.config';
-import { Scale as ScaleModel } from './models/scale';
-import ScaleNoteBuilder from './music-theory/scale-note-builder';
 import router from './router';
 
 Container.configure(...serviceConfig);
 createApp(App).use(router).mount('#app')
-
-let scale = Scale.get(`C major`.toLowerCase());
-console.log(scale);
-
-let startPitch = ['A', 'B', 'C', 'D'].includes(scale.tonic!.charAt(0).toUpperCase()) ? 3 : 4;
-let notes = ScaleNoteBuilder
-				.of(scale)
-				.fromNotePosition(5)
-				.fromPitch(startPitch)
-				.toNotePosition(5)
-				.toPitch(startPitch + 2)
-				.create();
-
-let triads = [];
-for (let i = 0; i < notes.length - 4; i++) {
-	triads.push(`${notes[i]} ${notes[i + 2]} ${notes[i + 4]}`);
-}
-console.log(`(${triads[0]})/w, ${triads.slice(1).map(triad => `(${triad})`).join(', ')}`);
-
-let chordNames = triads.map(triad => triad.split(' ')).map(triad => Chord.detect(triad)[0].replace('M', ''));
-console.log(chordNames);
-
-
 
 /*
 
