@@ -2,7 +2,7 @@ import { Scale as ScaleModel } from '@/models/scale';
 import { getScaleInfo, getScaleTriadNames } from '@/music-theory/scale';
 import { expect } from 'chai';
 
-describe('functional/music-theory', () => {
+describe('music-theory/scale', () => {
 
 	it('getScale', () => {
 		expect(getScaleInfo(ScaleModel.create('major', 'ionian', 'c')).name).to.equal('C major');
