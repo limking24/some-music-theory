@@ -1,10 +1,10 @@
 import { Scale as ScaleModel } from '@/models/scale';
-import { getScaleInfo, getScaleTriadNames, relativeTonicInIonian } from '@/music-theory/scale';
+import { getScaleInfo, getScaleTriadNames, relativeIonianTonic } from '@/music-theory/scale';
 import { expect } from 'chai';
 
 describe('music-theory/scale', () => {
 
-	it('getScale', () => {
+	it(getScaleInfo.name, () => {
 		expect(getScaleInfo(new ScaleModel('major', 'ionian', 'c')).name).to.equal('C major');
 		expect(getScaleInfo(new ScaleModel('major', 'dorian', 'c')).name).to.equal('C dorian');
 		expect(getScaleInfo(new ScaleModel('major', 'phrygian', 'c')).name).to.equal('C phrygian');
@@ -17,17 +17,17 @@ describe('music-theory/scale', () => {
 		expect(getScaleInfo(new ScaleModel('minor', 'melodic', 'c')).name).to.equal('C melodic minor');
 	});
 
-	it('getScaleTriadNames', () => {
+	it(getScaleTriadNames.name, () => {
 		expect(getScaleTriadNames(new ScaleModel('major', 'ionian', 'c'))).to.deep.equal(['C', 'Dm', 'Em', 'F', 'G', 'Am', 'Bdim']);
 		expect(getScaleTriadNames(new ScaleModel('minor', 'natural', 'c'))).to.deep.equal(['Cm', 'Ddim', 'Eb', 'Fm', 'Gm', 'Ab', 'Bb']);
 		expect(getScaleTriadNames(new ScaleModel('minor', 'harmonic', 'c'))).to.deep.equal(['Cm', 'Ddim', 'Ebaug', 'Fm', 'G', 'Ab', 'Bdim']);
 		expect(getScaleTriadNames(new ScaleModel('minor', 'melodic', 'c'))).to.deep.equal(['Cm', 'Dm', 'Ebaug', 'F', 'G', 'Adim', 'Bdim']);
 	});
 
-	it('relativeTonicInIonian', () => {
-		expect(relativeTonicInIonian(new ScaleModel('major', 'lydian', 'd'))).to.equal('a');
-		expect(relativeTonicInIonian(new ScaleModel('minor', 'natural', 'b-flat'))).to.equal('d-flat');
-		expect(relativeTonicInIonian(new ScaleModel('minor', 'melodic', 'a'))).to.equal('c');
+	it(relativeIonianTonic.name, () => {
+		expect(relativeIonianTonic(new ScaleModel('major', 'lydian', 'd'))).to.equal('a');
+		expect(relativeIonianTonic(new ScaleModel('minor', 'natural', 'b-flat'))).to.equal('d-flat');
+		expect(relativeIonianTonic(new ScaleModel('minor', 'melodic', 'a'))).to.equal('c');
 	});
 
 });

@@ -47,7 +47,7 @@ export function getScaleTriadNames(model: ScaleModel): string[] {
  * A Melodic Minor => C Major Ionian (0 flat/sharp)
  * ```
  */
-export function relativeTonicInIonian(scale: ScaleModel): TonicKey {
+export function relativeIonianTonic(scale: ScaleModel): TonicKey {
 	if (scale.typeKey === 'major' && scale.modeKey === 'ionian') {
 		return scale.tonicKey;
 	}

@@ -5,7 +5,7 @@ describe('model/scale', () => {
 
 	describe('static', () => {
 
-		it('create', () => {
+		it(Scale.create.name, () => {
 			let cIonian = new Scale('major', 'ionian', 'c');
 			let dIonian = new Scale('major', 'ionian', 'd');
 			let aNaturalMinor = new Scale('minor', 'natural', 'a');

@@ -1,6 +1,6 @@
 import { Scale, TonicRange } from '@/models/scale';
 import { removeAccidental } from '@/music-theory/note';
-import { getScaleTriadNames, relativeTonicInIonian } from '@/music-theory/scale';
+import { getScaleTriadNames, relativeIonianTonic } from '@/music-theory/scale';
 import ScaleNoteBuilder from '@/music-theory/scale-note-builder';
 import { InjectValue, Singleton } from 'typescript-ioc';
 import Vex from 'vexflow';
@@ -54,7 +54,7 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 				score.voice(chordTextNotes, {time: '11/1'})
 			]})
 			.addClef('treble')
-			.addKeySignature(TonicRange[relativeTonicInIonian(scale)]);
+			.addKeySignature(TonicRange[relativeIonianTonic(scale)]);
 		vf.draw();
 	}
 

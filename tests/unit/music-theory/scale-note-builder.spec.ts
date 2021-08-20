@@ -4,7 +4,7 @@ import { expect } from 'chai';
 
 describe('music-theory/scale-note-builder', () => {
 
-	it('create', () => {
+	it('B3 to D5 in C Major Ionian', () => {
 		expect(ScaleNoteBuilder
 				.of(new Scale('major', 'ionian', 'c'))
 				.fromNotePosition(6)
