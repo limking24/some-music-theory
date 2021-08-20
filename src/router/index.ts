@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '@/views/Home.vue'
+import Home from '@/views/Home.vue';
 import ScaleTriadsFinder from '@/views/scale-triads-finder.vue';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -18,8 +18,17 @@ const routes: Array<RouteRecordRaw> = [
 	},
 	{
 		path: '/scale-triads',
+		redirect: to => ({ path: '/scale-triads/major/ionian/c' })
+	},
+	{
+		path: '/scale-triads/:typeKey/:modeKey/:tonicKey',
 		name: 'Scale Triads',
-		component: ScaleTriadsFinder
+		component: ScaleTriadsFinder,
+		props: route => ({
+			typeKey: route.params.typeKey,
+			modeKey: route.params.modeKey,
+			tonicKey: route.params.tonicKey
+		})
 	}
 ]
 
