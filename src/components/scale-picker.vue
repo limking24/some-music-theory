@@ -1,66 +1,73 @@
 <template>
 	<form>
 		<label for="scale">Scale</label>
-		<select v-model="type" id="scale">
-			<option v-for="option in typeOptions" :key="option">
-				{{option}}
+		<select v-model="typeKey" id="scale">
+			<option v-for="(type, key) in typeOptions" :key="key" :value="key">
+				{{type}}
 			</option>
 		</select>
 
 		<label for="mode">{{modeOptions.label}}</label>
-		<select v-model="mode" id="mode">
-			<option v-for="option in modeOptions.value" :key="option">
-				{{option}}
+		<select v-model="modeKey" id="mode">
+			<option v-for="(mode, key) in modeOptions.value" :key="key" :value="key">
+				{{mode}}
 			</option>
 		</select>
 
 		<label for="tonic">Tonic</label>
-		<select v-model="tonic" id="tonic">
-			<option v-for="(option, index) in tonicOptions" :value="option" :key="option">
-				{{option}} {{tonicKeySignatures[index]}}
+		<select v-model="tonicKey" id="tonic">
+			<option v-for="(key, index) in tonicOptions" :key="key" :value="key">
+				{{tonicRange[key]}} {{tonicKeySignatures[index]}}
 			</option>
 		</select>
 	</form>
 </template>
 
 <script lang="ts">
-import { Scale } from '@/models/scale';
+import { Mode, ModeKey, Modes, Scale, TonicKey, TonicRange, Type } from '@/models/scale';
 import { Vue } from 'vue-class-component';
 import { Emit, Prop, Watch } from 'vue-property-decorator';
+
+interface ModeOptions {
+	label: string,
+	value: Modes
+}
 
 export default class ScalePicker extends Vue {
 
 	@Prop({required: true})
 	scale!: Scale;
 
-	type = this.scale.type;
+	typeKey = this.scale.typeKey;
 
-	mode = this.scale.mode;
+	modeKey = this.scale.modeKey;
 
-	tonic = this.scale.tonic;
+	tonicKey = this.scale.tonicKey;
 
-	typeOptions = Scale.types;
+	typeOptions = Type;
+
+	tonicRange = TonicRange;
 
 	tonicKeySignatures = ['(bbbbbbb)', '(bbbbbb)', '(bbbbb)', '(bbbb)', '(bbb)', '(bb)', '(b)', '', '(#)', '(##)', '(###)', '(####)', '(#####)', '(######)', '(#######)'];
 
-	get modeOptions(): { label: string, value: string[] } {
-		let options = Scale.getModes(this.type);
+	get modeOptions(): ModeOptions {
+		let options = Scale.getModes(this.typeKey);
 		return {
-			label: (options == Scale.minorTypes) ? 'Type' : 'Mode',
+			label: (options === Mode.minor) ? 'Type' : 'Mode',
 			value: options
 		}
 	}
 
-	get tonicOptions(): string[] {
-		return Scale.getTonicRange(this.mode);
+	get tonicOptions(): TonicKey[] {
+		return Scale.getTonicRange(this.modeKey);
 	}
 
 	/**
 	 * Triggered when scale type changed, causing scale mode to change.
 	 */
 	@Watch('modeOptions.value')
-	onModeOptionsChanged(current: string[], previous: string[]): void {
-		this.mode = current[0];
+	onModeOptionsChanged(current: Modes, previous: Modes): void {
+		this.modeKey = Object.keys(current)[0] as ModeKey;
 	}
 
 	/**
@@ -79,20 +86,20 @@ export default class ScalePicker extends Vue {
 	 * the same.
 	 */
 	@Watch('tonicOptions')
-	onTonicOptionsChanged(current: string[], previous: string[]): void {
-		let index = previous.indexOf(this.tonic);
-		if (current[index] == previous[index]) {
+	onTonicOptionsChanged(current: TonicKey[], previous: TonicKey[]): void {
+		let index = previous.indexOf(this.tonicKey);
+		if (current[index] === previous[index]) {
 			this.picked();
 		} else {
-			this.tonic = current[index];
+			this.tonicKey = current[index];
 		}
 	}
 
 	/**
 	 * Triggered when scale tonic changed.
 	 */
-	@Watch('tonic')
-	onTonicChanged(current: string, previous: string): void {
+	@Watch('tonicKey')
+	onTonicChanged(current: TonicKey, previous: TonicKey): void {
 		this.picked();
 	}
 
@@ -102,7 +109,7 @@ export default class ScalePicker extends Vue {
 	 */
 	@Emit('update:scale')
 	picked(): Scale {
-		return new Scale(this.type, this.mode, this.tonic);
+		return new Scale(this.typeKey, this.modeKey, this.tonicKey);
 	}
 
 }

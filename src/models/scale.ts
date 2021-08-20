@@ -1,9 +1,9 @@
-const Type = {
+export const Type = {
 	major: 'Major', 
 	minor: 'Minor'
 }
 
-const Mode = {
+export const Mode = {
 	major: {
 		ionian:			'Ionian', 
 		dorian:			'Dorian', 
@@ -20,7 +20,7 @@ const Mode = {
 	}
 }
 
-const TonicRange = {
+export const TonicRange = {
 	'f-flat':		'Fb',
 	'c-flat':		'Cb',
 	'g-flat':		'Gb',
@@ -44,24 +44,16 @@ const TonicRange = {
 	'b-sharp':		'B#'
 }
 
-type TypeKey = keyof typeof Type;
-type MajorModeKey = keyof typeof Mode.major;
-type MinorModeKey = keyof typeof Mode.minor;
-type ModeKey = MajorModeKey | MinorModeKey;
-type TonicKey = keyof typeof TonicRange;
-type Modes = typeof Mode.major | typeof Mode.minor;
+export type TypeKey = keyof typeof Type;
+export type MajorModeKey = keyof typeof Mode.major;
+export type MinorModeKey = keyof typeof Mode.minor;
+export type ModeKey = MajorModeKey | MinorModeKey;
+export type Modes = typeof Mode.major | typeof Mode.minor;
+export type TonicKey = keyof typeof TonicRange;
 
 export class Scale {
 
-	public static readonly types = ['Major', 'Minor'];
-
-	public static readonly majorModes = ['Ionian', 'Dorian', 'Phrygian', 'Lydian', 'Mixolydian', 'Aeolian', 'Locrian'];
-
-	public static readonly minorTypes = ['Natural', 'Harmonic', 'Melodic'];
-
-	private static readonly tonicRange = ['Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 
-										  'F',  'C',  'G',  'D',  'A',  'E',  'B', 
-										  'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'];
+	public constructor(public typeKey: TypeKey, public modeKey: ModeKey, public tonicKey: TonicKey) {}
 
 	public static isMajor(scale: TypeKey | Scale): boolean {
 		let type = (scale instanceof Scale) ? scale.typeKey : scale;
@@ -99,21 +91,19 @@ export class Scale {
 	}
 
 	/**
-	 * Creates a valid Scale. Default values will be used if arguments 
-	 * are not supplied or invalid.
+	 * Creates a Scale. Default values will be used if arguments are invalid.
 	 * 
-	 * @param type If unprovided or invalid, detect it from mode. 
-	 * If it cannot be detected, then it will be 'Major'.
+	 * @param typeKey If invalid, detect it from mode. If it cannot be 
+	 * detected, then it will be 'major'.
 	 * 
-	 * @param mode If unprovided or invalid, then it will be 'Ionian'
-	 * for major scale or 'Natural' for minor scale.
+	 * @param modeKey If invalid, then it will be 'ionian' for major scale or 
+	 * 'natural' for minor scale.
 	 * 
-	 * @param tonic If unprovided or invalid, then it will be the one
-	 * without any flats or sharps in the key signature. For example,
-	 * C Ionian has no flats or sharps, so it will be the default tonic
-	 * for major (Ionian) scale.
+	 * @param tonicKey If invalid, then it will be the one without any flats 
+	 * or sharps in the key signature. For example,  C Ionian has no flats or 
+	 * sharps, so 'c' will be the default tonic for major (Ionian) scale.
 	 * 
-	 * @returns a valid Scale
+	 * @returns a Scale
 	 */
 	public static create(typeKey: string, modeKey: string, tonicKey: string): Scale {
 		let type: TypeKey, mode: ModeKey, tonic: TonicKey;
@@ -138,8 +128,6 @@ export class Scale {
 
 		return new Scale(type, mode, tonic);
 	}
-
-	public constructor(public typeKey: TypeKey, public modeKey: ModeKey, public tonicKey: TonicKey) {}
 
 	public get type(): string {
 		return Type[this.typeKey];
