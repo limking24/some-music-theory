@@ -1,6 +1,6 @@
-import { expect } from 'chai';
 import { Scale as ScaleModel } from '@/models/scale';
-import { getScaleInfo, getScaleTriadNames } from '@/functional/music-theory';
+import { getScaleInfo, getScaleTriadNames } from '@/music-theory/scale';
+import { expect } from 'chai';
 
 describe('functional/music-theory', () => {
 
