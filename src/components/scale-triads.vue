@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import Scale from '@/models/scale';
+import { Scale } from '@/models/scale';
 import { ScaleTriadsScoreDrawer } from '@/services/scale-triads-score-drawer';
 import { Inject, InjectValue } from 'typescript-ioc';
 import { Vue } from 'vue-class-component';

@@ -51,7 +51,7 @@ type ModeKey = MajorModeKey | MinorModeKey;
 type TonicKey = keyof typeof TonicRange;
 type Modes = typeof Mode.major | typeof Mode.minor;
 
-export default class Scale {
+export class Scale {
 
 	public static readonly types = ['Major', 'Minor'];
 
@@ -116,25 +116,27 @@ export default class Scale {
 	 * @returns a valid Scale
 	 */
 	public static create(typeKey: string, modeKey: string, tonicKey: string): Scale {
+		let type: TypeKey, mode: ModeKey, tonic: TonicKey;
 		typeKey = typeKey.toLowerCase();
 		modeKey = modeKey.toLowerCase();
 		tonicKey = tonicKey.toLowerCase();
 
 		// Scale type
-		if (!(typeKey in Type)) {
-			typeKey = (modeKey in Mode.minor) ? 'minor' : 'major';
+		if (typeKey in Type) {
+			type = typeKey as TypeKey;
+		} else {
+			type = (modeKey in Mode.minor) ? 'minor' : 'major';
 		}
+
 		// Major mode / minor type
-		let modeOptions = this.getModes(typeKey as TypeKey);
-		if (!(modeKey in modeOptions)) {
-			modeKey = Object.keys(modeOptions)[0];
-		}
+		let modeOptions = this.getModes(type);
+		mode = ((modeKey in modeOptions) ? modeKey : Object.keys(modeOptions)[0]) as ModeKey;
+
 		// Tonic
-		let tonicOptions = this.getTonicRange(modeKey as ModeKey) as string[];
-		if (!tonicOptions.includes(tonicKey)) {
-			tonicKey = tonicOptions[7];
-		}
-		return new Scale(typeKey as TypeKey, modeKey as ModeKey, tonicKey as TonicKey);
+		let tonicOptions = this.getTonicRange(mode) as string[];
+		tonic = (tonicOptions.includes(tonicKey) ? tonicKey : tonicOptions[7]) as TonicKey;
+
+		return new Scale(type, mode, tonic);
 	}
 
 	public constructor(public typeKey: TypeKey, public modeKey: ModeKey, public tonicKey: TonicKey) {}
@@ -153,18 +155,6 @@ export default class Scale {
 
 	public get tonic(): string {
 		return TonicRange[this.tonicKey];
-	}
-
-}
-
-class AutocorrectScale extends Scale {
-
-	public get mode(): string {
-		return '';
-	}
-
-	public get tonic(): string {
-		return '';
 	}
 
 }

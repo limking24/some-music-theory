@@ -1,4 +1,4 @@
-import Scale from '@/models/scale';
+import { Scale } from '@/models/scale';
 import { InjectValue, Singleton } from 'typescript-ioc';
 import Vex from 'vexflow';
 

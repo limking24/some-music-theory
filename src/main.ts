@@ -4,7 +4,7 @@ import { Container } from 'typescript-ioc';
 import { createApp } from 'vue';
 import App from './App.vue';
 import serviceConfig from './config/service.config';
-import {default as ScaleModel } from './models/scale';
+import { Scale as ScaleModel } from './models/scale';
 import router from './router';
 
 Container.configure(...serviceConfig);

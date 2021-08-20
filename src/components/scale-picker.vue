@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import Scale from '@/models/scale';
+import { Scale } from '@/models/scale';
 import { Vue } from 'vue-class-component';
 import { Emit, Prop, Watch } from 'vue-property-decorator';
 

@@ -1,4 +1,4 @@
-import Scale from '@/models/scale';
+import { Scale } from '@/models/scale';
 import { expect } from 'chai';
 
 describe('model/scale', () => {

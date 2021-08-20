@@ -1,4 +1,4 @@
-import { default as ScaleModel } from '@/models/scale';
+import { Scale as ScaleModel } from '@/models/scale';
 import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Mode, Scale as ScaleUtil } from '@tonaljs/tonal';
 

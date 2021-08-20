@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { default as ScaleModel } from '@/models/scale';
+import { Scale as ScaleModel } from '@/models/scale';
 import { getScaleInfo, getScaleTriadNames } from '@/functional/music-theory';
 
 describe('functional/music-theory', () => {

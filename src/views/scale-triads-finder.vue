@@ -9,7 +9,7 @@
 <script lang="ts">
 import ScalePicker from '@/components/scale-picker.vue';
 import ScaleTriads from '@/components/scale-triads.vue';
-import Scale from '@/models/scale';
+import { Scale } from '@/models/scale';
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
