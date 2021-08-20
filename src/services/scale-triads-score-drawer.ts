@@ -16,7 +16,8 @@ export abstract class ScaleTriadsScoreDrawer {
 @Singleton
 export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 
-	public constructor(@InjectValue('scale.triads.score.element.id') private elementId: string) {
+	public constructor(@InjectValue('scale.triads.score.element.id') private elementId: string,
+						@InjectValue('scale.triads.score.width') private width: number) {
 		super();
 	}
 
@@ -41,9 +42,9 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 		// e.g. ['Am', 'Bdim', 'C', 'Dm', 'Em', 'F', 'G', 'Am', 'Bdim', 'C', 'Dm']
 		chordNames = [...chordNames.slice(5), ...chordNames, ...chordNames.slice(0, 2)];
 
-		let vf = new Vex.Flow.Factory({renderer: {elementId: this.elementId, width: 715}});
+		let vf = new Vex.Flow.Factory({renderer: {elementId: this.elementId, width: this.width}});
 		let score = vf.EasyScore();
-		let system = vf.System({width: 700});
+		let system = vf.System({width: this.width - 15});
 		let chordTextNotes = chordNames.map(chord => new Vex.Flow.TextNote({text: chord, duration: 'w'})
 															.setJustification(Vex.Flow.TextNote.Justification.CENTER)
 															.setLine(12));

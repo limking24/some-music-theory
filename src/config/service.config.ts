@@ -3,5 +3,6 @@ import { ScaleTriadsScoreDrawer, VexFlowScaleTriadsScoreDrawer } from '@/service
 export default [
 	// Scale Triads Score
 	{ bind: ScaleTriadsScoreDrawer, to: VexFlowScaleTriadsScoreDrawer },
-	{ bindName: 'scale.triads.score.element.id', to: 'vexflow-scale-triads-score' }
+	{ bindName: 'scale.triads.score.element.id', to: 'vexflow-scale-triads-score' },
+	{ bindName: 'scale.triads.score.width', to: 765 }
 ];
