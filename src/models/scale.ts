@@ -44,12 +44,27 @@ export const TonicRange = {
 	'b-sharp':		'B#'
 }
 
+export const TonicRangeStartIndex = {
+	ionian:			1,
+	dorian:			3,
+	phrygian:		5,
+	lydian:			0,
+	mixolydian:		2,
+	aeolian:		4,
+	locrian:		6,
+	natural:		4,
+	harmonic:		4,
+	melodic:		4
+}
+
 export type TypeKey = keyof typeof Type;
 export type MajorModeKey = keyof typeof Mode.major;
 export type MinorModeKey = keyof typeof Mode.minor;
 export type ModeKey = MajorModeKey | MinorModeKey;
 export type Modes = typeof Mode.major | typeof Mode.minor;
 export type TonicKey = keyof typeof TonicRange;
+
+export const TonicRangeKeys = Object.keys(TonicRange) as TonicKey[];
 
 export class Scale {
 
@@ -74,20 +89,8 @@ export class Scale {
 	}
 
 	public static getTonicRange(modeKey: ModeKey): TonicKey[] {
-		let startAt;
-		switch(modeKey) {
-			case 'ionian':		startAt = 1;		break;
-			case 'dorian':		startAt = 3;		break;
-			case 'phrygian':	startAt = 5;		break;
-			case 'lydian':		startAt = 0;		break;
-			case 'mixolydian':	startAt = 2;		break;
-			case 'aeolian':		startAt = 4;		break;
-			case 'locrian':		startAt = 6;		break;
-			case 'natural':		startAt = 1;		break;
-			case 'harmonic':	startAt = 1;		break;
-			case 'melodic':		startAt = 1;		break;
-		}
-		return Object.keys(TonicRange).slice(startAt, startAt + 15) as TonicKey[];
+		let startAt = TonicRangeStartIndex[modeKey];
+		return TonicRangeKeys.slice(startAt, startAt + 15);
 	}
 
 	/**

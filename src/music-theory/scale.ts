@@ -1,4 +1,4 @@
-import { Scale as ScaleModel, Mode as ScaleModelMode } from '@/models/scale';
+import { Scale as ScaleModel, Mode as ScaleModelMode, TonicKey, TonicRangeKeys, TonicRangeStartIndex } from '@/models/scale';
 import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Mode, Scale as ScaleUtil } from '@tonaljs/tonal';
 
@@ -34,4 +34,25 @@ export function getScaleTriadNames(model: ScaleModel): string[] {
 	} else {
 		return Mode.triads(model.mode, model.tonic);
 	}
+}
+
+/**
+ * Given a scale, find the relative tonic in major ionian scale
+ * with the same number of flats or sharps in the key signature.
+ * 
+ * ```
+ * Example:
+ * D Major Lydian => A Major Ionian (3 sharps)
+ * Bb Natural Minor => Db Major Ionian (5 flats)
+ * A Melodic Minor => C Major Ionian (0 flat/sharp)
+ * ```
+ */
+export function relativeTonicInIonian(scale: ScaleModel): TonicKey {
+	if (scale.typeKey === 'major' && scale.modeKey === 'ionian') {
+		return scale.tonicKey;
+	}
+	let index = TonicRangeKeys.indexOf(scale.tonicKey);
+	let startIndex = TonicRangeStartIndex[scale.modeKey];
+	let relativeIndex = index - startIndex + 1;
+	return TonicRangeKeys[relativeIndex];
 }
