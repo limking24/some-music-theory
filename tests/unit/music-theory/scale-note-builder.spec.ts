@@ -1,5 +1,5 @@
 import { Scale } from '@/models/scale';
-import ScaleNoteBuilder from '@/music-theory/scale-note-builder';
+import { ScaleNoteBuilder } from '@/music-theory/scale-note-builder';
 import { expect } from 'chai';
 
 describe('music-theory/scale-note-builder', () => {

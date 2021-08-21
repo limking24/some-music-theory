@@ -1,18 +1,15 @@
-/**
- * Remove accidental from a note if it has any.
- * 
- * ```
- * Example:
- * C4  => C4
- * Fb4 => F4
- * A#3 => A3
- * ``` 
- */
-export function removeAccidental(pitchNotation?: string): string | undefined {
-	if (pitchNotation === undefined)
-		return;
-	
-	return (pitchNotation.length === 2) ? 
-				pitchNotation : 
-				pitchNotation.charAt(0) + pitchNotation.charAt(2);
+function changeAccidentalTo(pitchNotation: string, to: string): string {
+	return pitchNotation.charAt(0) + to + pitchNotation.charAt(pitchNotation.length - 1);
+}
+
+export function removeAccidental(pitchNotation: string): string {
+	return changeAccidentalTo(pitchNotation, '');
+}
+
+export function indicateAsNatural(pitchNotation: string): string {
+	return changeAccidentalTo(pitchNotation, 'n');
+}
+
+export function indicateAsSharp(pitchNotation: string): string {
+	return changeAccidentalTo(pitchNotation, '#');
 }

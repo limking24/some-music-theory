@@ -3,9 +3,13 @@ import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Scale as ScaleUtil } from '@tonaljs/tonal';
 import { getScaleInfo } from './scale';
 
-type NotePosition = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type NotePosition = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-export default class ScaleNoteBuilder {
+export interface NoteFormatter {
+	format: (note: string | undefined, position: NotePosition) => string | undefined;
+}
+
+export class ScaleNoteBuilder {
 
 	private _fromNotePosition: NotePosition = 0;
 
@@ -14,6 +18,8 @@ export default class ScaleNoteBuilder {
 	private _toNotePosition: NotePosition = 6;
 
 	private _toPitch = 4;
+
+	private _formatter?: NoteFormatter;
 
 	private constructor(private scale: ScaleInfo) {}
 
@@ -41,10 +47,24 @@ export default class ScaleNoteBuilder {
 		return this;
 	}
 
+	public formatter(formatter: NoteFormatter): this {
+		this._formatter = formatter;
+		return this;
+	}
+
 	public create(): (string | undefined)[] {
 		let fromNote = this.scale.notes[this._fromNotePosition] + this._fromPitch;
 		let toNote = this.scale.notes[this._toNotePosition] + this._toPitch;
-		return ScaleUtil.rangeOf(this.scale.name)(fromNote, toNote);
+		let notes = ScaleUtil.rangeOf(this.scale.name)(fromNote, toNote);
+
+		if (this._formatter != undefined) {
+			notes = notes.map((note, index) => this._formatter!.format!(
+				note, 
+				(index + this._fromNotePosition) % 7 as NotePosition)
+			);
+		}
+
+		return notes;
 	}
 
 }

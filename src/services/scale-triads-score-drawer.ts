@@ -1,8 +1,8 @@
 import { Scale, TonicRange } from '@/models/scale';
-import { removeAccidental } from '@/music-theory/note';
+import { AccidentalEditorProvider } from '@/music-theory/accidental-editor';
 import { getScaleTriadNames, relativeIonianTonic } from '@/music-theory/scale';
-import ScaleNoteBuilder from '@/music-theory/scale-note-builder';
-import { InjectValue, Singleton } from 'typescript-ioc';
+import { ScaleNoteBuilder } from '@/music-theory/scale-note-builder';
+import { Inject, InjectValue, Singleton } from 'typescript-ioc';
 import Vex from 'vexflow';
 
 export abstract class ScaleTriadsScoreDrawer {
@@ -17,11 +17,12 @@ export abstract class ScaleTriadsScoreDrawer {
 export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 
 	public constructor(@InjectValue('scale.triads.score.element.id') private elementId: string,
-						@InjectValue('scale.triads.score.width') private width: number) {
+						@InjectValue('scale.triads.score.width') private width: number,
+						@Inject private accidentalEditorProvider: AccidentalEditorProvider) {
 		super();
 	}
 
-	draw(scale: Scale): void {
+	public draw(scale: Scale): void {
 		let startPitch = ['a', 'b', 'c', 'd'].includes(scale.tonicKey.charAt(0)) ? 3 : 4;
 		let notes = ScaleNoteBuilder
 						.of(scale)
@@ -29,8 +30,9 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 						.fromPitch(startPitch)
 						.toNotePosition(5)
 						.toPitch(startPitch + 2)
-						.create()
-						.map(removeAccidental);
+						.formatter(this.accidentalEditorProvider.get(scale))
+						.create();
+						
 		let triads = [];
 		for (let i = 0; i < notes.length - 4; i++) {
 			triads.push(`${notes[i]} ${notes[i + 2]} ${notes[i + 4]}`);
@@ -47,7 +49,7 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 		let system = vf.System({width: this.width - 15});
 		let chordTextNotes = chordNames.map(chord => new Vex.Flow.TextNote({text: chord, duration: 'w'})
 															.setJustification(Vex.Flow.TextNote.Justification.CENTER)
-															.setLine(12));
+															.setLine(13));
 		system
 			.addStave({voices: [
 				score.voice(score.notes(triadsString), {time: '11/1'}),
@@ -58,7 +60,7 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 		vf.draw();
 	}
 
-	reset(): void {
+	public reset(): void {
 		let score = document.getElementById(this.elementId);
 		if (score != undefined) {
 			while (score.hasChildNodes()) {

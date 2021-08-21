@@ -1,4 +1,4 @@
-import { Scale as ScaleModel, Mode as ScaleModelMode, TonicKey, TonicRangeKeys, TonicRangeStartIndex } from '@/models/scale';
+import { Scale as ScaleModel, TonicKey, TonicRangeKeys, TonicRangeStartIndex } from '@/models/scale';
 import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Mode, Scale as ScaleUtil } from '@tonaljs/tonal';
 
