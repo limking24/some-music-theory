@@ -18,7 +18,7 @@ describe('music-theory/scale-note-builder', () => {
 
 	it(HarmonicMinorScaleAccidentalEditor.name, () => {
 		expect(ScaleNoteBuilder
-			.of(new Scale('minor', 'melodic', 'a-flat'))
+			.of(new Scale('minor', 'harmonic', 'a-flat'))
 			.fromNotePosition(5)
 			.fromPitch(3)
 			.toNotePosition(6)
@@ -27,7 +27,7 @@ describe('music-theory/scale-note-builder', () => {
 			.create()).to.deep.equal(['F3', 'Gn3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'Gn4']);
 
 		expect(ScaleNoteBuilder
-			.of(new Scale('minor', 'melodic', 'a-sharp'))
+			.of(new Scale('minor', 'harmonic', 'a-sharp'))
 			.fromNotePosition(5)
 			.fromPitch(3)
 			.toNotePosition(6)
