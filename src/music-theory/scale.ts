@@ -32,7 +32,12 @@ export function getScaleTriadNames(model: ScaleModel): string[] {
 					.map((note, index) => note + suffixes[index]);
 		}
 	} else {
-		return Mode.triads(model.mode, model.tonic);
+		let triads = Mode.triads(model.mode, model.tonic);
+		// Workaround for tonaljs bug
+		if (model.modeKey = 'lydian') {
+			triads[3] = getScaleInfo(model).notes[3] + 'dim';
+		}
+		return triads;
 	}
 }
 
