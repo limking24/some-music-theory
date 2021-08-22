@@ -35,7 +35,7 @@ export function getScaleTriadNames(model: ScaleModel): string[] {
 	} else {
 		let triads = Mode.triads(model.mode, model.tonic);
 		// Workaround for tonaljs bug
-		if (model.modeKey = 'lydian') {
+		if (model.modeKey === 'lydian') {
 			triads[3] = getScaleInfo(model).notes[3] + 'dim';
 		}
 		return triads;
