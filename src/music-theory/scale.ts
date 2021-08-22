@@ -3,17 +3,7 @@ import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Mode, Scale as ScaleUtil } from '@tonaljs/tonal';
 
 export function getScaleInfo(model: ScaleModel): ScaleInfo {
-	let args;
-
-	if (ScaleModel.isMinor(model)) {
-		args = (model.modeKey === 'natural') ? 
-				`${model.tonic} ${model.type}` :
-				`${model.tonic} ${model.mode} ${model.type}`
-	} else {
-		args = `${model.tonic} ${model.mode}`;
-	}
-
-	return ScaleUtil.get(args.toLowerCase());
+	return ScaleUtil.get(model.toString().toLowerCase());
 }
 
 const TriadSuffixes = {

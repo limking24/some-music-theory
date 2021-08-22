@@ -148,4 +148,14 @@ export class Scale {
 		return TonicRange[this.tonicKey];
 	}
 
+	public toString(): string {
+		if (Scale.isMinor(this)) {
+			return (this.modeKey === 'natural') ? 
+					`${this.tonic} ${this.type}` :
+					`${this.tonic} ${this.mode} ${this.type}`
+		} else {
+			return `${this.tonic} ${this.mode}`;
+		};
+	}
+
 }
