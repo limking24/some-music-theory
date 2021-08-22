@@ -36,17 +36,22 @@ export default class ScaleTriads extends Vue {
 </script>
 
 <style>
+#scale-triads-score {
+	margin: 20px;
+}
+
 #scale-triads-score > div > svg > g.vf-stavenote:nth-of-type(1),
 #scale-triads-score > div > svg > g.vf-stavenote:nth-of-type(2),
 #scale-triads-score > div > svg > g.vf-stavenote:nth-of-type(10),
-#scale-triads-score > div > svg > g.vf-stavenote:nth-of-type(11) {
-	opacity: 0.4;
-}
-
+#scale-triads-score > div > svg > g.vf-stavenote:nth-of-type(11),
 #scale-triads-score > div > svg > text:nth-of-type(1),
 #scale-triads-score > div > svg > text:nth-of-type(2),
 #scale-triads-score > div > svg > text:nth-of-type(10),
 #scale-triads-score > div > svg > text:nth-of-type(11) {
 	opacity: 0.4;
+}
+
+#scale-triads-score > div > svg > text {
+	font-family: 'Catamaran';
 }
 </style>

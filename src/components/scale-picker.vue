@@ -142,20 +142,26 @@ export default class ScalePicker extends Vue {
 </script>
 
 <style scoped>
+form {
+	white-space: nowrap;
+	margin: 20px;
+}
+
 form > div {
 	display: inline-block;
 	text-align: left;
 }
 
-form > div > label {
-	margin: 0 7px;
+label {
+	margin: 0 8px;
 	font-weight: bold;
+	font-size: large;
 }
 
-form > div > select {
+select {
 	display: block;
 	width: 200px;
-	margin: 3px 7px;
+	margin: 0 7px;
 	overflow-y: auto;
 }
 </style>

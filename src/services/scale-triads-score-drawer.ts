@@ -32,7 +32,6 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 						.toPitch(startPitch + 2)
 						.formatter(this.accidentalEditorProvider.get(scale))
 						.create();
-						
 		let triads = [];
 		for (let i = 0; i < notes.length - 4; i++) {
 			triads.push(`${notes[i]} ${notes[i + 2]} ${notes[i + 4]}`);
@@ -49,7 +48,7 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 		let system = vf.System({width: this.width - 15});
 		let chordTextNotes = chordNames.map(chord => new Vex.Flow.TextNote({text: chord, duration: 'w'})
 															.setJustification(Vex.Flow.TextNote.Justification.CENTER)
-															.setLine(13));
+															.setLine((startPitch === 3) ? 13 : 11));
 		system
 			.addStave({voices: [
 				score.voice(score.notes(triadsString), {time: '11/1'}),
