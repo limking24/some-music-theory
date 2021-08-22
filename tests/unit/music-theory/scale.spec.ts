@@ -19,9 +19,12 @@ describe('music-theory/scale', () => {
 
 	it(getScaleTriadNames.name, () => {
 		expect(getScaleTriadNames(new ScaleModel('major', 'ionian', 'c'))).to.deep.equal(['C', 'Dm', 'Em', 'F', 'G', 'Am', 'Bdim']);
+		expect(getScaleTriadNames(new ScaleModel('major', 'lydian', 'f'))).to.deep.equal(['F', 'G', 'Am', 'Bdim', 'C', 'Dm', 'Em']);
 		expect(getScaleTriadNames(new ScaleModel('minor', 'natural', 'c'))).to.deep.equal(['Cm', 'Ddim', 'Eb', 'Fm', 'Gm', 'Ab', 'Bb']);
 		expect(getScaleTriadNames(new ScaleModel('minor', 'harmonic', 'c'))).to.deep.equal(['Cm', 'Ddim', 'Ebaug', 'Fm', 'G', 'Ab', 'Bdim']);
+		expect(getScaleTriadNames(new ScaleModel('minor', 'harmonic', 'a-sharp'))).to.deep.equal(['A#m', 'B#dim', 'C#aug', 'D#m', 'E#', 'F#', 'G𝄪dim']);
 		expect(getScaleTriadNames(new ScaleModel('minor', 'melodic', 'c'))).to.deep.equal(['Cm', 'Dm', 'Ebaug', 'F', 'G', 'Adim', 'Bdim']);
+		expect(getScaleTriadNames(new ScaleModel('minor', 'melodic', 'a-sharp'))).to.deep.equal(['A#m', 'B#m', 'C#aug', 'D#', 'E#', 'F𝄪dim', 'G𝄪dim']);
 	});
 
 	it(relativeIonianTonic.name, () => {
