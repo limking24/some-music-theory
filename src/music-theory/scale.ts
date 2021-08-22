@@ -27,9 +27,10 @@ export function getScaleTriadNames(model: ScaleModel): string[] {
 			return Mode.triads(model.type, model.tonic);
 		} else {
 			let suffixes = (model.modeKey === 'harmonic') ? TriadSuffixes.HarmonicMinor : TriadSuffixes.MelodicMinor;
-			return getScaleInfo(model)
-					.notes
-					.map((note, index) => note + suffixes[index]);
+			let notes = getScaleInfo(model).notes;
+			notes[5] = notes[5].replace('##', '𝄪');
+			notes[6] = notes[6].replace('##', '𝄪');
+			return notes.map((note, index) => note + suffixes[index]);
 		}
 	} else {
 		let triads = Mode.triads(model.mode, model.tonic);
