@@ -37,7 +37,7 @@ export default class ScaleTriads extends Vue {
 
 <style>
 #scale-triads-score {
-	margin: 20px;
+	margin-top: -5px;
 }
 
 #scale-triads-score > div > svg > g.vf-stavenote:nth-of-type(1),

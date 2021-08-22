@@ -2,6 +2,7 @@
   <div>
     <h1>Scale Triads</h1>
 	<scale-picker v-model:scale="scale"></scale-picker>
+	<h2>{{scale.toString()}} Scale</h2>
 	<scale-triads :scale="scale"></scale-triads>
   </div>
 </template>
@@ -39,3 +40,9 @@ export default class ScaleTriadsFinder extends Vue {
 
 }
 </script>
+
+<style scoped>
+h2 {
+	margin: 50px 0 0;
+}
+</style>

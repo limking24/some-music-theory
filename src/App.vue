@@ -26,8 +26,12 @@
 
 h1 {
 	margin: 20px;
-	font-size: 45px;
+	font-size: 50px;
 	font-weight: 700;
+}
+
+h2 {
+	font-size: 30px;
 }
 
 option {
