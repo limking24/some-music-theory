@@ -1,25 +1,31 @@
 <template>
 	<form>
-		<label for="scale">Scale</label>
-		<select v-model="typeKey" id="scale">
-			<option v-for="(type, key) in typeOptions" :key="key" :value="key">
-				{{type}}
-			</option>
-		</select>
+		<div>
+			<label for="scale">Scale</label>
+			<select v-model="typeKey" id="scale" size="7">
+				<option v-for="(type, key) in typeOptions" :key="key" :value="key">
+					{{type}}
+				</option>
+			</select>
+		</div>
 
-		<label for="mode">{{modeOptions.label}}</label>
-		<select v-model="modeKey" id="mode">
-			<option v-for="(mode, key) in modeOptions.value" :key="key" :value="key">
-				{{mode}}
-			</option>
-		</select>
-
-		<label for="tonic">Tonic</label>
-		<select v-model="tonicKey" id="tonic">
-			<option v-for="(key, index) in tonicOptions" :key="key" :value="key">
-				{{tonicRange[key]}} {{tonicKeySignatures[index]}}
-			</option>
-		</select>
+		<div>
+			<label for="mode">{{modeOptions.label}}</label>
+			<select v-model="modeKey" id="mode" size="7">
+				<option v-for="(mode, key) in modeOptions.value" :key="key" :value="key">
+					{{mode}}
+				</option>
+			</select>
+		</div>
+		
+		<div>
+			<label for="tonic">Tonic</label>
+			<select v-model="tonicKey" id="tonic" size="7">
+				<option v-for="(key, index) in tonicOptions" :key="key" :value="key">
+					{{tonicRange[key]}} {{tonicKeySignatures[index]}}
+				</option>
+			</select>
+		</div>
 	</form>
 </template>
 
@@ -49,6 +55,12 @@ export default class ScalePicker extends Vue {
 	tonicRange = TonicRange;
 
 	tonicKeySignatures = ['(bbbbbbb)', '(bbbbbb)', '(bbbbb)', '(bbbb)', '(bbb)', '(bb)', '(b)', '', '(#)', '(##)', '(###)', '(####)', '(#####)', '(######)', '(#######)'];
+
+	onUpdatedEvents = new Array<Function>();
+
+	mounted(): void {
+		this.showSelectedTonicAtCenter();
+	}
 
 	get modeOptions(): ModeOptions {
 		let options = Scale.getModes(this.typeKey);
@@ -93,6 +105,7 @@ export default class ScalePicker extends Vue {
 		} else {
 			this.tonicKey = current[index];
 		}
+		this.onUpdatedEvents.push(this.showSelectedTonicAtCenter);
 	}
 
 	/**
@@ -112,9 +125,37 @@ export default class ScalePicker extends Vue {
 		return new Scale(this.typeKey, this.modeKey, this.tonicKey);
 	}
 
+	showSelectedTonicAtCenter(): void {
+		let tonicOption = document.querySelector("#tonic > option:nth-child(1)")!;
+		let tonicSelect = tonicOption.parentElement!;
+		let index = this.tonicOptions.indexOf(this.tonicKey);
+		tonicSelect.scrollTop = tonicOption.scrollHeight * (index - 3);
+	}
+
+	updated(): void {
+		while (this.onUpdatedEvents.length > 0) {
+			(this.onUpdatedEvents.shift()!)();
+		}
+	}
+
 }
 </script>
 
 <style scoped>
+form > div {
+	display: inline-block;
+	text-align: left;
+}
 
+form > div > label {
+	margin: 0 7px;
+	font-weight: bold;
+}
+
+form > div > select {
+	display: block;
+	width: 200px;
+	margin: 3px 7px;
+	overflow-y: auto;
+}
 </style>
