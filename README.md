@@ -1,4 +1,4 @@
-# music-app
+# some-music-theory
 
 ## Project setup
 ```
