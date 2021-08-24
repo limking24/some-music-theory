@@ -13,12 +13,11 @@ export abstract class ScaleTriadsScoreDrawer {
 
 }
 
-@Singleton
 export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 
-	public constructor(@InjectValue('scale.triads.score.element.id') private elementId: string,
-						@InjectValue('scale.triads.score.width') private width: number,
-						@Inject private accidentalEditorProvider: AccidentalEditorProvider) {
+	public constructor(protected elementId: string,
+						protected width: number,
+						protected accidentalEditorProvider: AccidentalEditorProvider) {
 		super();
 	}
 
@@ -66,6 +65,45 @@ export class VexFlowScaleTriadsScoreDrawer extends ScaleTriadsScoreDrawer {
 				score.removeChild(score.lastChild!);
 			}
 		}
+	}
+
+}
+
+@Singleton
+export class HighlightableVexFlowScaleTriadsScoreDrawer extends VexFlowScaleTriadsScoreDrawer {
+
+	public constructor(@InjectValue('scale.triads.score.element.id') elementId: string,
+						@InjectValue('scale.triads.score.width') width: number,
+						@Inject accidentalEditorProvider: AccidentalEditorProvider) {
+		super(elementId, width, accidentalEditorProvider);
+	}
+
+	public draw(scale: Scale): void {
+		super.draw(scale);
+		document
+			.querySelectorAll(`#${this.elementId} g.vf-notehead`)
+			.forEach((element, x) => {
+				/*
+				x:			2  5  8  11 14 17 20 23 26 29 32
+							1  4  7  10 13 16 19 22 25 28 31
+							0  3  6  9  12 15 18 21 24 27 30
+
+				noteIndex:	4  5  6  0  1  2  3  4  5  6  0
+							2  3  4  5  6  0  1  2  3  4  5
+							0  1  2  3  4  5  6  0  1  2  3
+				*/
+				let y = x % 3;
+				let noteIndex = ((x - y) / 3 + (y * 2)) % 7;
+				let clazz = `_${noteIndex}`
+				let selector = `#${this.elementId} g.vf-notehead.${clazz}`;
+				element.classList.add(clazz);
+				element.addEventListener('mouseover', () => document
+																.querySelectorAll(selector)
+																.forEach(element => element.classList.add('active')));
+				element.addEventListener('mouseout', () => document
+																.querySelectorAll(selector)
+																.forEach(element => element.classList.remove('active')));
+			});
 	}
 
 }

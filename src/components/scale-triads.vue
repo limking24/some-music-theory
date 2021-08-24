@@ -54,4 +54,9 @@ export default class ScaleTriads extends Vue {
 #scale-triads-score > div > svg > text {
 	font-family: 'Catamaran';
 }
+
+#scale-triads-score g.vf-notehead.active path {
+	fill: indianred;
+	/* indianred sandybrown lightsalmon */
+}
 </style>
