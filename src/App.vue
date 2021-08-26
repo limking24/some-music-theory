@@ -20,7 +20,7 @@
 	color: #2c3e50;
 }
 
-#app {
+#app, option {
 	font-family: 'Catamaran', sans-serif;
 }
 
@@ -35,7 +35,6 @@ h2 {
 }
 
 option {
-	font-family: 'Catamaran', sans-serif;
 	font-size: 14.5px;
 	padding-bottom: 0;
 }
