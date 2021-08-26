@@ -56,7 +56,6 @@ export default class ScaleTriads extends Vue {
 }
 
 #scale-triads-score g.vf-notehead.active path {
-	fill: indianred;
-	/* indianred sandybrown lightsalmon */
+	fill: red;
 }
 </style>
