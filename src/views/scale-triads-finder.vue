@@ -4,6 +4,7 @@
 	<scale-picker v-model:scale="scale"></scale-picker>
 	<h2>{{scale.toString()}} Scale</h2>
 	<scale-triads :scale="scale"></scale-triads>
+	<p>* Hover over a note to highlight it.</p>
   </div>
 </template>
 
@@ -44,5 +45,11 @@ export default class ScaleTriadsFinder extends Vue {
 <style scoped>
 h2 {
 	margin: 50px 0 0;
+}
+
+p {
+	font-style: italic;
+	font-size: smaller;
+	color: rgb(115, 115, 115);
 }
 </style>
