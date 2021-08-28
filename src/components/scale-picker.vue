@@ -60,6 +60,7 @@ export default class ScalePicker extends Vue {
 
 	mounted(): void {
 		this.showSelectedTonicAtCenter();
+		document.getElementById('tonic')!.scrollTop += 2;
 	}
 
 	get modeOptions(): ModeOptions {
