@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <h1>Scale Triads</h1>
-	<scale-picker v-model:scale="scale"></scale-picker>
-	<h2>{{scale.toString()}} Scale</h2>
-	<scale-triads :scale="scale"></scale-triads>
-	<p>* Hover over a note to highlight it.</p>
-  </div>
+	<div>
+		<h1>Scale Triads</h1>
+		<scale-picker v-model:scale="scale"></scale-picker>
+		<h2>{{scale.toString()}} Scale</h2>
+		<scale-triads :scale="scale"></scale-triads>
+		<p>* Hover over a note to highlight it.</p>
+	</div>
 </template>
 
 <script lang="ts">
