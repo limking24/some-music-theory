@@ -20,11 +20,12 @@
 	color: #2c3e50;
 }
 
-#app, option {
+#app, option, p {
 	font-family: 'Catamaran', sans-serif;
 }
 
 h1 {
+	text-shadow: 2px 3px 5px rgba(0, 0, 0, 0.080);
 	margin: 20px;
 	font-size: 50px;
 	font-weight: 700;
