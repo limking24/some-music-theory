@@ -10,9 +10,9 @@
 		</div>
 
 		<div>
-			<label for="mode">{{modeOptions.label}}</label>
+			<label for="mode">{{modeLabel}}</label>
 			<select v-model="modeKey" id="mode" size="7">
-				<option v-for="(mode, key) in modeOptions.value" :key="key" :value="key">
+				<option v-for="(mode, key) in modeOptions" :key="key" :value="key">
 					{{mode}}
 				</option>
 			</select>
@@ -33,11 +33,6 @@
 import { Mode, ModeKey, Modes, Scale, TonicKey, TonicRange, Type } from '@/models/scale';
 import { Vue } from 'vue-class-component';
 import { Emit, Prop, Watch } from 'vue-property-decorator';
-
-interface ModeOptions {
-	label: string,
-	value: Modes
-}
 
 export default class ScalePicker extends Vue {
 
@@ -63,12 +58,12 @@ export default class ScalePicker extends Vue {
 		document.getElementById('tonic')!.scrollTop += 2;
 	}
 
-	get modeOptions(): ModeOptions {
-		let options = Scale.getModes(this.typeKey);
-		return {
-			label: (options === Mode.minor) ? 'Type' : 'Mode',
-			value: options
-		}
+	get modeLabel(): string {
+		return (this.typeKey === 'major') ? 'Mode' : 'Type';
+	}
+
+	get modeOptions(): Modes {
+		return Scale.getModes(this.typeKey);
 	}
 
 	get tonicOptions(): TonicKey[] {
@@ -78,7 +73,7 @@ export default class ScalePicker extends Vue {
 	/**
 	 * Triggered when scale type changed, causing scale mode to change.
 	 */
-	@Watch('modeOptions.value')
+	@Watch('modeOptions')
 	onModeOptionsChanged(current: Modes, previous: Modes): void {
 		this.modeKey = Object.keys(current)[0] as ModeKey;
 	}
