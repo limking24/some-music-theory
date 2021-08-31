@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { Mode, ModeKey, Modes, Scale, TonicKey, TonicRange, Type } from '@/models/scale';
+import { ModeKey, Modes, Scale, TonicKey, TonicRange, Type } from '@/models/scale';
 import { Vue } from 'vue-class-component';
 import { Emit, Prop, Watch } from 'vue-property-decorator';
 
