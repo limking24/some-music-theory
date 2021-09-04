@@ -17,7 +17,7 @@ export const ScaleNameMap = ScaleType
 							.reduce((unsorted, scale) => {
 								unsorted[scale.name] = new ScaleName(scale.name, toTitleCase(scale.name), scale.aliases);
 								scale.aliases.forEach(alias => 
-									unsorted[alias] = new ScaleName(alias, toTitleCase(alias[0] === '·' ? alias.slice(1) : alias), scale.aliases.map(a => (a == alias) ? scale.name : a))
+									unsorted[alias] = new ScaleName(scale.name, toTitleCase(alias[0] === '·' ? alias.slice(1) : alias), scale.aliases.map(a => (a == alias) ? scale.name : a))
 								);
 								return unsorted;
 							}, {} as KeyedScaleName);
