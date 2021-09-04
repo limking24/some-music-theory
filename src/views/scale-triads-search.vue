@@ -21,7 +21,7 @@ import { Prop, Watch } from 'vue-property-decorator';
 		ScaleTriads
 	}
 })
-export default class ScaleTriadsFinder extends Vue {
+export default class ScaleTriadsSearch extends Vue {
 
 	@Prop({default: 'major'})
 	typeKey!: string;
