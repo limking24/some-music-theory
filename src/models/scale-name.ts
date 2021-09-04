@@ -3,7 +3,7 @@ import { ScaleType } from '@tonaljs/tonal';
 
 export class ScaleName {
 
-	public constructor(public display: string, public aliases?: string[]) {}
+	public constructor(public key: string, public display: string, public aliases?: string[]) {}
 
 }
 
@@ -15,9 +15,9 @@ export const ScaleNameMap = ScaleType
 							.all()
 							.filter(scale => scale.name !== 'chromatic')
 							.reduce((unsorted, scale) => {
-								unsorted[scale.name] = new ScaleName(toTitleCase(scale.name), scale.aliases);
+								unsorted[scale.name] = new ScaleName(scale.name, toTitleCase(scale.name), scale.aliases);
 								scale.aliases.forEach(alias => 
-									unsorted[alias] = new ScaleName(toTitleCase(alias[0] === '·' ? alias.slice(1) : alias), scale.aliases.map(a => (a == alias) ? scale.name : a))
+									unsorted[alias] = new ScaleName(alias, toTitleCase(alias[0] === '·' ? alias.slice(1) : alias), scale.aliases.map(a => (a == alias) ? scale.name : a))
 								);
 								return unsorted;
 							}, {} as KeyedScaleName);
