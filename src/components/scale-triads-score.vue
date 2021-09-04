@@ -11,7 +11,7 @@ import { Inject, InjectValue } from 'typescript-ioc';
 import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 
-export default class ScaleTriads extends Vue {
+export default class ScaleTriadsScore extends Vue {
 
 	@Prop({required: true})
 	scale!: Scale;

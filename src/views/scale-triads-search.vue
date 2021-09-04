@@ -3,14 +3,14 @@
 		<h1>Scale Triads</h1>
 		<scale-picker v-model:scale="scale"></scale-picker>
 		<h2>{{scale.toString()}} Scale</h2>
-		<scale-triads :scale="scale"></scale-triads>
+		<scale-triads-score :scale="scale"></scale-triads-score>
 		<p>* Hover over a note to highlight it.</p>
 	</div>
 </template>
 
 <script lang="ts">
 import ScalePicker from '@/components/scale-picker.vue';
-import ScaleTriads from '@/components/scale-triads.vue';
+import ScaleTriadsScore from '@/components/scale-triads-score.vue';
 import { Scale } from '@/models/scale';
 import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
@@ -18,7 +18,7 @@ import { Prop, Watch } from 'vue-property-decorator';
 @Options({
 	components: {
 		ScalePicker,
-		ScaleTriads
+		ScaleTriadsScore
 	}
 })
 export default class ScaleTriadsSearch extends Vue {
