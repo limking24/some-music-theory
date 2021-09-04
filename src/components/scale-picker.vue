@@ -51,11 +51,9 @@ export default class ScalePicker extends Vue {
 
 	tonicKeySignatures = ['(bbbbbbb)', '(bbbbbb)', '(bbbbb)', '(bbbb)', '(bbb)', '(bb)', '(b)', '', '(#)', '(##)', '(###)', '(####)', '(#####)', '(######)', '(#######)'];
 
-	onUpdatedEvents = new Array<Function>();
-
 	mounted(): void {
 		this.showSelectedTonicAtCenter();
-		document.getElementById('tonic')!.scrollTop += 2;
+		this.$nextTick(() => document.getElementById('tonic')!.scrollTop += 2);
 	}
 
 	get modeLabel(): string {
@@ -101,7 +99,7 @@ export default class ScalePicker extends Vue {
 		} else {
 			this.tonicKey = current[index];
 		}
-		this.onUpdatedEvents.push(this.showSelectedTonicAtCenter);
+		this.showSelectedTonicAtCenter();
 	}
 
 	/**
@@ -122,16 +120,12 @@ export default class ScalePicker extends Vue {
 	}
 
 	showSelectedTonicAtCenter(): void {
-		let tonicOption = document.querySelector("#tonic > option:nth-child(1)")!;
-		let tonicSelect = tonicOption.parentElement!;
-		let index = this.tonicOptions.indexOf(this.tonicKey);
-		tonicSelect.scrollTop = tonicOption.scrollHeight * (index - 3);
-	}
-
-	updated(): void {
-		while (this.onUpdatedEvents.length > 0) {
-			(this.onUpdatedEvents.shift()!)();
-		}
+		this.$nextTick(() => {
+			let tonicOption = document.querySelector("#tonic > option:nth-child(1)")!;
+			let tonicSelect = tonicOption.parentElement!;
+			let index = this.tonicOptions.indexOf(this.tonicKey);
+			tonicSelect.scrollTop = tonicOption.scrollHeight * (index - 3);
+		});
 	}
 
 }
