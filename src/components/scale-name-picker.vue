@@ -1,7 +1,7 @@
 <template>
 	<div class="scale-name-picker">
 		<div v-for="key in sortedKeys" :key="key"
-			@click="syncedSelected = key"
+			@click="selected = key"
 			:class="{
 				'selected': classes[key].selected, 
 				'alias-of-selected': classes[key].aliasOfSelected
@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts">
-import { ScaleNameMap, SortedScaleNameKey } from '@/models/scale-name';
+import { ScaleName, ScaleNameMap, SortedScaleNameKey } from '@/models/scale-name';
 import { Vue } from 'vue-class-component';
-import { PropSync, Watch } from 'vue-property-decorator';
+import { Emit, Prop, Watch } from 'vue-property-decorator';
 
 interface Class {
 	selected: boolean;
@@ -27,8 +27,10 @@ interface Classes {
 
 export default class ScaleNamePicker extends Vue {
 
-	@PropSync('selected', {required: true})
-	syncedSelected!: string;
+	@Prop({required: true})
+	scaleName!: ScaleName;
+
+	selected = this.scaleName.key;
 
 	sortedKeys = SortedScaleNameKey;
 
@@ -44,7 +46,7 @@ export default class ScaleNamePicker extends Vue {
 				}, {} as Classes);
 
 	mounted(): void {
-		this.toggleClasses(this.syncedSelected);
+		this.toggleClasses(this.selected);
 		this.$nextTick(() => {
 			let selectedDiv = document.querySelector('.scale-name-picker .selected')! as HTMLElement;
 			let parent = selectedDiv.parentElement! as HTMLElement;
@@ -52,10 +54,11 @@ export default class ScaleNamePicker extends Vue {
 		});
 	}
 
-	@Watch('syncedSelected')
+	@Watch('selected')
 	onKeyChanged(newKey: string, oldKey: string): void {
 		this.toggleClasses(oldKey);
 		this.toggleClasses(newKey);
+		this.picked();
 	}
 
 	toggleClasses(key: string): void {
@@ -65,6 +68,11 @@ export default class ScaleNamePicker extends Vue {
 			?.forEach(alias => {
 				this.classes[alias].aliasOfSelected = !this.classes[alias].aliasOfSelected;
 			});
+	}
+
+	@Emit('update:scaleName')
+	picked(): ScaleName {
+		return ScaleNameMap[this.selected];
 	}
 
 }
