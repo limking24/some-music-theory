@@ -34,14 +34,14 @@ export class ScaleName {
 	 * 
 	 * MAP['dominant-diminished'] = {
 	 *    key: 'dominant-diminished',
-	 *    ref: 'dominant diminished',
+	 *    ref: 'half-whole diminished',
 	 *    display: 'Dominant Diminished',
 	 *    aliasKeys: ['half-whole-diminished', 'messiaens-mode-2']
 	 * }
 	 * 
 	 * MAP['messiaens-mode-2'] = {
 	 *    key: 'messiaens-mode-2',
-	 *    ref: 'messiaen\'s mode #2',
+	 *    ref: 'half-whole diminished',
 	 *    display: 'Messiaen\'s Mode #2',
 	 *    aliasKeys: ['dominant-diminished', 'half-whole-diminished']
 	 * }
@@ -51,9 +51,8 @@ export class ScaleName {
 							.all()
 							.filter(scale => scale.name !== 'chromatic')
 							.reduce((map, scale) => {
-								/* e.g.
-								   names: ['half-whole diminished', 'dominant diminished', 'messiaen's mode #2']
-								   keys:  ['half-whole-diminished', 'dominant-diminished', 'messiaens-mode-2'] */
+								/* e.g. names: ['half-whole diminished', 'dominant diminished', 'messiaen's mode #2']
+								        keys:  ['half-whole-diminished', 'dominant-diminished', 'messiaens-mode-2'] */
 								let names = [ scale.name, ...scale.aliases];
 								let keys = names.map(name => name.replace(/['# ]/g, char => replacement[char]));
 								keys.forEach((key, index) => {
