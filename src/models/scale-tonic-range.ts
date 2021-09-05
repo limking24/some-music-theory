@@ -101,7 +101,7 @@ export class ScaleTonicRange {
 		[key: string]: ScaleTonicRange
 	};
 
-	public constructor(public readonly upper: number,
+	private constructor(public readonly upper: number,
 						public readonly lower: number) {}
 
 	/**
