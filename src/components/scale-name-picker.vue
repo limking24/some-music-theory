@@ -3,18 +3,18 @@
 		<div v-for="key in sortedKeys" :key="key"
 			@click="selected = key"
 			:class="{
-				'selected': classes[key].selected, 
-				'alias-of-selected': classes[key].aliasOfSelected
+				'selected': highlight[key].selected, 
+				'alias-of-selected': highlight[key].aliasOfSelected
 			}">
-			{{names[key].display}}
+			{{getScaleName(key).display}}
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { ScaleName, ScaleNameMap, SortedScaleNameKey } from '@/models/scale-name';
+import { ScaleName } from '@/models/scale-name';
 import { Vue } from 'vue-class-component';
-import { Emit, Prop, Watch } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
 
 interface Class {
 	selected: boolean;
@@ -32,21 +32,22 @@ export default class ScaleNamePicker extends Vue {
 
 	selected = this.scaleName.key;
 
-	sortedKeys = SortedScaleNameKey;
+	sortedKeys = ScaleName.KEYS;
 
-	names = ScaleNameMap;
+	highlight = ScaleName.KEYS
+					.reduce((highlight, key) => {
+						highlight[key] = {
+							selected: false,
+							aliasOfSelected: false
+						};
+						return highlight;
+					}, {} as Classes);
 
-	classes = SortedScaleNameKey
-				.reduce((classes, key) => {
-					classes[key] = {
-						selected: false,
-						aliasOfSelected: false
-					};
-					return classes;
-				}, {} as Classes);
+	getScaleName = ScaleName.get;
 
 	mounted(): void {
-		this.toggleClasses(this.selected);
+		this.toggleHighlight(this.selected);
+		// Make the selected item visible
 		this.$nextTick(() => {
 			let selectedDiv = document.querySelector('.scale-name-picker .selected')! as HTMLElement;
 			let parent = selectedDiv.parentElement! as HTMLElement;
@@ -55,24 +56,19 @@ export default class ScaleNamePicker extends Vue {
 	}
 
 	@Watch('selected')
-	onKeyChanged(newKey: string, oldKey: string): void {
-		this.toggleClasses(oldKey);
-		this.toggleClasses(newKey);
-		this.picked();
+	onSelected(newKey: string, oldKey: string): void {
+		this.toggleHighlight(oldKey);
+		this.toggleHighlight(newKey);
+		this.$emit('update:scaleName', ScaleName.get(this.selected));
 	}
 
-	toggleClasses(key: string): void {
-		this.classes[key].selected = !this.classes[key].selected;
-		ScaleNameMap[key]
-			.aliases
-			?.forEach(alias => {
-				this.classes[alias].aliasOfSelected = !this.classes[alias].aliasOfSelected;
+	toggleHighlight(key: string): void {
+		this.highlight[key].selected = !this.highlight[key].selected;
+		ScaleName
+			.aliasKeysOf(key)
+			.forEach(aliasKey => {
+				this.highlight[aliasKey].aliasOfSelected = !this.highlight[aliasKey].aliasOfSelected;
 			});
-	}
-
-	@Emit('update:scaleName')
-	picked(): ScaleName {
-		return ScaleNameMap[this.selected];
 	}
 
 }
