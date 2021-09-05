@@ -54,7 +54,7 @@ export class ScaleName {
 								/* e.g.
 								   names: ['half-whole diminished', 'dominant diminished', 'messiaen's mode #2']
 								   keys:  ['half-whole-diminished', 'dominant-diminished', 'messiaens-mode-2'] */
-								let names = [ scale.name, ...scale.aliases.map(alias => alias.startsWith('·') ? alias.slice(1) : alias)];
+								let names = [ scale.name, ...scale.aliases];
 								let keys = names.map(name => name.replace(/['# ]/g, char => replacement[char]));
 								keys.forEach((key, index) => {
 									map[key] = new ScaleName(

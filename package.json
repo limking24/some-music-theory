@@ -8,12 +8,12 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@tonaljs/tonal": "^4.6.2",
-    "core-js": "^3.6.5",
+    "@tonaljs/tonal": "^4.6.4",
+    "core-js": "^3.17.2",
     "reflect-metadata": "^0.1.13",
     "typescript-ioc": "^3.2.2",
     "vexflow": "^3.0.9",
-    "vue": "^3.2.2",
+    "vue": "^3.2.8",
     "vue-class-component": "^8.0.0-0",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^4.0.0-0"
@@ -27,8 +27,8 @@
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
-    "@vue/test-utils": "^2.0.0-0",
+    "@vue/compiler-sfc": "^3.2.8",
+    "@vue/test-utils": "^2.0.0-rc.13",
     "chai": "^4.1.2",
     "typescript": "~4.1.5"
   },
