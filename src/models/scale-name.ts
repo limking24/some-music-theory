@@ -11,6 +11,42 @@ const replacement = {
 
 export class ScaleName {
 
+	/**
+	 * A mapping between scale name key and the instance itself.
+	 * 
+	 * ScaleType obtained from tonaljs will be transformed into
+	 * ScaleName like the following:
+	 * 
+	 * ```
+	 * // From
+	 * {
+	 *    name: 'half-whole diminished',
+	 *    aliases: ['dominant diminished', 'messiaen\'s mode #2']
+	 * }
+	 * 
+	 * // To
+	 * MAP['half-whole-diminished'] = {
+	 *    key: 'half-whole-diminished',
+	 *    ref: 'half-whole diminished',
+	 *    display: 'Half-whole Diminished',
+	 *    aliasKeys: ['dominant-diminished', 'messiaens-mode-2']
+	 * }
+	 * 
+	 * MAP['dominant-diminished'] = {
+	 *    key: 'dominant-diminished',
+	 *    ref: 'dominant diminished',
+	 *    display: 'Dominant Diminished',
+	 *    aliasKeys: ['half-whole-diminished', 'messiaens-mode-2']
+	 * }
+	 * 
+	 * MAP['messiaens-mode-2'] = {
+	 *    key: 'messiaens-mode-2',
+	 *    ref: 'messiaen\'s mode #2',
+	 *    display: 'Messiaen\'s Mode #2',
+	 *    aliasKeys: ['dominant-diminished', 'half-whole-diminished']
+	 * }
+	 * ```
+	 */
 	private static MAP = ScaleType
 							.all()
 							.filter(scale => scale.name !== 'chromatic')
