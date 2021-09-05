@@ -1,13 +1,18 @@
 <template>
 	<div>
-		<h2>{{scaleName.display}} Scale</h2>
-		<div v-if="aliases">
-			(Alias: {{aliases}})
+		<h2>{{scaleName.display}}</h2>
+		<div v-if="aliases" class="alias">
+			<template v-if="scaleName.aliases.length === 1">
+				Alias:
+			</template>
+			<template v-else>
+				Aliases:
+			</template>
+			{{aliases}}
 		</div>
-		<table border="1" align="center">
+		<table>
 			<thead>
 				<tr>
-					<td></td>
 					<td>Tonic</td>
 					<td>Enharmonic</td>
 					<td v-for="(note, index) in allScales[0].notes" :key="note">{{index + 1}}</td>
@@ -22,7 +27,6 @@
 						highlight: highlight[index],
 						dim: tonicRange.outOfRange(index)
 					}">
-					<td>{{index}}</td>
 					<td>{{scale.tonic}}</td>
 					<td>{{enharmonic[index]}}</td>
 					<td v-for="note in scale.notes" :key="note">{{note}}</td>
@@ -91,33 +95,71 @@ export default class ScaleNotesTable extends Vue {
 
 <style scoped>
 h2 {
-	margin-bottom: 0;
+	margin: 50px 0 5px;
 }
 
-td {
-	padding: 1px 7px;
-}
-
-td:first-child,
-td:nth-child(2),
-td:nth-child(3),
-thead tr {
-	font-weight: bold;
-}
-
-td:nth-child(n+4) {
-	width: 45px;
-}
-
-td:last-child {
-	width: auto;
+.alias {
+	font-size: 120%;
+	margin-bottom: 25px;
 }
 
 .highlight {
-	background: rgb(30, 144, 255) !important;
+	background: rgb(180, 180, 180) !important;
 }
 
 .dim {
-	background: darkgrey;
+	opacity: 0.45;
+}
+
+table {
+	border-spacing: 0;
+	text-align: left;
+	margin: 10px 0 40px;
+}
+
+/* Header */
+thead td {
+	font-weight: bold;
+	font-size: 120%;
+	border-bottom: 2px solid #2c3e50;
+}
+
+/* Even row */
+tbody tr:nth-child(even) {
+	background: rgb(245, 245, 245);
+}
+
+/* Tonic & Enharmonic columns */
+td:first-child,
+td:nth-child(2) {
+	font-weight: bold;
+}
+
+/* Tonic columns */
+td:first-child {
+	padding-left: 23px;
+	padding-right: 25px;
+}
+
+/* Enharmonic columns */
+td:nth-child(2) {
+	padding-right: 40px;
+}
+
+/* Note columns */
+td:nth-child(n+3):not(:last-child) {
+	min-width: 40px;
+	padding: 6px 10px;
+}
+
+/* Accidentals columns */
+td:last-child {
+	padding-left: 25px;
+	padding-right: 25px;
+}
+
+/* Last row */
+tr:last-child td {
+	border-bottom: 2px solid #2c3e50;
 }
 </style>
