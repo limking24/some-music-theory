@@ -1,10 +1,9 @@
 <template>
-	<!-- <div id="nav">
-		<router-link to="/">Home</router-link> |
-		<router-link to="/about">About</router-link> |
+	<div id="nav">
+		<router-link to="/scale-notes-table">Scale Notes Table</router-link> |
 		<router-link to="/scale-triads">Scale Triads</router-link>
-	</div> -->
-	<router-view/>
+	</div>
+	<router-view id="view"/>
 </template>
 
 <style>
@@ -51,5 +50,9 @@ option {
 
 #nav a.router-link-exact-active {
 	color: #42b983;
+}
+
+#view {
+	display: inline-block;
 }
 </style>
