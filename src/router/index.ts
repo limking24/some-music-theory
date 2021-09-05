@@ -1,4 +1,5 @@
-import ScaleTriadsFinder from '@/views/scale-triads-finder.vue';
+import ScaleNotesTableSearch from '@/views/scale-notes-table-search.vue';
+import ScaleTriadsSearch from '@/views/scale-triads-search.vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
@@ -8,13 +9,25 @@ const routes: Array<RouteRecordRaw> = [
 		redirect: to => ({ path: '/scale-triads' })
 	},
 	{
+		path: '/scale-notes-table',
+		redirect: to => ({ path: '/scale-notes-table/major' })
+	},
+	{
+		path: '/scale-notes-table/:scaleNameKey',
+		name: 'Scale Notes Table',
+		component: ScaleNotesTableSearch,
+		props: route => ({
+			scaleNameKey: decodeURIComponent(route.params.scaleNameKey as string),
+		})
+	},
+	{
 		path: '/scale-triads',
 		redirect: to => ({ path: '/scale-triads/major/ionian/c' })
 	},
 	{
 		path: '/scale-triads/:typeKey/:modeKey/:tonicKey',
 		name: 'Scale Triads',
-		component: ScaleTriadsFinder,
+		component: ScaleTriadsSearch,
 		props: route => ({
 			typeKey: route.params.typeKey,
 			modeKey: route.params.modeKey,
