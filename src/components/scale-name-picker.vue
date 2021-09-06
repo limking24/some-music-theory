@@ -32,9 +32,9 @@ export default class ScaleNamePicker extends Vue {
 
 	selected = this.scaleName.key;
 
-	sortedKeys = ScaleName.KEYS;
+	sortedKeys = ScaleName.Keys;
 
-	highlight = ScaleName.KEYS
+	highlight = ScaleName.Keys
 					.reduce((highlight, key) => {
 						highlight[key] = {
 							selected: false,

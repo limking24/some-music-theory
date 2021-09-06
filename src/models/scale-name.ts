@@ -9,7 +9,20 @@ const replacement = {
 	[key: string]: string
 };
 
+export interface ScaleNameMap {
+	[key: string]: ScaleName;
+}
+
 export class ScaleName {
+
+	private static _map: ScaleNameMap | undefined = undefined;
+
+	private static _keys: string[] | undefined = undefined;
+
+	public constructor(public readonly key: string,
+						public readonly ref: string,
+						public readonly display: string,
+						public readonly aliasKeys: string[]) {}
 
 	/**
 	 * A mapping between scale name key and the instance itself.
@@ -47,14 +60,14 @@ export class ScaleName {
 	 * }
 	 * ```
 	 */
-	private static MAP = ScaleType
+	public static get Map(): ScaleNameMap {
+		if (this._map === undefined) {
+			this._map = ScaleType
 							.all()
 							.filter(scale => scale.name !== 'chromatic')
 							.reduce((map, scale) => {
-								/* e.g. names: ['half-whole diminished', 'dominant diminished', 'messiaen's mode #2']
-								        keys:  ['half-whole-diminished', 'dominant-diminished', 'messiaens-mode-2'] */
-								let names = [ scale.name, ...scale.aliases];
-								let keys = names.map(name => name.replace(/['# ]/g, char => replacement[char]));
+								let names = [ scale.name, ...scale.aliases];										// names: ['half-whole diminished', 'dominant diminished', 'messiaen's mode #2']
+								let keys = names.map(name => name.replace(/['# ]/g, char => replacement[char]));	// keys:  ['half-whole-diminished', 'dominant-diminished', 'messiaens-mode-2']
 								keys.forEach((key, index) => {
 									map[key] = new ScaleName(
 										key, 
@@ -64,34 +77,38 @@ export class ScaleName {
 									);
 								});
 								return map;
-							}, {} as {
-								[key: string]: ScaleName;
-							});
+							}, {} as ScaleNameMap);
+		}
+		return this._map;
+	}
 
-	public static KEYS = Object
-							.keys(ScaleName.MAP)
-							.sort((a, b) => ScaleName.MAP[a].display.localeCompare(ScaleName.MAP[b].display));
-
-	public constructor(public readonly key: string,
-						public readonly ref: string,
-						public readonly display: string,
-						public readonly aliasKeys: string[]) {}
+	/**
+	 * Sorted keys of all scale names.
+	 */
+	public static get Keys(): string[] {
+		if (this._keys === undefined) {
+			this._keys = Object
+							.keys(ScaleName.Map)
+							.sort((a, b) => ScaleName.Map[a].display.localeCompare(ScaleName.Map[b].display));
+		}
+		return this._keys;
+	}
 
 	public static get(key: string, defaultKey = 'major'): ScaleName {
-		let scaleName = ScaleName.MAP[key];
+		let scaleName = ScaleName.Map[key];
 		if (scaleName === undefined) {
-			scaleName = ScaleName.MAP[defaultKey];
+			scaleName = ScaleName.Map[defaultKey];
 		}
 		return scaleName!;
 	}
 
 	public static aliasKeysOf(key: string): string[] {
-		let scaleName = ScaleName.MAP[key];
+		let scaleName = ScaleName.Map[key];
 		return scaleName ? scaleName.aliasKeys : [];
 	}
 
 	public get aliases(): ScaleName[] {
-		return this.aliasKeys.map(key => ScaleName.MAP[key]);
+		return this.aliasKeys.map(key => ScaleName.Map[key]);
 	}
 
 }
