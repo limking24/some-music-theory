@@ -38,21 +38,21 @@ export class ScaleName {
 	 * }
 	 * 
 	 * // To
-	 * MAP['half-whole-diminished'] = {
+	 * _map['half-whole-diminished'] = {
 	 *    key: 'half-whole-diminished',
 	 *    ref: 'half-whole diminished',
 	 *    display: 'Half-whole Diminished',
 	 *    aliasKeys: ['dominant-diminished', 'messiaens-mode-2']
 	 * }
 	 * 
-	 * MAP['dominant-diminished'] = {
+	 * _map['dominant-diminished'] = {
 	 *    key: 'dominant-diminished',
 	 *    ref: 'half-whole diminished',
 	 *    display: 'Dominant Diminished',
 	 *    aliasKeys: ['half-whole-diminished', 'messiaens-mode-2']
 	 * }
 	 * 
-	 * MAP['messiaens-mode-2'] = {
+	 * _map['messiaens-mode-2'] = {
 	 *    key: 'messiaens-mode-2',
 	 *    ref: 'half-whole diminished',
 	 *    display: 'Messiaen\'s Mode #2',
