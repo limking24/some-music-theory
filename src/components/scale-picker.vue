@@ -52,8 +52,11 @@ export default class ScalePicker extends Vue {
 	tonicKeySignatures = ['(bbbbbbb)', '(bbbbbb)', '(bbbbb)', '(bbbb)', '(bbb)', '(bb)', '(b)', '', '(#)', '(##)', '(###)', '(####)', '(#####)', '(######)', '(#######)'];
 
 	mounted(): void {
-		this.showSelectedTonicAtCenter();
-		this.$nextTick(() => document.getElementById('tonic')!.scrollTop += 2);
+		if (document.readyState === 'complete') {
+			this.showSelectedTonicAtCenter();
+		} else {
+			window.addEventListener('load', this.showSelectedTonicAtCenter);
+		}
 	}
 
 	get modeLabel(): string {

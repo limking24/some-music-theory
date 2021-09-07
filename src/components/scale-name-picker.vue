@@ -31,12 +31,16 @@ export default class ScaleNamePicker extends Vue {
 
 	mounted(): void {
 		this.toggleHighlight(this.selected);
-		// Make the selected item visible
-		this.$nextTick(() => {
-			let selectedDiv = document.querySelector('.scale-name-picker .selected')! as HTMLElement;
-			let parent = selectedDiv.parentElement! as HTMLElement;
+		let scrollToSelected = () => {
+			let selectedDiv = this.$el.querySelector('.scale-name-picker .selected') as HTMLElement;
+			let parent = selectedDiv.parentElement as HTMLElement;
 			parent.scrollTop = selectedDiv.offsetTop - parent.offsetTop;
-		});
+		};
+		if (document.readyState === 'complete') {
+			this.$nextTick(scrollToSelected);
+		} else {
+			window.addEventListener('load', scrollToSelected);
+		}
 	}
 
 	@Watch('selected')
