@@ -9,7 +9,8 @@
 <script lang="ts">
 import ScaleNamePicker from '@/components/scale-name-picker.vue';
 import ScaleNotesTable from '@/components/scale-notes-table.vue';
-import { ScaleName } from '@/models/scale-name';
+import { ScaleName, ScaleNameDictionary } from '@/models/scale-name';
+import { Inject } from 'typescript-ioc';
 import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 
@@ -24,7 +25,10 @@ export default class ScaleNotesTableSearch extends Vue {
 	@Prop()
 	scaleNameKey!: string;
 
-	scaleName = ScaleName.get(this.scaleNameKey);
+	@Inject
+	dictionary!: ScaleNameDictionary;
+
+	scaleName = this.dictionary.get(this.scaleNameKey, 'major');
 
 	@Watch('scaleName')
 	onScaleNamePicked(scaleName: ScaleName) {

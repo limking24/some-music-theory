@@ -2,12 +2,7 @@
 	<div>
 		<h2>{{scaleName.display}}</h2>
 		<div v-if="aliases" class="alias">
-			<template v-if="scaleName.aliases.length === 1">
-				Alias:
-			</template>
-			<template v-else>
-				Aliases:
-			</template>
+			Alias<template v-if="scaleName.aliasKeys.length > 1">es</template>: 
 			{{aliases}}
 		</div>
 		<table>
@@ -39,14 +34,18 @@
 
 <script lang="ts">
 import { TonicRange } from '@/models/scale';
-import { ScaleName } from '@/models/scale-name';
+import { ScaleName, ScaleNameDictionary } from '@/models/scale-name';
 import { ScaleTonicRange } from '@/models/scale-tonic-range';
 import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Scale as ScaleUtil } from '@tonaljs/tonal';
+import { Inject } from 'typescript-ioc';
 import { Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 export default class ScaleNotesTable extends Vue {
+
+	@Inject
+	dictionary!: ScaleNameDictionary;
 
 	@Prop({required: true})
 	scaleName!: ScaleName;
@@ -58,8 +57,8 @@ export default class ScaleNotesTable extends Vue {
 	highlight = new Array<boolean>(this.tonics.length);
 
 	get aliases(): string {
-		return this.scaleName
-					.aliases
+		return this.dictionary
+					.aliasesOf(this.scaleName)
 					.map(alias => alias.display)
 					.join(', ');
 	}

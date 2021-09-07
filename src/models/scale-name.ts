@@ -1,114 +1,65 @@
-import { toTitleCase } from '@/functional/string';
-import { ScaleType } from '@tonaljs/tonal';
-
-const replacement = {
-	' ': '-',
-	'\'': '',
-	'#': ''
-} as {
-	[key: string]: string
-};
-
-export interface ScaleNameMap {
-	[key: string]: ScaleName;
-}
+import { Inject, Singleton } from 'typescript-ioc';
 
 export class ScaleName {
-
-	private static _map: ScaleNameMap | undefined = undefined;
-
-	private static _keys: string[] | undefined = undefined;
 
 	public constructor(public readonly key: string,
 						public readonly ref: string,
 						public readonly display: string,
 						public readonly aliasKeys: string[]) {}
 
-	/**
-	 * A mapping between scale name key and the instance itself.
-	 * 
-	 * ScaleType obtained from tonaljs will be transformed into
-	 * ScaleName like the following:
-	 * 
-	 * ```
-	 * // From
-	 * {
-	 *    name: 'half-whole diminished',
-	 *    aliases: ['dominant diminished', 'messiaen\'s mode #2']
-	 * }
-	 * 
-	 * // To
-	 * _map['half-whole-diminished'] = {
-	 *    key: 'half-whole-diminished',
-	 *    ref: 'half-whole diminished',
-	 *    display: 'Half-whole Diminished',
-	 *    aliasKeys: ['dominant-diminished', 'messiaens-mode-2']
-	 * }
-	 * 
-	 * _map['dominant-diminished'] = {
-	 *    key: 'dominant-diminished',
-	 *    ref: 'half-whole diminished',
-	 *    display: 'Dominant Diminished',
-	 *    aliasKeys: ['half-whole-diminished', 'messiaens-mode-2']
-	 * }
-	 * 
-	 * _map['messiaens-mode-2'] = {
-	 *    key: 'messiaens-mode-2',
-	 *    ref: 'half-whole diminished',
-	 *    display: 'Messiaen\'s Mode #2',
-	 *    aliasKeys: ['dominant-diminished', 'half-whole-diminished']
-	 * }
-	 * ```
-	 */
-	public static get Map(): ScaleNameMap {
-		if (this._map === undefined) {
-			this._map = ScaleType
-							.all()
-							.filter(scale => scale.name !== 'chromatic')
-							.reduce((map, scale) => {
-								let names = [ scale.name, ...scale.aliases];										// names: ['half-whole diminished', 'dominant diminished', 'messiaen's mode #2']
-								let keys = names.map(name => name.replace(/['# ]/g, char => replacement[char]));	// keys:  ['half-whole-diminished', 'dominant-diminished', 'messiaens-mode-2']
-								keys.forEach((key, index) => {
-									map[key] = new ScaleName(
-										key, 
-										scale.name, 
-										toTitleCase(names[index]), 
-										keys.filter(k => k !== key)
-									);
-								});
-								return map;
-							}, {} as ScaleNameMap);
-		}
-		return this._map;
+}
+
+export abstract class ScaleNames implements Array<ScaleName> {}
+export interface ScaleNames extends Array<ScaleName> {}
+
+export interface ScaleNameOptionByKey {
+	[key: string]: ScaleNameOption;
+}
+
+export class ScaleNameOption {
+
+	public constructor(public readonly value: ScaleName,
+						public selected = false,
+						public aliasOfSelected = false) {}
+
+	public static create(scaleNames: ScaleNames): ScaleNameOptionByKey {
+		return scaleNames
+				.reduce((options, scaleName) => {
+					options[scaleName.key] = new ScaleNameOption(scaleName);
+					return options;
+				}, {} as ScaleNameOptionByKey);
 	}
 
-	/**
-	 * Sorted keys of all scale names.
-	 */
-	public static get Keys(): string[] {
-		if (this._keys === undefined) {
-			this._keys = Object
-							.keys(ScaleName.Map)
-							.sort((a, b) => ScaleName.Map[a].display.localeCompare(ScaleName.Map[b].display));
-		}
-		return this._keys;
+}
+
+@Singleton
+export class ScaleNameDictionary {
+
+	public readonly map = new Map<string, ScaleName>();
+	
+	public constructor(@Inject scaleNames: ScaleNames) {
+		scaleNames.forEach(scaleName => {
+			this.map.set(scaleName.key, scaleName);
+		});
 	}
 
-	public static get(key: string, defaultKey = 'major'): ScaleName {
-		let scaleName = ScaleName.Map[key];
-		if (scaleName === undefined) {
-			scaleName = ScaleName.Map[defaultKey];
+	public get(key: string, defaultKey?: string): ScaleName | undefined {
+		let scaleName = this.map.get(key);
+		if (scaleName === undefined && defaultKey != undefined) {
+			scaleName = this.map.get(defaultKey);
 		}
-		return scaleName!;
+		return scaleName;
 	}
 
-	public static aliasKeysOf(key: string): string[] {
-		let scaleName = ScaleName.Map[key];
+	public aliasesOf(arg: ScaleName | string): ScaleName[] {
+		return this.aliasKeysOf(arg)
+					.map(key => this.map.get(key))
+					.filter(scaleName => scaleName !== undefined) as ScaleName[];
+	}
+
+	public aliasKeysOf(arg: ScaleName | string): string[] {
+		let scaleName = this.map.get((arg instanceof ScaleName) ? arg.key : arg);
 		return scaleName ? scaleName.aliasKeys : [];
-	}
-
-	public get aliases(): ScaleName[] {
-		return this.aliasKeys.map(key => ScaleName.Map[key]);
 	}
 
 }

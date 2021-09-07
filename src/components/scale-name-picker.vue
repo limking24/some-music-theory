@@ -1,49 +1,33 @@
 <template>
 	<div class="scale-name-picker">
-		<div v-for="key in sortedKeys" :key="key"
+		<div v-for="(option, key) in options" :key="key"
 			@click="selected = key"
 			:class="{
-				'selected': highlight[key].selected, 
-				'alias-of-selected': highlight[key].aliasOfSelected
+				'selected': option.selected, 
+				'alias-of-selected': option.aliasOfSelected
 			}">
-			{{getScaleName(key).display}}
+			{{option.value.display}}
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { ScaleName } from '@/models/scale-name';
+import { ScaleName, ScaleNameOption, ScaleNames } from '@/models/scale-name';
+import { Inject } from 'typescript-ioc';
 import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
-
-interface Class {
-	selected: boolean;
-	aliasOfSelected: boolean;
-}
-
-interface Classes {
-	[key: string]: Class;
-}
 
 export default class ScaleNamePicker extends Vue {
 
 	@Prop({required: true})
 	scaleName!: ScaleName;
 
+	@Inject
+	scaleNames!: ScaleNames;
+
+	options = ScaleNameOption.create(this.scaleNames);
+
 	selected = this.scaleName.key;
-
-	sortedKeys = ScaleName.Keys;
-
-	highlight = ScaleName.Keys
-					.reduce((highlight, key) => {
-						highlight[key] = {
-							selected: false,
-							aliasOfSelected: false
-						};
-						return highlight;
-					}, {} as Classes);
-
-	getScaleName = ScaleName.get;
 
 	mounted(): void {
 		this.toggleHighlight(this.selected);
@@ -59,16 +43,17 @@ export default class ScaleNamePicker extends Vue {
 	onSelected(newKey: string, oldKey: string): void {
 		this.toggleHighlight(oldKey);
 		this.toggleHighlight(newKey);
-		this.$emit('update:scaleName', ScaleName.get(this.selected));
+		this.$emit('update:scaleName', this.options[newKey].value);
 	}
 
 	toggleHighlight(key: string): void {
-		this.highlight[key].selected = !this.highlight[key].selected;
-		ScaleName
-			.aliasKeysOf(key)
-			.forEach(aliasKey => {
-				this.highlight[aliasKey].aliasOfSelected = !this.highlight[aliasKey].aliasOfSelected;
-			});
+		this.options[key].selected = !this.options[key].selected;
+		this.options[key]
+				.value
+				.aliasKeys
+				.forEach(aliasKey => {
+					this.options[aliasKey].aliasOfSelected = !this.options[aliasKey].aliasOfSelected;
+				});
 	}
 
 }
