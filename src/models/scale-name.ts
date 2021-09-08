@@ -36,11 +36,16 @@ export class ScaleNameOption {
 export class ScaleNameDictionary {
 
 	public readonly map = new Map<string, ScaleName>();
-	
+
 	public constructor(@Inject scaleNames: ScaleNames) {
 		scaleNames.forEach(scaleName => {
 			this.map.set(scaleName.key, scaleName);
 		});
+	}
+
+	public add(scaleName: ScaleName): this {
+		this.map.set(scaleName.key, scaleName);
+		return this;
 	}
 
 	public get(key: string, defaultKey?: string): ScaleName | undefined {

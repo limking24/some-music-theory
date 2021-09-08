@@ -31,15 +31,15 @@ const replacement = {
  * [
  *   //...
  *   {
- *     key: 'half-whole-diminished',
- *     ref: 'half-whole diminished',
- *     display: 'Half-whole Diminished',
- *     aliasKeys: ['dominant-diminished', 'messiaens-mode-2']
- *   }, {
  *     key: 'dominant-diminished',
  *     ref: 'half-whole diminished',
  *     display: 'Dominant Diminished',
  *     aliasKeys: ['half-whole-diminished', 'messiaens-mode-2']
+ *   }, {
+ *     key: 'half-whole-diminished',
+ *     ref: 'half-whole diminished',
+ *     display: 'Half-whole Diminished',
+ *     aliasKeys: ['dominant-diminished', 'messiaens-mode-2']
  *   }, {
  *     key: 'messiaens-mode-2',
  *     ref: 'half-whole diminished',
@@ -74,12 +74,12 @@ const scaleNameProvider: ObjectFactory = () => {
 	return scaleNames;
 };
 
-let scaleTonicRangeDictionary: ScaleTonicRangeDictionary | undefined;
-const scaleTonicRangeDictionaryProvider: ObjectFactory = () => {
-	if (scaleTonicRangeDictionary === undefined) {
+let rangeDictionary: ScaleTonicRangeDictionary | undefined;
+const rangeDictionaryProvider: ObjectFactory = () => {
+	if (rangeDictionary === undefined) {
 		let factory = Container.get(ScaleTonicRangeFactory);
-		scaleTonicRangeDictionary = new ScaleTonicRangeDictionary();
-		scaleTonicRangeDictionary
+		rangeDictionary = new ScaleTonicRangeDictionary();
+		rangeDictionary
 			.add('aeolian',							factory.create(5, 17))
 			.add('altered',							factory.create(3, 15))
 			.add('augmented heptatonic',			factory.create(1, 12))
@@ -173,10 +173,10 @@ const scaleTonicRangeDictionaryProvider: ObjectFactory = () => {
 			.add('whole tone pentatonic',			factory.create(6, 17))
 			.add('whole tone',						factory.create(1, 13))
 	}
-	return scaleTonicRangeDictionary;
+	return rangeDictionary;
 };
 
 export default [
 	{ bind: ScaleNames, factory: scaleNameProvider },
-	{ bind: ScaleTonicRangeDictionary, factory: scaleTonicRangeDictionaryProvider }
+	{ bind: ScaleTonicRangeDictionary, factory: rangeDictionaryProvider }
 ];
