@@ -35,7 +35,7 @@
 <script lang="ts">
 import { TonicRange } from '@/models/scale';
 import { ScaleName, ScaleNameDictionary } from '@/models/scale-name';
-import { ScaleTonicRange } from '@/models/scale-tonic-range';
+import { ScaleTonicRange, ScaleTonicRangeDictionary } from '@/models/scale-tonic-range';
 import { Scale as ScaleInfo } from '@tonaljs/scale';
 import { Scale as ScaleUtil } from '@tonaljs/tonal';
 import { Inject } from 'typescript-ioc';
@@ -45,7 +45,10 @@ import { Prop } from 'vue-property-decorator';
 export default class ScaleNotesTable extends Vue {
 
 	@Inject
-	dictionary!: ScaleNameDictionary;
+	nameDictionary!: ScaleNameDictionary;
+
+	@Inject
+	rangeDictionary!: ScaleTonicRangeDictionary;
 
 	@Prop({required: true})
 	scaleName!: ScaleName;
@@ -57,14 +60,14 @@ export default class ScaleNotesTable extends Vue {
 	highlight = new Array<boolean>(this.tonics.length);
 
 	get aliases(): string {
-		return this.dictionary
+		return this.nameDictionary
 					.aliasesOf(this.scaleName)
 					.map(alias => alias.display)
 					.join(', ');
 	}
 
 	get tonicRange(): ScaleTonicRange {
-		return ScaleTonicRange.get(this.scaleName.ref);
+		return this.rangeDictionary.get(this.scaleName.ref);
 	}
 
 	get allScales(): ScaleInfo[] {
