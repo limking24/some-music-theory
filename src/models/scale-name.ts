@@ -22,8 +22,15 @@ export class ScaleNameOption {
 						public selected = false,
 						public aliasOfSelected = false) {}
 
-	public static create(scaleNames: ScaleNames): ScaleNameOptionByKey {
-		return scaleNames
+}
+
+@Singleton
+export class ScaleNameOptionFactory {
+
+	public constructor(@Inject private _scaleNames: ScaleNames) {}
+
+	public create(): ScaleNameOptionByKey {
+		return this._scaleNames
 				.reduce((options, scaleName) => {
 					options[scaleName.key] = new ScaleNameOption(scaleName);
 					return options;

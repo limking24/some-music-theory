@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { ScaleName, ScaleNameOption, ScaleNames } from '@/models/scale-name';
+import { ScaleName, ScaleNameOptionFactory } from '@/models/scale-name';
 import { Inject } from 'typescript-ioc';
 import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
@@ -23,9 +23,9 @@ export default class ScaleNamePicker extends Vue {
 	scaleName!: ScaleName;
 
 	@Inject
-	scaleNames!: ScaleNames;
+	optionFactory!: ScaleNameOptionFactory;
 
-	options = ScaleNameOption.create(this.scaleNames);
+	options = this.optionFactory.create();
 
 	selected = this.scaleName.key;
 
