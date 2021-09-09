@@ -3,9 +3,19 @@ import { Inject, Singleton } from 'typescript-ioc';
 export class ScaleName {
 
 	public constructor(public readonly key: string,
-						public readonly ref: string,
 						public readonly display: string,
 						public readonly aliasKeys: string[]) {}
+
+}
+
+export class TonalScaleName extends ScaleName {
+
+	public constructor(key: string,
+						display: string,
+						aliasKeys: string[],
+						public readonly ref: string) {
+		super(key, display, aliasKeys);
+	}
 
 }
 
