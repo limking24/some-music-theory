@@ -13,8 +13,8 @@ const replacement = {
 };
 
 /**
- * Transform ScaleType array obtained from tonaljs into
- * ScaleName array like the following:
+ * Transform a ScaleType array obtained from tonaljs into
+ * a sorted ScaleName array like the following:
  * 
  * ```
  * // From
