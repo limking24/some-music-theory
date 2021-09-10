@@ -15,7 +15,7 @@ export abstract class ScaleNameDao {
 }
 
 @Singleton
-export class TonalScaleNameDao extends ScaleNameDao {
+export class InMemoryTonalScaleNameDao extends ScaleNameDao {
 
 	private _names: TonalScaleName[] | undefined;
 
