@@ -33,7 +33,7 @@ export class InMemoryTonalScaleNameDao extends ScaleNameDao {
 		return this._names;
 	}
 
-	public get(key: string): ScaleName | undefined {
+	public get(key: string): TonalScaleName | undefined {
 		for (let name of this.all()) {
 			if (key === name.key) {
 				return name;
@@ -47,10 +47,10 @@ export class InMemoryTonalScaleNameDao extends ScaleNameDao {
 		return name ? name.aliasKeys : [];
 	}
 
-	public aliasesOf(key: string): ScaleName[] {
+	public aliasesOf(key: string): TonalScaleName[] {
 		return this.aliasKeysOf(key)
 					.map(aliasKey => this.get(aliasKey))
-					.filter(alias => alias !== undefined) as ScaleName[];
+					.filter(alias => alias !== undefined) as TonalScaleName[];
 	}
 
 }
