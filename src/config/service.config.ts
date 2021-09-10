@@ -1,4 +1,4 @@
-import { TonalScaleNameFactory } from '@/middleware/tonal-scale-name-factory';
+import { TonalScaleNameFactory } from '@/middleware/tonal-scale-name';
 import { ScaleNameDictionary } from '@/services/scale-name-dictionary';
 import { ScaleNameProvider, TonalScaleNameProvider } from '@/services/scale-name-provider';
 import { HighlightableVexFlowScaleTriadsScoreDrawer, ScaleTriadsScoreDrawer } from '@/services/scale-triads-score-drawer';
