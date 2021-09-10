@@ -79,7 +79,7 @@ export class TonalScaleName extends ScaleName {
 
 }
 
-export interface ScaleNameOptionByKey {
+export interface ScaleNameOptionMap {
 	[key: string]: ScaleNameOption;
 }
 
@@ -89,12 +89,12 @@ export class ScaleNameOption {
 						public selected = false,
 						public aliasOfSelected = false) {}
 	
-	public create(scaleNames: ScaleName[]): ScaleNameOptionByKey {
+	public static create(scaleNames: ScaleName[]): ScaleNameOptionMap {
 		return scaleNames
 				.reduce((options, scaleName) => {
 					options[scaleName.key] = new ScaleNameOption(scaleName);
 					return options;
-				}, {} as ScaleNameOptionByKey);
+				}, {} as ScaleNameOptionMap);
 	}
 
 }

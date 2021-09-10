@@ -1,6 +1,6 @@
 <template>
 	<div class="scale-name-picker">
-		<div v-for="(option, key) in options" :key="key"
+		<div v-for="(option, key) in optionMap" :key="key"
 			@click="selected = key"
 			:class="{
 				'selected': option.selected, 
@@ -12,8 +12,7 @@
 </template>
 
 <script lang="ts">
-import { ScaleName, ScaleNameOptionFactory } from '@/models/scale-name';
-import { Inject } from 'typescript-ioc';
+import { ScaleName, ScaleNameOption } from '@/models/scale-name';
 import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 
@@ -22,10 +21,10 @@ export default class ScaleNamePicker extends Vue {
 	@Prop({required: true})
 	scaleName!: ScaleName;
 
-	@Inject
-	optionFactory!: ScaleNameOptionFactory;
+	@Prop({required: true})
+	options!: ScaleName[];
 
-	options = this.optionFactory.create();
+	optionMap = ScaleNameOption.create(this.options);
 
 	selected = this.scaleName.key;
 
@@ -47,16 +46,16 @@ export default class ScaleNamePicker extends Vue {
 	onSelected(newKey: string, oldKey: string): void {
 		this.toggleHighlight(oldKey);
 		this.toggleHighlight(newKey);
-		this.$emit('update:scaleName', this.options[newKey].value);
+		this.$emit('update:scaleName', this.optionMap[newKey].value);
 	}
 
 	toggleHighlight(key: string): void {
-		this.options[key].selected = !this.options[key].selected;
-		this.options[key]
+		this.optionMap[key].selected = !this.optionMap[key].selected;
+		this.optionMap[key]
 				.value
 				.aliasKeys
 				.forEach(aliasKey => {
-					this.options[aliasKey].aliasOfSelected = !this.options[aliasKey].aliasOfSelected;
+					this.optionMap[aliasKey].aliasOfSelected = !this.optionMap[aliasKey].aliasOfSelected;
 				});
 	}
 
