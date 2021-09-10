@@ -19,6 +19,10 @@ export class ScaleNotesTableRow {
 		return enharmonic[this.index];
 	}
 
+	public get enharmonicIndex(): number {
+		return tonic.indexOf(this.enharmonic);
+	}
+
 	public get accidentals(): string {
 		return this.notes
 					.map(note => note.slice(1))
