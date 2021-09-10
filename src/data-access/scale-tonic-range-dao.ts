@@ -1,7 +1,7 @@
 import { NoRange, ScaleTonicRangeFactory } from '@/factories/scale-tonic-range-factory';
 import { ScaleTonicRange } from '@/models/scale-tonic-range';
 import { Inject, Singleton } from 'typescript-ioc';
-import { InMemoryTonalScaleNameDao } from './scale-name-dao';
+import { TonalScaleNameDao } from './scale-name-dao';
 
 export abstract class ScaleTonicRangeDao {
 
@@ -10,12 +10,12 @@ export abstract class ScaleTonicRangeDao {
 }
 
 @Singleton
-export class InMemoryScaleTonicRangeDao extends ScaleTonicRangeDao {
+export class TonalScaleTonicRangeDao extends ScaleTonicRangeDao {
 
 	private readonly _rangeByRef = new Map<string, ScaleTonicRange>();
 
 	public constructor(@Inject private _factory: ScaleTonicRangeFactory,
-						@Inject private _nameDao: InMemoryTonalScaleNameDao){
+						@Inject private _nameDao: TonalScaleNameDao){
 		super();
 	}
 

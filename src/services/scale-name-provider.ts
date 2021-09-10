@@ -1,4 +1,4 @@
-import { InMemoryTonalScaleNameDao } from '@/data-access/scale-name-dao';
+import { TonalScaleNameDao } from '@/data-access/scale-name-dao';
 import { ScaleName, TonalScaleName } from '@/models/scale-name';
 import { Inject, Singleton } from 'typescript-ioc';
 
@@ -22,7 +22,7 @@ export class TonalScaleNameProvider extends ScaleNameProvider {
 
 	private _nonChromatic: TonalScaleName[] | undefined;
 
-	public constructor(@Inject private readonly _dao: InMemoryTonalScaleNameDao) {
+	public constructor(@Inject private readonly _dao: TonalScaleNameDao) {
 		super();
 	}
 
