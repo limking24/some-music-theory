@@ -11,6 +11,8 @@ export class ScaleTonicRange {
 
 }
 
+export const NoRange = new ScaleTonicRange(0, 20);
+
 @Singleton
 export class ScaleTonicRangeFactory {
 
@@ -32,26 +34,6 @@ export class ScaleTonicRangeFactory {
 			this._cache.set(key, range);
 		}
 		return range;
-	}
-
-}
-
-export class ScaleTonicRangeDictionary {
-
-	public static NoRange = new ScaleTonicRange(0, 20);
-
-	public readonly map = new Map<string, ScaleTonicRange>();
-
-	public constructor() {}
-
-	public add(ref: string, range: ScaleTonicRange): this {
-		this.map.set(ref, range);
-		return this;
-	}
-
-	public get(ref: string): ScaleTonicRange {
-		let range = this.map.get(ref);
-		return range ? range : ScaleTonicRangeDictionary.NoRange;
 	}
 
 }
