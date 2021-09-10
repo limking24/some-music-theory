@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>Scale Notes Table</h1>
-		<scale-name-picker v-model:scaleName="scaleName"/>
+		<scale-name-picker v-model:scaleName="scaleName" :options="options"/>
 		<scale-notes-table :scaleName="scaleName"/>
 	</div>
 </template>
@@ -9,7 +9,8 @@
 <script lang="ts">
 import ScaleNamePicker from '@/components/scale-name-picker.vue';
 import ScaleNotesTable from '@/components/scale-notes-table.vue';
-import { ScaleName, ScaleNameDictionary } from '@/models/scale-name';
+import { ScaleName } from '@/models/scale-name';
+import { ScaleNameProvider } from '@/services/scale-name-provider';
 import { Inject } from 'typescript-ioc';
 import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
@@ -26,12 +27,14 @@ export default class ScaleNotesTableSearch extends Vue {
 	scaleNameKey!: string;
 
 	@Inject
-	dictionary!: ScaleNameDictionary;
+	optionProvider!: ScaleNameProvider;
 
-	scaleName = this.dictionary.get(this.scaleNameKey, 'major');
+	options = this.optionProvider.nonChromatic();
+
+	scaleName = this.optionProvider.findNonChromatic(this.scaleNameKey);
 
 	@Watch('scaleName')
-	onScaleNamePicked(scaleName: ScaleName) {
+	onScaleNamePicked(scaleName: ScaleName): void {
 		this.$router.push(`/scale-notes-table/${scaleName.key}`);
 	}
 
