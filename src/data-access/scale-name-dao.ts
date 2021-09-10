@@ -42,6 +42,10 @@ export class InMemoryTonalScaleNameDao extends ScaleNameDao {
 		return undefined;
 	}
 
+	public refOf(key: string): string | undefined {
+		return this.get(key)?.ref;
+	}
+
 	public aliasKeysOf(key: string): string[] {
 		let name = this.get(key);
 		return name ? name.aliasKeys : [];
