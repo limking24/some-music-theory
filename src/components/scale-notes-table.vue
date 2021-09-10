@@ -1,31 +1,31 @@
 <template>
 	<div>
-		<h2>{{scaleName.display}}</h2>
-		<div v-if="aliases" class="alias">
-			Alias<template v-if="scaleName.aliasKeys.length > 1">es</template>: 
-			{{aliases}}
+		<h2>{{info.scaleName}}</h2>
+		<div v-if="info.hasAliases" class="alias">
+			Alias<template v-if="info.numberOfAliases > 1">es</template>: 
+			{{info.aliases}}
 		</div>
 		<table>
 			<thead>
 				<tr>
 					<td>Tonic</td>
 					<td>Enharmonic</td>
-					<td v-for="(note, index) in allScales[0].notes" :key="note">{{index + 1}}</td>
+					<td v-for="(note, index) in info.notesPerOctave" :key="index">{{index + 1}}</td>
 					<td>Accidentals</td>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="(scale, index) in allScales" :key="scale"
+				<tr v-for="(row, index) in info.rows" :key="index"
 					@mouseover="toggleHighlight(index)"
 					@mouseout="toggleHighlight(index)"
 					:class="{
-						highlight: highlight[index],
-						dim: tonicRange.outOfRange(index)
+						highlight: row.highlight,
+						dim: row.dim
 					}">
-					<td>{{scale.tonic}}</td>
-					<td>{{enharmonic[index]}}</td>
-					<td v-for="note in scale.notes" :key="note">{{note}}</td>
-					<td>{{accidentals(scale.notes)}}</td>
+					<td>{{row.tonic}}</td>
+					<td>{{row.enharmonic}}</td>
+					<td v-for="note in row.notes" :key="note">{{note}}</td>
+					<td>{{row.accidentals}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -33,63 +33,36 @@
 </template>
 
 <script lang="ts">
-import { TonicRange } from '@/models/scale';
-import { ScaleName, ScaleNameDictionary } from '@/models/scale-name';
-import { ScaleTonicRange, ScaleTonicRangeDictionary } from '@/models/scale-tonic-range';
-import { Scale as ScaleInfo } from '@tonaljs/scale';
-import { Scale as ScaleUtil } from '@tonaljs/tonal';
+import { ScaleNotesTableInfoFactory } from '@/factories/scale-notes-table-info-factory';
+import { ScaleName } from '@/models/scale-name';
+import { ScaleNotesTableInfo } from '@/models/scale-notes-table-info';
 import { Inject } from 'typescript-ioc';
 import { Vue } from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
 
 export default class ScaleNotesTable extends Vue {
-
-	@Inject
-	nameDictionary!: ScaleNameDictionary;
-
-	@Inject
-	rangeDictionary!: ScaleTonicRangeDictionary;
 
 	@Prop({required: true})
 	scaleName!: ScaleName;
 
-	tonics = Object.values(TonicRange);
+	@Inject
+	factory!: ScaleNotesTableInfoFactory;
 
-	enharmonic = ['E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#', '-', '-', '-', 'Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C'];
+	info!: ScaleNotesTableInfo;
 
-	highlight = new Array<boolean>(this.tonics.length);
-
-	get aliases(): string {
-		return this.nameDictionary
-					.aliasesOf(this.scaleName)
-					.map(alias => alias.display)
-					.join(', ');
-	}
-
-	get tonicRange(): ScaleTonicRange {
-		return this.rangeDictionary.get(this.scaleName.ref);
-	}
-
-	get allScales(): ScaleInfo[] {
-		return this.tonics.map(tonic => ScaleUtil.get(tonic + ' ' + this.scaleName.ref));
-	}
-
-	accidentals(notes: string[]): string {
-		return notes
-				.map(note => note.slice(1))
-				.filter(accidental => accidental != '')
-				.join(',');
+	@Watch('scaleName', {immediate: true})
+	onScaleChanged(scaleName: ScaleName): void {
+		this.info = this.factory.create(scaleName);
 	}
 
 	/**
 	 * Highlight or unhighlight the scale of a certain tonic and its enharmonic equivalent.
 	 */
 	toggleHighlight(index: number): void {
-		this.highlight[index] = !this.highlight[index];
-		let enharmonicIndex = this.tonics.indexOf(this.enharmonic[index]);
-		if (enharmonicIndex >= 0) {
-			this.highlight[enharmonicIndex] = !this.highlight[enharmonicIndex];
-		}
+		let tonic = this.info.rows[index];
+		let enharmonic = this.info.enharmonicOf(index);
+		let rows = enharmonic ? [tonic, enharmonic] : [tonic];
+		rows.forEach(row => row.highlight != row.highlight);
 	}
 
 }
