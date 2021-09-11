@@ -97,4 +97,12 @@ export class ScaleNameOption {
 				}, {} as ScaleNameOptionMap);
 	}
 
+	public toggleSelected(): void {
+		this.selected = !this.selected;
+	}
+
+	public toggleAliasOfSelected(): void {
+		this.aliasOfSelected = !this.aliasOfSelected;
+	}
+
 }

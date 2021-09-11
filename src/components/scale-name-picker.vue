@@ -50,13 +50,11 @@ export default class ScaleNamePicker extends Vue {
 	}
 
 	toggleHighlight(key: string): void {
-		this.optionMap[key].selected = !this.optionMap[key].selected;
+		this.optionMap[key].toggleSelected();
 		this.optionMap[key]
 				.value
 				.aliasKeys
-				.forEach(aliasKey => {
-					this.optionMap[aliasKey].aliasOfSelected = !this.optionMap[aliasKey].aliasOfSelected;
-				});
+				.forEach(aliasKey => this.optionMap[aliasKey].toggleAliasOfSelected());
 	}
 
 }
