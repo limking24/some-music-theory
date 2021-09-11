@@ -1,7 +1,7 @@
 <template>
 	<div class="scale-name-picker">
 		<div v-for="(option, key) in optionMap" :key="key"
-			@click="selected = key"
+			@click="onPicked(key, scaleName.key)"
 			:class="{
 				'selected': option.selected, 
 				'alias-of-selected': option.aliasOfSelected
@@ -14,7 +14,7 @@
 <script lang="ts">
 import { ScaleName, ScaleNameOption } from '@/models/scale-name';
 import { Vue } from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 
 export default class ScaleNamePicker extends Vue {
 
@@ -26,10 +26,8 @@ export default class ScaleNamePicker extends Vue {
 
 	optionMap = ScaleNameOption.create(this.options);
 
-	selected = this.scaleName.key;
-
 	mounted(): void {
-		this.toggleHighlight(this.selected);
+		this.toggleHighlight(this.scaleName.key);
 		let scrollToSelected = () => {
 			let selectedDiv = this.$el.querySelector('.scale-name-picker .selected') as HTMLElement;
 			let parent = selectedDiv.parentElement as HTMLElement;
@@ -42,8 +40,7 @@ export default class ScaleNamePicker extends Vue {
 		}
 	}
 
-	@Watch('selected')
-	onSelected(newKey: string, oldKey: string): void {
+	onPicked(newKey: string, oldKey: string): void {
 		this.toggleHighlight(oldKey);
 		this.toggleHighlight(newKey);
 		this.$emit('update:scaleName', this.optionMap[newKey].value);
