@@ -34,12 +34,7 @@ export class TonalScaleNameDao extends ScaleNameDao {
 	}
 
 	public get(key: string): TonalScaleName | undefined {
-		for (let name of this.all()) {
-			if (key === name.key) {
-				return name;
-			}
-		}
-		return undefined;
+		return this.all().find(name => name.key === key);
 	}
 
 	public refOf(key: string): string | undefined {
