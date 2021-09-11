@@ -12,6 +12,7 @@
     "core-js": "^3.17.2",
     "reflect-metadata": "^0.1.13",
     "typescript-ioc": "^3.2.2",
+    "typescript-optional": "^2.0.1",
     "vexflow": "^3.0.9",
     "vue": "^3.2.8",
     "vue-class-component": "^8.0.0-0",
