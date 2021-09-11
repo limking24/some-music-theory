@@ -27,12 +27,8 @@ export class ScaleNameProvider {
 	 */
 	public findNonChromatic(key: string): ScaleName {
 		let names = this.nonChromatic();
-		for (let name of names) {
-			if (key === name.key) {
-				return name;
-			}
-		}
-		return names[0];
+		let name = names.find(n => n.key === key);
+		return name ? name : names[0];
 	}
 	
 }
