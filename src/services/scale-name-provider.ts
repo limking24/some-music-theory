@@ -1,32 +1,18 @@
-import { TonalScaleNameDao } from '@/data-access/scale-name-dao';
-import { ScaleName, TonalScaleName } from '@/models/scale-name';
+import { ScaleNameDao } from '@/data-access/scale-name-dao';
+import { ScaleName } from '@/models/scale-name';
 import { Inject, Singleton } from 'typescript-ioc';
 
-export abstract class ScaleNameProvider {
+@Singleton
+export class ScaleNameProvider {
+
+	private _nonChromatic: ScaleName[] | undefined;
+
+	public constructor(@Inject private readonly _dao: ScaleNameDao) {}
 
 	/**
 	 * Get all names of scale which has fewer than 12 notes per octave.
 	 */
-	public abstract nonChromatic(): ScaleName[];
-
-	/**
-	 * Find a ScaleName instance by key. If not found, a default
-	 * instance will be returned.
-	 */
-	public abstract findNonChromatic(key: string): ScaleName;
-
-}
-
-@Singleton
-export class TonalScaleNameProvider extends ScaleNameProvider {
-
-	private _nonChromatic: TonalScaleName[] | undefined;
-
-	public constructor(@Inject private readonly _dao: TonalScaleNameDao) {
-		super();
-	}
-
-	public nonChromatic(): TonalScaleName[] {
+	public nonChromatic(): ScaleName[] {
 		if (this._nonChromatic === undefined) {
 			this._nonChromatic = this._dao
 										.all()
@@ -35,7 +21,11 @@ export class TonalScaleNameProvider extends ScaleNameProvider {
 		return this._nonChromatic;
 	}
 
-	public findNonChromatic(key: string): TonalScaleName {
+	/**
+	 * Find a ScaleName instance by key. If not found, a default
+	 * instance will be returned.
+	 */
+	public findNonChromatic(key: string): ScaleName {
 		let names = this.nonChromatic();
 		for (let name of names) {
 			if (key === name.key) {
