@@ -34,4 +34,8 @@ export class ScaleNotesTableRow {
 		return this.range.outOfRange(this.index);
 	}
 
+	public toggleHighlight(): void {
+		this.highlight = !this.highlight;
+	}
+
 }

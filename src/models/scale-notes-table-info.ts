@@ -29,9 +29,19 @@ export class ScaleNotesTableInfo {
 		return this.rows[0].notes.length;
 	}
 
-	public enharmonicOf(index: number): ScaleNotesTableRow | undefined {
+	/**
+	 * Highlight or unhighlight a particular scale and its enharmonic equivalent
+	 * if it has any. For example, C's enharmonic equivalent is B#, so when 
+	 * highlighting the C scale row, B# will also be highlighted.
+	 * 
+	 * @param index row index of a particular scale
+	 */
+	public toggleHighlight(index: number): void {
+		this.rows[index].toggleHighlight();
 		let enharmonicIndex = this.rows[index].enharmonicIndex;
-		return (enharmonicIndex === -1) ? undefined : this.rows[enharmonicIndex];
+		if (enharmonicIndex > -1) {
+			this.rows[enharmonicIndex].toggleHighlight();
+		}
 	}
 
 }

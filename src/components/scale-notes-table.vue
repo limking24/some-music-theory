@@ -16,8 +16,8 @@
 			</thead>
 			<tbody>
 				<tr v-for="(row, index) in info.rows" :key="index"
-					@mouseover="toggleHighlight(index)"
-					@mouseout="toggleHighlight(index)"
+					@mouseover="info.toggleHighlight(index)"
+					@mouseout="info.toggleHighlight(index)"
 					:class="{
 						highlight: row.highlight,
 						dim: row.dim
@@ -48,21 +48,11 @@ export default class ScaleNotesTable extends Vue {
 	@Inject
 	factory!: ScaleNotesTableInfoFactory;
 
-	info!: ScaleNotesTableInfo;
+	info: ScaleNotesTableInfo = this.factory.create(this.scaleName);
 
-	@Watch('scaleName', {immediate: true})
+	@Watch('scaleName')
 	onScaleChanged(scaleName: ScaleName): void {
 		this.info = this.factory.create(scaleName);
-	}
-
-	/**
-	 * Highlight or unhighlight the scale of a certain tonic and its enharmonic equivalent.
-	 */
-	toggleHighlight(index: number): void {
-		let tonic = this.info.rows[index];
-		let enharmonic = this.info.enharmonicOf(index);
-		let rows = enharmonic ? [tonic, enharmonic] : [tonic];
-		rows.forEach(row => row.highlight != row.highlight);
 	}
 
 }
