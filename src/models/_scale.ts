@@ -1,11 +1,7 @@
 import { ScaleTonicRange } from './scale-tonic-range';
+import { ScaleName } from './_scale-name';
 
-export class Scale {
-
-	public constructor(public readonly key: string,
-						public readonly display: string,
-						public readonly aliases: string[],
-						public readonly notesPerOctave: number,
-						public readonly tonicRange: ScaleTonicRange) {}
-
+export interface Scale extends ScaleName {
+	readonly notesPerOctave: number;
+	readonly tonicRange: ScaleTonicRange;
 }
