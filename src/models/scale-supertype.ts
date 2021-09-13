@@ -1,5 +1,3 @@
-import { Optional } from 'typescript-optional';
-
 export enum ScaleSupertype {
 	Monotonic = 1,
 	Ditonic = 2,
@@ -12,8 +10,4 @@ export enum ScaleSupertype {
 	Nonatonic = 9,
 	Decatonic = 10,
 	Chromatic = 12
-}
-
-export function getScaleSupertype(key: string): Optional<ScaleSupertype> {
-	return Optional.ofNullable(ScaleSupertype[key as keyof typeof ScaleSupertype]);
 }
