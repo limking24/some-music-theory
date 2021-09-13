@@ -1,4 +1,4 @@
-import { ScaleTonicRange } from '../models/scale-tonic-range';
+import { ScaleTonicRange } from './scale-tonic-range';
 
 export interface ScaleType {
 	readonly key: string;

@@ -1,4 +1,4 @@
-import { ScaleTonicRange } from '@/models/scale-tonic-range';
+import { ScaleTonicRange } from '@/data/scale-tonic-range';
 import { Singleton } from 'typescript-ioc';
 
 export const NoRange = new ScaleTonicRange(0, 20);

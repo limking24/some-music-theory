@@ -1,7 +1,7 @@
-import { toTitleCase } from '@/functional/string';
-import { ScaleTonicRange } from '@/models/scale-tonic-range';
-import { ScaleTypeRef } from '@/data/scale-type-ref';
+import { ScaleTonicRange } from '@/data/scale-tonic-range';
 import { ScaleType } from '@/data/scale-type';
+import { ScaleTypeRef } from '@/data/scale-type-ref';
+import { toTitleCase } from '@/functional/string';
 import { ScaleType as ScaleTypeUtil } from '@tonaljs/tonal';
 
 export interface Data {

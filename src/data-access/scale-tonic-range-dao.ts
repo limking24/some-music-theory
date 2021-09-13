@@ -1,5 +1,5 @@
+import { ScaleTonicRange } from '@/data/scale-tonic-range';
 import { NoRange, ScaleTonicRangeFactory } from '@/factories/scale-tonic-range-factory';
-import { ScaleTonicRange } from '@/models/scale-tonic-range';
 import { Inject, Singleton } from 'typescript-ioc';
 import { TonalScaleNameDao } from './scale-name-dao';
 

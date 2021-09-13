@@ -1,4 +1,4 @@
-import { ScaleTonicRange } from './scale-tonic-range';
+import { ScaleTonicRange } from '../data/scale-tonic-range';
 
 export const tonic = ['Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'];
 
