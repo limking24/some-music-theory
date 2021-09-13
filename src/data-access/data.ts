@@ -1,147 +1,140 @@
-import { ScaleTonicRangeFactory } from '@/factories/scale-tonic-range-factory';
 import { toTitleCase } from '@/functional/string';
 import { ScaleTonicRange } from '@/models/scale-tonic-range';
+import { TonalJsScaleRef } from '@/models/tonaljs-scale-ref';
+import { Scale } from '@/models/_scale';
 import { ScaleType } from '@tonaljs/tonal';
-import { ScaleMapRecord, ScaleRecord, TonalJsScaleRecord } from './record-types';
 
-export interface Records {
-	scales: ScaleRecord[];
-	tonalJsScales: TonalJsScaleRecord[];
-	scaleMap: ScaleMapRecord[];
+export interface Data {
+	scales: Scale[];
+	tonalJsScaleRefs: TonalJsScaleRef[];
 }
 
-export function create(): Records {
-	let scales = new Array<ScaleRecord>();
-	let scaleMap = new Array<ScaleMapRecord>();
-	let tonalJsScales = new Array<TonalJsScaleRecord>();
-	let dataByName = createDataByName();
-	let replacement = {
-		' ': '-',
-		'\'': '',
-		'#': ''
-	} as { [key: string]: string };
+export interface DataByRef {
+	[key: string]: {
+		tonicRange: ScaleTonicRange;
+	};
+}
+
+export function create(): Data {
+	const replacement = { ' ': '-', '\'': '', '#': '' } as { [key: string]: string };
+	let scales = new Array<Scale>();
+	let tonalJsScaleRefs = new Array<TonalJsScaleRef>();
+	let dataByRef = createDataByRef();
 	ScaleType
 		.all()
 		.forEach(scale => {
-			let names = [ scale.name, ...scale.aliases];										// names: ['half-whole diminished', 'dominant diminished', 'messiaen's mode #2']
-			let keys = names.map(name => name.replace(/['# ]/g, char => replacement[char]));	// keys:  ['half-whole-diminished', 'dominant-diminished', 'messiaens-mode-2']
+			let ref = scale.name;
+			console.log(ref);
+			
+			let names = [ scale.name, ...scale.aliases].sort();								//    names: ['dominant diminished', 'half-whole diminished', 'messiaen's mode #2']
+			let keys = names.map(ref => ref.replace(/['# ]/g, char => replacement[char]));	//     keys: ['dominant-diminished', 'half-whole-diminished', 'messiaens-mode-2']
+			let displays = names.map(ref => toTitleCase(ref));								// displays: ['Dominant Diminished', 'Half-Whole Diminished', 'Messiaen's Mode #2']
 			keys.forEach((key, i) => {
-				// ScaleRecord
-				scales.push({ 
-					key, 
-					display: toTitleCase(names[i]), 
-					aliasKeys: keys.filter(k => k !== key)
-				});
-				// ScaleMapRecord
-				scaleMap.push({ 
-					scaleKey: key, 
-					tonalJsScaleName: names[i]
-				});
-			});
-			// TonalJsScaleRecord
-			tonalJsScales.push({
-				name: scale.name,
-				notesPerOctave: scale.intervals.length,
-				tonicRange: dataByName.get(scale.name)!
+				let display = displays[i];
+				let aliases = displays.filter(d => d !== display);
+				let notesPerOctave = scale.intervals.length;
+				let tonicRange = dataByRef[ref].tonicRange;
+				scales.push({ key, display, aliases, notesPerOctave, tonicRange });
+				tonalJsScaleRefs.push({ key, ref });
 			});
 		});
-	return { scales, scaleMap, tonalJsScales };
+	return { scales, tonalJsScaleRefs };
 }
 
-function createDataByName(): Map<string, ScaleTonicRange> {
-	let factory = new ScaleTonicRangeFactory();
-	let map = new Map<string, ScaleTonicRange>();
-	map.set('aeolian',							factory.create(5, 17));
-	map.set('altered',							factory.create(3, 15));
-	map.set('augmented heptatonic',				factory.create(1, 12));
-	map.set('augmented',						factory.create(0, 11));
-	map.set('balinese',							factory.create(5, 16));
-	map.set('bebop locrian',					factory.create(7, 18));
-	map.set('bebop major',						factory.create(1, 12));
-	map.set('bebop minor',						factory.create(4, 15));
-	map.set('bebop',							factory.create(3, 14));
-	map.set('composite blues',					factory.create(5, 16));
-	map.set('diminished',						factory.create(5, 16));
-	map.set('dorian #4',						factory.create(3, 14));
-	map.set('dorian b2',						factory.create(5, 17));
-	map.set('dorian',							factory.create(4, 16));
-	map.set('double harmonic lydian',			factory.create(4, 15));
-	map.set('double harmonic major',			factory.create(4, 16));
-	map.set('egyptian',							factory.create(4, 16));
-	map.set('enigmatic',						factory.create(5, 16));
-	map.set('flamenco',							factory.create(4, 16));
-	map.set('flat six pentatonic',				factory.create(4, 16));
-	map.set('flat three pentatonic',			factory.create(4, 16));
-	map.set('half-whole diminished',			factory.create(4, 15));
-	map.set('harmonic major',					factory.create(4, 15));
-	map.set('harmonic minor',					factory.create(4, 15));
-	map.set('hirajoshi',						factory.create(5, 17));
-	map.set('hungarian major',					factory.create(1, 13));
-	map.set('hungarian minor',					factory.create(3, 15));
-	map.set('ichikosucho',						factory.create(4, 15));
-	map.set('in-sen',							factory.create(6, 18));
-	map.set('ionian pentatonic',				factory.create(2, 14));
-	map.set('iwato',							factory.create(7, 19));
-	map.set('kafi raga',						factory.create(3, 15));
-	map.set('kumoijoshi',						factory.create(6, 18));
-	map.set('leading whole tone',				factory.create(1, 13));
-	map.set('locrian #2',						factory.create(6, 18));
-	map.set('locrian 6',						factory.create(6, 17));
-	map.set('locrian major',					factory.create(5, 17));
-	map.set('locrian pentatonic',				factory.create(7, 19));
-	map.set('locrian',							factory.create(7, 19));
-	map.set('lydian #5P pentatonic',			factory.create(0, 12));
-	map.set('lydian #9',						factory.create(0, 11));
-	map.set('lydian augmented',					factory.create(0, 12));
-	map.set('lydian diminished',				factory.create(3, 14));
-	map.set('lydian dominant pentatonic',		factory.create(2, 14));
-	map.set('lydian dominant',					factory.create(2, 14));
-	map.set('lydian minor',						factory.create(3, 15));
-	map.set('lydian pentatonic',				factory.create(1, 13));
-	map.set('lydian',							factory.create(1, 13));
-	map.set('major augmented',					factory.create(1, 12));
-	map.set('major blues',						factory.create(3, 15));
-	map.set('major pentatonic',					factory.create(2, 14));
-	map.set('major',							factory.create(2, 14));
-	map.set('malkos raga',						factory.create(6, 18));
-	map.set('melodic minor',					factory.create(3, 15));
-	map.set('messiaen\'s mode #3',				factory.create(3, 15));
-	map.set('messiaen\'s mode #4',				factory.create(4, 15));
-	map.set('messiaen\'s mode #5',				factory.create(3, 14));
-	map.set('messiaen\'s mode #6',				factory.create(0, 12));
-	map.set('messiaen\'s mode #7',				factory.create(4, 15));
-	map.set('minor #7M pentatonic',				factory.create(3, 15));
-	map.set('minor bebop',						factory.create(4, 15));
-	map.set('minor blues',						factory.create(6, 18));
-	map.set('minor hexatonic',					factory.create(3, 15));
-	map.set('minor pentatonic',					factory.create(5, 17));
-	map.set('minor six diminished',				factory.create(4, 15));
-	map.set('minor six pentatonic',				factory.create(4, 16));
-	map.set('mixolydian b6',					factory.create(4, 16));
-	map.set('mixolydian pentatonic',			factory.create(3, 15));
-	map.set('mixolydian',						factory.create(3, 15));
-	map.set('mystery #1',						factory.create(6, 17));
-	map.set('neopolitan major pentatonic',		factory.create(5, 17));
-	map.set('neopolitan major',					factory.create(4, 16));
-	map.set('oriental',							factory.create(5, 17));
-	map.set('pelog',							factory.create(6, 18));
-	map.set('persian',							factory.create(5, 16));
-	map.set('phrygian dominant',				factory.create(5, 16));
-	map.set('phrygian',							factory.create(6, 18));
-	map.set('piongio',							factory.create(4, 15));
-	map.set('prometheus neopolitan',			factory.create(3, 15));
-	map.set('prometheus',						factory.create(2, 14));
-	map.set('purvi raga',						factory.create(4, 15));
-	map.set('ritusen',							factory.create(3, 15));
-	map.set('romanian minor',					factory.create(6, 17));
-	map.set('scriabin',							factory.create(5, 16));
-	map.set('six tone symmetric',				factory.create(3, 14));
-	map.set('spanish heptatonic',				factory.create(5, 16));
-	map.set('super locrian pentatonic',			factory.create(8, 20));
-	map.set('todi raga',						factory.create(4, 15));
-	map.set('ultralocrian',						factory.create(9, 20));
-	map.set('vietnamese 1',						factory.create(6, 17));
-	map.set('whole tone pentatonic',			factory.create(6, 17));
-	map.set('whole tone',						factory.create(1, 13));
-	return map;
+function createDataByRef(): DataByRef {
+	return {
+		'aeolian':						{ tonicRange: new ScaleTonicRange(5, 17) },
+		'altered':						{ tonicRange: new ScaleTonicRange(3, 15) },
+		'augmented heptatonic':			{ tonicRange: new ScaleTonicRange(1, 12) },
+		'augmented':					{ tonicRange: new ScaleTonicRange(0, 11) },
+		'balinese':						{ tonicRange: new ScaleTonicRange(5, 16) },
+		'bebop locrian':				{ tonicRange: new ScaleTonicRange(7, 18) },
+		'bebop major':					{ tonicRange: new ScaleTonicRange(1, 12) },
+		'bebop minor':					{ tonicRange: new ScaleTonicRange(4, 15) },
+		'bebop':						{ tonicRange: new ScaleTonicRange(3, 14) },
+		'chromatic':					{ tonicRange: new ScaleTonicRange(5, 16) },
+		'composite blues':				{ tonicRange: new ScaleTonicRange(5, 16) },
+		'diminished':					{ tonicRange: new ScaleTonicRange(5, 16) },
+		'dorian #4':					{ tonicRange: new ScaleTonicRange(3, 14) },
+		'dorian b2':					{ tonicRange: new ScaleTonicRange(5, 17) },
+		'dorian':						{ tonicRange: new ScaleTonicRange(4, 16) },
+		'double harmonic lydian':		{ tonicRange: new ScaleTonicRange(4, 15) },
+		'double harmonic major':		{ tonicRange: new ScaleTonicRange(4, 16) },
+		'egyptian':						{ tonicRange: new ScaleTonicRange(4, 16) },
+		'enigmatic':					{ tonicRange: new ScaleTonicRange(5, 16) },
+		'flamenco':						{ tonicRange: new ScaleTonicRange(4, 16) },
+		'flat six pentatonic':			{ tonicRange: new ScaleTonicRange(4, 16) },
+		'flat three pentatonic':		{ tonicRange: new ScaleTonicRange(4, 16) },
+		'half-whole diminished':		{ tonicRange: new ScaleTonicRange(4, 15) },
+		'harmonic major':				{ tonicRange: new ScaleTonicRange(4, 15) },
+		'harmonic minor':				{ tonicRange: new ScaleTonicRange(4, 15) },
+		'hirajoshi':					{ tonicRange: new ScaleTonicRange(5, 17) },
+		'hungarian major':				{ tonicRange: new ScaleTonicRange(1, 13) },
+		'hungarian minor':				{ tonicRange: new ScaleTonicRange(3, 15) },
+		'ichikosucho':					{ tonicRange: new ScaleTonicRange(4, 15) },
+		'in-sen':						{ tonicRange: new ScaleTonicRange(6, 18) },
+		'ionian pentatonic':			{ tonicRange: new ScaleTonicRange(2, 14) },
+		'iwato':						{ tonicRange: new ScaleTonicRange(7, 19) },
+		'kafi raga':					{ tonicRange: new ScaleTonicRange(3, 15) },
+		'kumoijoshi':					{ tonicRange: new ScaleTonicRange(6, 18) },
+		'leading whole tone':			{ tonicRange: new ScaleTonicRange(1, 13) },
+		'locrian #2':					{ tonicRange: new ScaleTonicRange(6, 18) },
+		'locrian 6':					{ tonicRange: new ScaleTonicRange(6, 17) },
+		'locrian major':				{ tonicRange: new ScaleTonicRange(5, 17) },
+		'locrian pentatonic':			{ tonicRange: new ScaleTonicRange(7, 19) },
+		'locrian':						{ tonicRange: new ScaleTonicRange(7, 19) },
+		'lydian #5P pentatonic':		{ tonicRange: new ScaleTonicRange(0, 12) },
+		'lydian #9':					{ tonicRange: new ScaleTonicRange(0, 11) },
+		'lydian augmented':				{ tonicRange: new ScaleTonicRange(0, 12) },
+		'lydian diminished':			{ tonicRange: new ScaleTonicRange(3, 14) },
+		'lydian dominant pentatonic':	{ tonicRange: new ScaleTonicRange(2, 14) },
+		'lydian dominant':				{ tonicRange: new ScaleTonicRange(2, 14) },
+		'lydian minor':					{ tonicRange: new ScaleTonicRange(3, 15) },
+		'lydian pentatonic':			{ tonicRange: new ScaleTonicRange(1, 13) },
+		'lydian':						{ tonicRange: new ScaleTonicRange(1, 13) },
+		'major augmented':				{ tonicRange: new ScaleTonicRange(1, 12) },
+		'major blues':					{ tonicRange: new ScaleTonicRange(3, 15) },
+		'major pentatonic':				{ tonicRange: new ScaleTonicRange(2, 14) },
+		'major':						{ tonicRange: new ScaleTonicRange(2, 14) },
+		'malkos raga':					{ tonicRange: new ScaleTonicRange(6, 18) },
+		'melodic minor':				{ tonicRange: new ScaleTonicRange(3, 15) },
+		'messiaen\'s mode #3':			{ tonicRange: new ScaleTonicRange(3, 15) },
+		'messiaen\'s mode #4':			{ tonicRange: new ScaleTonicRange(4, 15) },
+		'messiaen\'s mode #5':			{ tonicRange: new ScaleTonicRange(3, 14) },
+		'messiaen\'s mode #6':			{ tonicRange: new ScaleTonicRange(0, 12) },
+		'messiaen\'s mode #7':			{ tonicRange: new ScaleTonicRange(4, 15) },
+		'minor #7M pentatonic':			{ tonicRange: new ScaleTonicRange(3, 15) },
+		'minor bebop':					{ tonicRange: new ScaleTonicRange(4, 15) },
+		'minor blues':					{ tonicRange: new ScaleTonicRange(6, 18) },
+		'minor hexatonic':				{ tonicRange: new ScaleTonicRange(3, 15) },
+		'minor pentatonic':				{ tonicRange: new ScaleTonicRange(5, 17) },
+		'minor six diminished':			{ tonicRange: new ScaleTonicRange(4, 15) },
+		'minor six pentatonic':			{ tonicRange: new ScaleTonicRange(4, 16) },
+		'mixolydian b6':				{ tonicRange: new ScaleTonicRange(4, 16) },
+		'mixolydian pentatonic':		{ tonicRange: new ScaleTonicRange(3, 15) },
+		'mixolydian':					{ tonicRange: new ScaleTonicRange(3, 15) },
+		'mystery #1':					{ tonicRange: new ScaleTonicRange(6, 17) },
+		'neopolitan major pentatonic':	{ tonicRange: new ScaleTonicRange(5, 17) },
+		'neopolitan major':				{ tonicRange: new ScaleTonicRange(4, 16) },
+		'oriental':						{ tonicRange: new ScaleTonicRange(5, 17) },
+		'pelog':						{ tonicRange: new ScaleTonicRange(6, 18) },
+		'persian':						{ tonicRange: new ScaleTonicRange(5, 16) },
+		'phrygian dominant':			{ tonicRange: new ScaleTonicRange(5, 16) },
+		'phrygian':						{ tonicRange: new ScaleTonicRange(6, 18) },
+		'piongio':						{ tonicRange: new ScaleTonicRange(4, 15) },
+		'prometheus neopolitan':		{ tonicRange: new ScaleTonicRange(3, 15) },
+		'prometheus':					{ tonicRange: new ScaleTonicRange(2, 14) },
+		'purvi raga':					{ tonicRange: new ScaleTonicRange(4, 15) },
+		'ritusen':						{ tonicRange: new ScaleTonicRange(3, 15) },
+		'romanian minor':				{ tonicRange: new ScaleTonicRange(6, 17) },
+		'scriabin':						{ tonicRange: new ScaleTonicRange(5, 16) },
+		'six tone symmetric':			{ tonicRange: new ScaleTonicRange(3, 14) },
+		'spanish heptatonic':			{ tonicRange: new ScaleTonicRange(5, 16) },
+		'super locrian pentatonic':		{ tonicRange: new ScaleTonicRange(8, 20) },
+		'todi raga':					{ tonicRange: new ScaleTonicRange(4, 15) },
+		'ultralocrian':					{ tonicRange: new ScaleTonicRange(9, 20) },
+		'vietnamese 1':					{ tonicRange: new ScaleTonicRange(6, 17) },
+		'whole tone pentatonic':		{ tonicRange: new ScaleTonicRange(6, 17) },
+		'whole tone':					{ tonicRange: new ScaleTonicRange(1, 13) }
+	};
 }
