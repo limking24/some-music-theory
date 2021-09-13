@@ -1,4 +1,4 @@
-import { ScaleType } from '@/models/scale-type';
+import { ScaleType } from '@/data/scale-type';
 import { Inject, Singleton } from 'typescript-ioc';
 import { SMTDB } from './database';
 
