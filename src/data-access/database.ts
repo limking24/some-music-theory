@@ -20,7 +20,7 @@ export class SMTDB extends Dexie {
 		});
 		this.scaleTypes = this.table('scaleTypes');
 		this.scaleTypeRefs = this.table('scaleTypeRefs');
-		this.on('populate', Reflect.apply(this.populate, this, []));
+		this.on('populate', () => Reflect.apply(this.populate, this, []));
 		this.open();
 	}
 
