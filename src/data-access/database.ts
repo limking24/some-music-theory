@@ -1,5 +1,5 @@
 import { TonalJsScaleRef } from '@/models/tonaljs-scale-ref';
-import { Scale } from '@/models/_scale';
+import { ScaleType } from '@/models/scale-type';
 import { Dexie } from 'dexie';
 import { OnlyInstantiableByContainer, Singleton } from 'typescript-ioc';
 import { create } from './data';
@@ -8,17 +8,17 @@ import { create } from './data';
 @OnlyInstantiableByContainer
 export class SMTDB extends Dexie {
 
-	public scales: Dexie.Table<Scale, string>;
+	public scaleTypes: Dexie.Table<ScaleType, string>;
 
 	public tonalJsScaleRefs: Dexie.Table<TonalJsScaleRef, string>;
 
 	public constructor() {
 		super('some-music-theory');
 		this.version(1).stores({
-			scales: '&key, notesPerOctave',
+			scaleTypes: '&key, notesPerOctave',
 			tonalJsScaleRefs: '&key'
 		});
-		this.scales = this.table('scales');
+		this.scaleTypes = this.table('scaleTypes');
 		this.tonalJsScaleRefs = this.table('tonalJsScaleRefs');
 		this.on('populate', Reflect.apply(this.populate, this, []));
 		this.open();
@@ -26,7 +26,7 @@ export class SMTDB extends Dexie {
 
 	private populate(): void {
 		let data = create();
-		this.scales.bulkAdd(data.scales);
+		this.scaleTypes.bulkAdd(data.scaleTypes);
 		this.tonalJsScaleRefs.bulkAdd(data.tonalJsScaleRefs);
 	}
 
