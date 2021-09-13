@@ -1,11 +1,11 @@
 import { toTitleCase } from '@/functional/string';
 import { ScaleTonicRange } from '@/models/scale-tonic-range';
 import { TonalJsScaleRef } from '@/models/tonaljs-scale-ref';
-import { Scale } from '@/models/_scale';
-import { ScaleType } from '@tonaljs/tonal';
+import { ScaleType } from '@/models/scale-type';
+import { ScaleType as ScaleTypeUtil } from '@tonaljs/tonal';
 
 export interface Data {
-	scales: Scale[];
+	scaleTypes: ScaleType[];
 	tonalJsScaleRefs: TonalJsScaleRef[];
 }
 
@@ -17,26 +17,25 @@ export interface DataByRef {
 
 export function create(): Data {
 	const replacement = { ' ': '-', '\'': '', '#': '' } as { [key: string]: string };
-	let scales = new Array<Scale>();
+	let scaleTypes = new Array<ScaleType>();
 	let tonalJsScaleRefs = new Array<TonalJsScaleRef>();
 	let dataByRef = createDataByRef();
-	ScaleType
+	ScaleTypeUtil
 		.all()
 		.forEach(scale => {
 			let ref = scale.name;
-			let names = [ scale.name, ...scale.aliases].sort();								//    names: ['dominant diminished', 'half-whole diminished', 'messiaen's mode #2']
-			let keys = names.map(ref => ref.replace(/['# ]/g, char => replacement[char]));	//     keys: ['dominant-diminished', 'half-whole-diminished', 'messiaens-mode-2']
-			let displays = names.map(ref => toTitleCase(ref));								// displays: ['Dominant Diminished', 'Half-Whole Diminished', 'Messiaen's Mode #2']
+			let names = [ scale.name, ...scale.aliases];									// names: ['dominant diminished', 'half-whole diminished', 'messiaen's mode #2']
+			let keys = names.map(ref => ref.replace(/['# ]/g, char => replacement[char]));	// keys:  ['dominant-diminished', 'half-whole-diminished', 'messiaens-mode-2']
 			keys.forEach((key, i) => {
-				let display = displays[i];
-				let aliases = displays.filter(d => d !== display);
+				let display = toTitleCase(names[i]);
+				let aliasKeys = keys.filter(k => k !== key);
 				let notesPerOctave = scale.intervals.length;
 				let tonicRange = dataByRef[ref].tonicRange;
-				scales.push({ key, display, aliases, notesPerOctave, tonicRange });
+				scaleTypes.push({ key, display, aliasKeys, notesPerOctave, tonicRange });
 				tonalJsScaleRefs.push({ key, ref });
 			});
 		});
-	return { scales, tonalJsScaleRefs };
+	return { scaleTypes: scaleTypes, tonalJsScaleRefs };
 }
 
 function createDataByRef(): DataByRef {
