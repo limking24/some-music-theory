@@ -8,7 +8,7 @@ export abstract class ScaleDao {
 
 	public abstract get(key: string): Promise<ScaleType>;
 
-	public abstract uniqueNotesPerOctave(): Promise<number[]>;
+	public abstract supertypes(): Promise<number[]>;
 
 }
 
@@ -23,8 +23,8 @@ export class DexieScaleDao extends ScaleDao {
 		return {} as Promise<ScaleType>;
 	}
 
-	public async uniqueNotesPerOctave(): Promise<number[]> {
-		const array = await this._db.scaleTypes.orderBy('notesPerOctave').uniqueKeys();
+	public async supertypes(): Promise<number[]> {
+		const array = await this._db.scaleTypes.orderBy('supertype').uniqueKeys();
 		return array.map(part => Number(part));
 	}
 
