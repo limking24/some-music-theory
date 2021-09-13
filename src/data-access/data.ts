@@ -24,8 +24,6 @@ export function create(): Data {
 		.all()
 		.forEach(scale => {
 			let ref = scale.name;
-			console.log(ref);
-			
 			let names = [ scale.name, ...scale.aliases].sort();								//    names: ['dominant diminished', 'half-whole diminished', 'messiaen's mode #2']
 			let keys = names.map(ref => ref.replace(/['# ]/g, char => replacement[char]));	//     keys: ['dominant-diminished', 'half-whole-diminished', 'messiaens-mode-2']
 			let displays = names.map(ref => toTitleCase(ref));								// displays: ['Dominant Diminished', 'Half-Whole Diminished', 'Messiaen's Mode #2']
