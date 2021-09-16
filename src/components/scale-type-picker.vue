@@ -92,13 +92,11 @@ export default class ScaleTypePicker extends Vue {
 						}, {} as Options<ScaleType>);
 		// Highlight aliases
 		this.toggleAliasHighlight(this.type);
-		// Position the selected option to the top
+		// Position the selected option (or the first option) to the top
 		this.$nextTick(() => {
+			let select = this.$el.querySelector('.scale-type-picker #type');
 			let selected = this.$el.querySelector('.scale-type-picker #type option:checked') as HTMLElement;
-			if (selected) {
-				let parent = selected.parentElement as HTMLElement;
-				parent.scrollTop = selected.offsetTop - parent.offsetTop;
-			}
+			select.scrollTop = (selected) ? selected.offsetTop - select.offsetTop : 0;
 		});
 	}
 
