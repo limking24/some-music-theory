@@ -26,22 +26,3 @@ export class ScaleType implements Displayable {
 	}
 
 }
-
-export function createSupertypeOptions(supertypes: number[]): Options {
-	return supertypes
-			.reduce((options, supertype) => {
-				let display = ScaleSupertype[supertype];
-				if (display) {
-					options[supertype] = { display };
-				}
-				return options;
-			}, {} as Options);
-}
-
-export function createTypeOptions(dtos: ScaleTypeDto[]): Options<ScaleType> {
-	return dtos
-			.reduce((options, dto) => {
-				options[dto.key] = new ScaleType(dto.display, dto.aliasKeys);
-				return options;
-			}, {} as Options<ScaleType>);
-}
