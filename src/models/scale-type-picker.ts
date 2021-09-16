@@ -1,5 +1,4 @@
-import { Displayable, Options } from './options';
-import { ScaleType as ScaleTypeDto } from '@/data/scale-type';
+import { Displayable } from './options';
 
 export enum ScaleSupertype {
 	Monotonic = 1,
