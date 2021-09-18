@@ -1,23 +1,23 @@
 <template>
-	<div>
-		<h2>{{info.scaleName}}</h2>
-		<div v-if="info.hasAliases" class="alias">
-			Alias<template v-if="info.numberOfAliases > 1">es</template>: 
-			{{info.aliases}}
+	<div v-if="table.scaleName">
+		<h2>{{table.scaleName}}</h2>
+		<div v-if="table.hasAliases" class="alias">
+			Alias<template v-if="table.numberOfAliases > 1">es</template>: 
+			{{table.aliases}}
 		</div>
 		<table>
 			<thead>
 				<tr>
 					<td>Tonic</td>
 					<td>Enharmonic</td>
-					<td v-for="(note, index) in info.notesPerOctave" :key="index">{{index + 1}}</td>
+					<td v-for="(note, index) in table.notesPerOctave" :key="index">{{index + 1}}</td>
 					<td>Accidentals</td>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="(row, index) in info.rows" :key="index"
-					@mouseover="info.toggleHighlight(index)"
-					@mouseout="info.toggleHighlight(index)"
+				<tr v-for="(row, index) in table.rows" :key="index"
+					@mouseover="table.toggleHighlight(index)"
+					@mouseout="table.toggleHighlight(index)"
 					:class="{
 						highlight: row.highlight,
 						dim: row.dim
@@ -33,26 +33,42 @@
 </template>
 
 <script lang="ts">
-import { ScaleNotesTableInfoFactory } from '@/factories/scale-notes-table-info-factory';
-import { ScaleName } from '@/models/scale-name';
-import { ScaleNotesTableInfo } from '@/models/scale-notes-table-info';
+import { ScaleDao } from '@/data-access/scale-dao';
+import { Row, Table, Tonic } from '@/models/scale-notes-table';
+import { ScaleService } from '@/services/scale-service';
 import { Inject } from 'typescript-ioc';
 import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 
 export default class ScaleNotesTable extends Vue {
 
-	@Prop({required: true})
-	scaleName!: ScaleName;
+	@Prop({require: true})
+	scale!: string;
 
 	@Inject
-	factory!: ScaleNotesTableInfoFactory;
+	scaleDao!: ScaleDao;
 
-	info: ScaleNotesTableInfo = this.factory.create(this.scaleName);
+	@Inject
+	scaleService!: ScaleService;
 
-	@Watch('scaleName')
-	onScaleChanged(scaleName: ScaleName): void {
-		this.info = this.factory.create(scaleName);
+	table = {} as Table;
+
+	@Watch('scale', {immediate: true})
+	async loadTable(key: string): Promise<void> {
+		if (key) {
+			(await this.scaleDao.get(key)).ifPresent(async scale => {
+				let [aliases, notesArray] = await Promise.all([
+					this.scaleDao.displayOf(scale.aliasKeys),
+					this.scaleService.getNotesByTonics(scale.key, Tonic)
+				]);
+				this.table = new Table(
+					scale.display, 
+					aliases, 
+					scale.supertype, 
+					notesArray.get().map((notes, index) => new Row(index, notes, scale.tonicRange))
+				);
+			});
+		}
 	}
 
 }
