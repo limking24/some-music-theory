@@ -5,7 +5,7 @@ import { Optional } from 'typescript-optional';
 
 export abstract class ScaleService {
 
-	public abstract getNotes(key: string, tonic: string): Promise<Optional<string[]>>;
+	public abstract getNotesByTonics(key: string, tonics: string[]): Promise<Optional<string[][]>>;
 
 }
 
@@ -16,13 +16,12 @@ export class TonalJsScaleService extends ScaleService {
 		super();
 	}
 
-	public async getNotes(key: string, tonic: string): Promise<Optional<string[]>> {
+	public async getNotesByTonics(key: string, tonics: string[]): Promise<Optional<string[][]>> {
 		let ref = await this._refDao.getRef(key);
 		if (ref.isPresent()) {
-			let scale = Scale.get(`${tonic} ${ref.get()}`);
-			if (scale.notes.length > 1) {
-				return Optional.of(scale.notes);
-			}
+			return Optional.of(tonics.map(tonic => Scale
+													.get(`${tonic} ${ref.get()}`)
+													.notes));
 		}
 		return Optional.empty();
 	}
