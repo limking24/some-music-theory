@@ -1,15 +1,15 @@
 import { ScaleTonicRange } from '@/data/scale-tonic-range';
 import { ScaleType } from '@/data/scale-type';
-import { ScaleTypeRef } from '@/data/scale-type-ref';
+import { TonalJsScaleRef } from '@/data/tonaljs-scale-ref';
 import { toTitleCase } from '@/functional/string';
 import { ScaleType as ScaleTypeUtil } from '@tonaljs/tonal';
 
 export interface Data {
 	scaleTypes: ScaleType[];
-	scaleTypeRefs: ScaleTypeRef[];
+	tonalJsScaleRefs: TonalJsScaleRef[];
 }
 
-interface DataByRef {
+interface TonalJsScaleRefToDataMap {
 	[key: string]: {
 		tonicRange: ScaleTonicRange;
 	};
@@ -18,8 +18,8 @@ interface DataByRef {
 export function create(): Data {
 	const replacement = { ' ': '-', '\'': '', '#': '' } as { [key: string]: string };
 	let scaleTypes = new Array<ScaleType>();
-	let scaleTypeRefs = new Array<ScaleTypeRef>();
-	let dataByRef = createDataByRef();
+	let tonalJsScaleRefs = new Array<TonalJsScaleRef>();
+	let refToDataMap = createRefToDatMap();
 	ScaleTypeUtil
 		.all()
 		.forEach(scale => {
@@ -30,15 +30,15 @@ export function create(): Data {
 				let display = toTitleCase(names[i]);
 				let aliasKeys = keys.filter(k => k !== key);
 				let supertype = scale.intervals.length;
-				let tonicRange = dataByRef[ref].tonicRange;
+				let tonicRange = refToDataMap[ref].tonicRange;
 				scaleTypes.push({ key, display, aliasKeys, supertype, tonicRange });
-				scaleTypeRefs.push({ key, ref });
+				tonalJsScaleRefs.push({ key, ref });
 			});
 		});
-	return { scaleTypes: scaleTypes, scaleTypeRefs };
+	return { scaleTypes: scaleTypes, tonalJsScaleRefs };
 }
 
-function createDataByRef(): DataByRef {
+function createRefToDatMap(): TonalJsScaleRefToDataMap {
 	return {
 		'aeolian':						{ tonicRange: new ScaleTonicRange(5, 17) },
 		'altered':						{ tonicRange: new ScaleTonicRange(3, 15) },
