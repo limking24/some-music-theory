@@ -26,8 +26,8 @@ export default class ScaleNotesTableSearch extends Vue {
 
 	exclude = [ScaleSupertype.Chromatic];
 
-	updateRoute(key: string): void {
-		this.$router.push(`/scale-notes-table/${key}`);
+	updateRoute(scaleType: string): void {
+		this.$router.push(`/scale-notes-table/${scaleType}`);
 	}
 
 }
