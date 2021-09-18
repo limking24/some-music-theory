@@ -152,6 +152,10 @@ select {
 	width: 250px;
 }
 
+select:focus option:checked {
+	background: rgb(45, 150, 250) linear-gradient(rgb(45, 150, 250), rgb(45, 150, 250));
+}
+
 #type:focus .alias-of-selected {
 	color: rgb(255, 255, 255);
 	background: rgb(100, 175, 255);
