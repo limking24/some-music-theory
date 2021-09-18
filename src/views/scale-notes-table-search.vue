@@ -1,41 +1,34 @@
 <template>
 	<div>
 		<h1>Scale Notes Table</h1>
-		<scale-name-picker v-model:scaleName="scaleName" :options="options"/>
-		<scale-notes-table :scaleName="scaleName"/>
+		<scale-type-picker :exclude="exclude" :selected="scale" @picked="updateRoute" />
+		<scale-notes-table :scale="scale"/>
 	</div>
 </template>
 
 <script lang="ts">
-import ScaleNamePicker from '@/components/scale-name-picker.vue';
 import ScaleNotesTable from '@/components/scale-notes-table.vue';
-import { ScaleName } from '@/models/scale-name';
-import { ScaleNameProvider } from '@/services/scale-name-provider';
-import { Inject } from 'typescript-ioc';
+import ScaleTypePicker from '@/components/scale-type-picker.vue';
+import { ScaleSupertype } from '@/models/scale-type-picker';
 import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 
 @Options({
 	components: {
-		ScaleNamePicker,
+		ScaleTypePicker,
 		ScaleNotesTable
 	}
 })
 export default class ScaleNotesTableSearch extends Vue {
 
 	@Prop()
-	scaleNameKey!: string;
+	scale!: string;
 
-	@Inject
-	optionProvider!: ScaleNameProvider;
-
-	options = this.optionProvider.nonChromatic();
-
-	scaleName = this.optionProvider.findNonChromatic(this.scaleNameKey);
+	exclude = [ScaleSupertype.Chromatic];
 
 	@Watch('scaleName')
-	onScaleNamePicked(scaleName: ScaleName): void {
-		this.$router.push(`/scale-notes-table/${scaleName.key}`);
+	updateRoute(key: string): void {
+		this.$router.push(`/scale-notes-table/${key}`);
 	}
 
 }
