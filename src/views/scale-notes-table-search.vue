@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<h1>Scale Notes Table</h1>
-		<scale-type-picker :exclude="exclude" :scaleType="scaleType" @picked="updateRoute" />
-		<scale-notes-table :scaleType="scaleType"/>
+		<scale-type-picker :scale-type="scaleType" :exclude-supertypes="exclude" @picked="updateRoute" />
+		<scale-notes-table :scale-type="scaleType"/>
 	</div>
 </template>
 

@@ -33,7 +33,7 @@ import { Emit, Prop } from 'vue-property-decorator';
 export default class ScaleTypePicker extends Vue {
 
 	@Prop({default: []})
-	exclude!: ScaleSupertype[];
+	excludeSupertypes!: ScaleSupertype[];
 
 	@Prop()
 	scaleType?: string;
@@ -73,7 +73,7 @@ export default class ScaleTypePicker extends Vue {
 
 	async loadSuperTypes(): Promise<void> {
 		this.supertypes = (await this.scaleDao.supertypes())
-							.filter(supertype => !this.exclude.includes(supertype))
+							.filter(supertype => !this.excludeSupertypes.includes(supertype))
 							.reduce((options, supertype) => {
 								let display = `${ScaleSupertype[supertype]} (${supertype})`;
 								if (display) {
