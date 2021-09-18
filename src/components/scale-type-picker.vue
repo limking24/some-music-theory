@@ -2,7 +2,7 @@
 	<div class="scale-type-picker">
 		<div>
 			<label for="supertype">Type</label>
-			<select id="supertype" v-model="supertype" @change="loadTypes(Number($event.target.value))" size="10">
+			<select id="supertype" v-model="_supertype" @change="loadTypes(Number($event.target.value))" size="10">
 				<option v-for="(supertype, key) in supertypes" :key="key" :value="key">
 					{{supertype.display}}
 				</option>
@@ -11,7 +11,7 @@
 
 		<div>
 			<label for="type">Scale</label>
-			<select id="type" :value="type" @change="changeType($event.target.value)" size="10">
+			<select id="type" :value="_type" @change="changeType($event.target.value)" size="10">
 				<option v-for="(type, key) in types" :key="key" :value="key" :class="{'alias-of-selected': type.aliasOfSelected}">
 					{{type.display}}
 				</option>
@@ -36,7 +36,7 @@ export default class ScaleTypePicker extends Vue {
 	exclude!: ScaleSupertype[];
 
 	@Prop()
-	selected?: string;
+	scaleType?: string;
 
 	@Inject
 	scaleDao!: ScaleDao;
@@ -45,14 +45,14 @@ export default class ScaleTypePicker extends Vue {
 
 	types: Options<ScaleType> = {};
 
-	supertype: number = -1;
+	_supertype: number = -1;
 
-	type: string = '';
+	_type: string = '';
 
 	async mounted(): Promise<void> {
 		// Find the scale type to be selected from database, and load supertypes options synchronously.
 		let [scale] = await Promise.all([
-			this.selected ? this.scaleDao.get(this.selected) : Promise.resolve(Optional.empty<Dto>()), 
+			this.scaleType ? this.scaleDao.get(this.scaleType) : Promise.resolve(Optional.empty<Dto>()), 
 			this.loadSuperTypes()
 		]);
 		// Check if the scale type exists, and if its supertype is one of the options.
@@ -60,15 +60,15 @@ export default class ScaleTypePicker extends Vue {
 		// Otherwise, set the supertype to the first option
 		scale.ifPresent(data => {
 			if (data.supertype in this.supertypes) {
-				this.supertype = data.supertype;
-				this.type = this.selected!;
+				this._supertype = data.supertype;
+				this._type = this.scaleType!;
 			}
 		});
-		if (this.supertype === -1) {
-			this.supertype = Number(Object.keys(this.supertypes)[0]);
+		if (this._supertype === -1) {
+			this._supertype = Number(Object.keys(this.supertypes)[0]);
 		}
 		// Load type options
-		await this.loadTypes(this.supertype);
+		await this.loadTypes(this._supertype);
 	}
 
 	async loadSuperTypes(): Promise<void> {
@@ -91,7 +91,7 @@ export default class ScaleTypePicker extends Vue {
 							return options;
 						}, {} as Options<ScaleType>);
 		// Highlight aliases
-		this.toggleAliasHighlight(this.type);
+		this.toggleAliasHighlight(this._type);
 		// Position the selected option (or the first option) to the top
 		this.$nextTick(() => {
 			let select = this.$el.querySelector('.scale-type-picker #type');
@@ -103,8 +103,8 @@ export default class ScaleTypePicker extends Vue {
 	@Emit('picked')
 	changeType(key: string): string {
 		this.toggleAliasHighlight(key); // Highlight aliases of the newly selected
-		this.toggleAliasHighlight(this.type); // Unhighlight aliases of the old one
-		this.type = key;
+		this.toggleAliasHighlight(this._type); // Unhighlight aliases of the old one
+		this._type = key;
 		return key;
 	}
 

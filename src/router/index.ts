@@ -13,11 +13,11 @@ const routes: Array<RouteRecordRaw> = [
 		redirect: to => ({ path: '/scale-notes-table/major' })
 	},
 	{
-		path: '/scale-notes-table/:scale',
+		path: '/scale-notes-table/:scaleType',
 		name: 'Scale Notes Table',
 		component: ScaleNotesTableSearch,
 		props: route => ({
-			scale: decodeURIComponent(route.params.scale as string),
+			scaleType: decodeURIComponent(route.params.scaleType as string),
 		})
 	},
 	{

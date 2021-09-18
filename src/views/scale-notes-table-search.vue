@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<h1>Scale Notes Table</h1>
-		<scale-type-picker :exclude="exclude" :selected="scale" @picked="updateRoute" />
-		<scale-notes-table :scale="scale"/>
+		<scale-type-picker :exclude="exclude" :scaleType="scaleType" @picked="updateRoute" />
+		<scale-notes-table :scaleType="scaleType"/>
 	</div>
 </template>
 
@@ -11,7 +11,7 @@ import ScaleNotesTable from '@/components/scale-notes-table.vue';
 import ScaleTypePicker from '@/components/scale-type-picker.vue';
 import { ScaleSupertype } from '@/models/scale-type-picker';
 import { Options, Vue } from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 
 @Options({
 	components: {
@@ -22,11 +22,10 @@ import { Prop, Watch } from 'vue-property-decorator';
 export default class ScaleNotesTableSearch extends Vue {
 
 	@Prop()
-	scale!: string;
+	scaleType!: string;
 
 	exclude = [ScaleSupertype.Chromatic];
 
-	@Watch('scaleName')
 	updateRoute(key: string): void {
 		this.$router.push(`/scale-notes-table/${key}`);
 	}

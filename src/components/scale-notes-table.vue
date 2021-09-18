@@ -43,7 +43,7 @@ import { Prop, Watch } from 'vue-property-decorator';
 export default class ScaleNotesTable extends Vue {
 
 	@Prop({require: true})
-	scale!: string;
+	scaleType!: string;
 
 	@Inject
 	scaleDao!: ScaleDao;
@@ -53,7 +53,7 @@ export default class ScaleNotesTable extends Vue {
 
 	table = {} as Table;
 
-	@Watch('scale', {immediate: true})
+	@Watch('scaleType', {immediate: true})
 	async loadTable(key: string): Promise<void> {
 		if (key) {
 			(await this.scaleDao.get(key)).ifPresent(async scale => {
