@@ -11,6 +11,7 @@ export abstract class ScaleDao {
 
 	public abstract supertypes(): Promise<number[]>;
 
+	public abstract displayOf(keys: string[]): Promise<string[]>;
 
 }
 
@@ -33,6 +34,13 @@ export class DexieScaleDao extends ScaleDao {
 	public async supertypes(): Promise<number[]> {
 		const array = await this._db.scaleTypes.orderBy('supertype').uniqueKeys();
 		return array.map(part => Number(part));
+	}
+
+	public async displayOf(keys: string[]): Promise<string[]> {
+		let scales = await Promise.all(keys.map(key => this.get(key)));
+		return scales
+				.filter(scale => scale.isPresent())
+				.map(scale => scale.get().display);
 	}
 
 }
