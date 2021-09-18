@@ -1,5 +1,3 @@
-import { Displayable } from './options';
-
 export enum ScaleSupertype {
 	Monotonic = 1,
 	Ditonic = 2,
@@ -14,7 +12,7 @@ export enum ScaleSupertype {
 	Chromatic = 12
 }
 
-export class ScaleType implements Displayable {
+export class ScaleType {
 
 	public constructor(public readonly display: string,
 						public readonly aliasKeys: string[],

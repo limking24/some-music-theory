@@ -4,7 +4,7 @@
 			<label for="supertype">Type</label>
 			<select id="supertype" v-model="_supertype" @change="loadTypes(Number($event.target.value))" size="10">
 				<option v-for="(supertype, key) in supertypes" :key="key" :value="key">
-					{{supertype.display}}
+					{{supertype}}
 				</option>
 			</select>
 		</div>
@@ -23,7 +23,6 @@
 <script lang="ts">
 import { ScaleDao } from '@/data-access/scale-dao';
 import { ScaleType as Dto } from '@/data/scale-type';
-import { Options } from '@/models/options';
 import { ScaleSupertype, ScaleType } from '@/models/scale-type-picker';
 import { Inject } from 'typescript-ioc';
 import { Optional } from 'typescript-optional';
@@ -41,9 +40,9 @@ export default class ScaleTypePicker extends Vue {
 	@Inject
 	scaleDao!: ScaleDao;
 
-	supertypes: Options = {};
+	supertypes: Record<string, string> = {};
 
-	types: Options<ScaleType> = {};
+	types: Record<string, ScaleType> = {};
 
 	_supertype: number = -1;
 
@@ -77,10 +76,10 @@ export default class ScaleTypePicker extends Vue {
 							.reduce((options, supertype) => {
 								let display = `${ScaleSupertype[supertype]} (${supertype})`;
 								if (display) {
-									options[supertype] = { display };
+									options[supertype] = display;
 								}
 								return options;
-							}, {} as Options);
+							}, {} as Record<string, string>);
 	}
 
 	async loadTypes(supertype: number): Promise<void> {
@@ -89,7 +88,7 @@ export default class ScaleTypePicker extends Vue {
 						.reduce((options, type) => {
 							options[type.key] = new ScaleType(type.display, type.aliasKeys);
 							return options;
-						}, {} as Options<ScaleType>);
+						}, {} as Record<string, ScaleType>);
 		// Highlight aliases
 		this.toggleAliasHighlight(this._type);
 		// Position the selected option (or the first option) to the top
