@@ -2,7 +2,7 @@
 	<div class="scale-type-picker">
 		<div>
 			<label for="supertype">Type</label>
-			<select id="supertype" v-model="_supertype" @change="loadTypes(Number($event.target.value))" size="10">
+			<select id="supertype" v-model="supertype" @change="loadTypes(Number($event.target.value))" size="10">
 				<option v-for="(supertype, key) in supertypes" :key="key" :value="key">
 					{{supertype}}
 				</option>
@@ -11,7 +11,7 @@
 
 		<div>
 			<label for="type">Scale</label>
-			<select id="type" :value="_type" @change="changeType($event.target.value)" size="10">
+			<select id="type" :value="type" @change="changeType($event.target.value)" size="10">
 				<option v-for="(type, key) in types" :key="key" :value="key" :class="{'alias-of-selected': type.aliasOfSelected}">
 					{{type.display}}
 				</option>
@@ -44,9 +44,9 @@ export default class ScaleTypePicker extends Vue {
 
 	types: Record<string, ScaleType> = {};
 
-	_supertype: number = -1;
+	supertype: number = -1;
 
-	_type: string = '';
+	type: string = '';
 
 	async mounted(): Promise<void> {
 		// Find the scale type to be selected from database, and load supertypes options synchronously.
@@ -59,15 +59,15 @@ export default class ScaleTypePicker extends Vue {
 		// Otherwise, set the supertype to the first option
 		scale.ifPresent(data => {
 			if (data.supertype in this.supertypes) {
-				this._supertype = data.supertype;
-				this._type = this.scaleType!;
+				this.supertype = data.supertype;
+				this.type = this.scaleType!;
 			}
 		});
-		if (this._supertype === -1) {
-			this._supertype = Number(Object.keys(this.supertypes)[0]);
+		if (this.supertype === -1) {
+			this.supertype = Number(Object.keys(this.supertypes)[0]);
 		}
 		// Load type options
-		await this.loadTypes(this._supertype);
+		await this.loadTypes(this.supertype);
 	}
 
 	async loadSuperTypes(): Promise<void> {
@@ -90,7 +90,7 @@ export default class ScaleTypePicker extends Vue {
 							return options;
 						}, {} as Record<string, ScaleType>);
 		// Highlight aliases
-		this.toggleAliasHighlight(this._type);
+		this.toggleAliasHighlight(this.type);
 		// Position the selected option (or the first option) to the top
 		this.$nextTick(() => {
 			let select = this.$el.querySelector('.scale-type-picker #type');
@@ -102,8 +102,8 @@ export default class ScaleTypePicker extends Vue {
 	@Emit('picked')
 	changeType(key: string): string {
 		this.toggleAliasHighlight(key); // Highlight aliases of the newly selected
-		this.toggleAliasHighlight(this._type); // Unhighlight aliases of the old one
-		this._type = key;
+		this.toggleAliasHighlight(this.type); // Unhighlight aliases of the old one
+		this.type = key;
 		return key;
 	}
 
