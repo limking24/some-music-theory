@@ -1,5 +1,4 @@
-import { ScaleTonicRange } from '@/data/scale-tonic-range';
-import { ScaleType } from '@/data/scale-type';
+import { ScaleTonicRange, ScaleType } from '@/data/scale-type';
 import { TonalJsScaleRef } from '@/data/tonaljs-scale-ref';
 import { toTitleCase } from '@/functional/string';
 import { ScaleType as ScaleTypeUtil } from '@tonaljs/tonal';
