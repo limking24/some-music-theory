@@ -27,6 +27,19 @@ export const MinorSubtypes: Record<string, string> = {
 	'melodic':			'Melodic'
 }
 
+export const SubtypeToKeyMap: Record<string, string> = {
+	'ionian':			'ionian', 
+	'dorian':			'dorian', 
+	'phrygian':			'phrygian', 
+	'lydian':			'lydian', 
+	'mixolydian':		'mixolydian', 
+	'aeolian':			'aeolian', 
+	'locrian':			'locrian',
+	'natural':			'minor',
+	'harmonic':			'harmonic-minor',
+	'melodic':			'melodic-minor'
+}
+
 /**
  * Used to create tonic options.
  */
