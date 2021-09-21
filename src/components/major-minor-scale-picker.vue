@@ -86,7 +86,7 @@ export default class MajorMinorScalePicker extends Vue {
 	scrollTonicOptionIntoView(): void {
 		let index = Object.keys(this.tonics).findIndex(key => key === this.tonic);
 		if (index === -1) {
-			index = 7;
+			index = 6;
 		}
 		let select = this.$el.querySelector('#tonic');
 		let option = select.options[index];

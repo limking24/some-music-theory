@@ -71,7 +71,6 @@ const Tonics: Pair<string, string>[] = [
  * Used to create tonic options.
  */
  const Accidentals = [
-	' (bbbbbbb)',
 	' (bbbbbb)',
 	' (bbbbb)',
 	' (bbbb)',
@@ -84,8 +83,7 @@ const Tonics: Pair<string, string>[] = [
 	' (###)',
 	' (####)',
 	' (#####)',
-	' (######)',
-	' (#######)'
+	' (######)'
 ];
 
 export interface Tonic {
@@ -99,7 +97,6 @@ export interface Tonic {
  * For example, the options for major ionian will be:
  * ```
  * {
- *   'ionian c-flat' : 			{ value: c-flat', 		display: 'Cb (bbbbbbb)' },
  *   'ionian g-flat' : 			{ value: g-flat', 		display: 'Gb (bbbbbb)' },
  *   'ionian d-flat' : 			{ value: d-flat', 		display: 'Db (bbbbb)' },
  *   'ionian a-flat' : 			{ value: a-flat', 		display: 'Ab (bbbb)' },
@@ -112,8 +109,7 @@ export interface Tonic {
  *   'ionian a' : 				{ value: a', 			display: 'A (###)' },
  *   'ionian e' : 				{ value: e', 			display: 'E (####)' },
  *   'ionian b' : 				{ value: b', 			display: 'B (#####)' },
- *   'ionian f-sharp' : 		{ value: f-sharp', 		display: 'F# (######)' },
- *   'ionian c-sharp' : 		{ value: c-sharp', 		display: 'C# (#######)' }
+ *   'ionian f-sharp' : 		{ value: f-sharp', 		display: 'F# (######)' }
  * }
  * ```
  * 
@@ -123,20 +119,20 @@ export interface Tonic {
  export function createTonics(subtype: string): Record<string, Tonic> {
 	let start;
 	switch(subtype) {
-		case 'ionian':		start = 1;	break;
-		case 'dorian':		start = 3;	break;
-		case 'phrygian':	start = 5;	break;
-		case 'lydian':		start = 0;	break;
-		case 'mixolydian':	start = 2;	break;
-		case 'aeolian':		start = 4;	break;
-		case 'locrian':		start = 6;	break;
-		case 'natural':		start = 4;	break;
-		case 'harmonic':	start = 4;	break;
-		case 'melodic':		start = 4;	break;
+		case 'ionian':		start = 2;	break;
+		case 'dorian':		start = 4;	break;
+		case 'phrygian':	start = 6;	break;
+		case 'lydian':		start = 1;	break;
+		case 'mixolydian':	start = 3;	break;
+		case 'aeolian':		start = 5;	break;
+		case 'locrian':		start = 7;	break;
+		case 'natural':		start = 5;	break;
+		case 'harmonic':	start = 5;	break;
+		case 'melodic':		start = 5;	break;
 		default: return {};
 	}
 	return Tonics
-			.slice(start, start + 15)
+			.slice(start, start + 13)
 			.reduce((options, tonic, index) => {
 				options[`${subtype} ${tonic.key}`] = { 
 					value: tonic.key, 
