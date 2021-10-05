@@ -10,6 +10,7 @@
 				<tr>
 					<td>Tonic</td>
 					<td>Enharmonic</td>
+					<td></td>
 					<td v-for="(note, index) in table.notesPerOctave" :key="index">{{index + 1}}</td>
 					<td>Accidentals</td>
 				</tr>
@@ -24,6 +25,9 @@
 					}">
 					<td>{{row.tonic}}</td>
 					<td>{{row.enharmonic}}</td>
+					<td>
+						<sampler-play-button @on-play="(sampler, onStop) => play(sampler, onStop, row.notes)"/>
+					</td>
 					<td v-for="note in row.notes" :key="note">{{note}}</td>
 					<td>{{row.accidentals}}</td>
 				</tr>
@@ -33,13 +37,20 @@
 </template>
 
 <script lang="ts">
+import { onStop, Sampler } from '@/audio/sampler';
 import { ScaleDao } from '@/data-access/scale-dao';
 import { Row, Table, Tonic } from '@/models/scale-notes-table';
 import { ScaleService } from '@/services/scale-service';
 import { Inject } from 'typescript-ioc';
-import { Vue } from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
+import SamplerPlayButton from './sampler-play-button.vue';
 
+@Options({
+	components: {
+		SamplerPlayButton
+	}
+})
 export default class ScaleNotesTable extends Vue {
 
 	@Prop({require: true})
@@ -71,6 +82,15 @@ export default class ScaleNotesTable extends Vue {
 		}
 	}
 
+	async play(sampler: Sampler, onStop: onStop, notes: string[]): Promise<void> {
+		notes = [...notes, notes[0]];
+		let startPitch = notes[0].charCodeAt(0) < 67 ? 3 : 4; // A, A#, B = 3, Others = 4
+		let endPitch = startPitch + 1;
+		let index = notes.findIndex((note, i) => note.charCodeAt(0) < 67 && notes[i + 1].charCodeAt(0) >= 67);
+		let pitchNotation = notes.map((note, i) => (i <= index) ? `${note}${startPitch}` : `${note}${endPitch}`);
+		sampler.play(pitchNotation, {onStop});
+	}
+
 }
 </script>
 
@@ -90,6 +110,10 @@ h2 {
 
 .dim {
 	opacity: 0.45;
+}
+
+.play-button {
+	cursor: pointer;
 }
 
 table {

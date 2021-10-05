@@ -1,5 +1,6 @@
+import { MajorMinorScale } from '@/models/major-minor-scale';
 import ScaleNotesTableSearch from '@/views/scale-notes-table-search.vue';
-import ScaleTriadsSearch from '@/views/scale-triads-search.vue';
+import MajorMinorScaleTriadsSearch from '@/views/major-minor-scale-triads-search.vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
@@ -17,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'Scale Notes Table',
 		component: ScaleNotesTableSearch,
 		props: route => ({
-			scaleType: decodeURIComponent(route.params.scaleType as string),
+			scaleType: route.params.scaleType as string,
 		})
 	},
 	{
@@ -25,13 +26,15 @@ const routes: Array<RouteRecordRaw> = [
 		redirect: to => ({ path: '/scale-triads/major/ionian/c' })
 	},
 	{
-		path: '/scale-triads/:typeKey/:modeKey/:tonicKey',
-		name: 'Scale Triads',
-		component: ScaleTriadsSearch,
+		path: '/scale-triads/:type/:subtype/:tonic',
+		name: 'Major & Minor Scale Triads',
+		component: MajorMinorScaleTriadsSearch,
 		props: route => ({
-			typeKey: route.params.typeKey,
-			modeKey: route.params.modeKey,
-			tonicKey: route.params.tonicKey
+			scale: {
+				type: (route.params.type as string).toLowerCase(),
+				subtype: (route.params.subtype as string).toLowerCase(),
+				tonic: (route.params.tonic as string).toLowerCase()
+			} as MajorMinorScale
 		})
 	}
 ]

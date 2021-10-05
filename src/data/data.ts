@@ -23,8 +23,8 @@ export function create(): Data {
 		.all()
 		.forEach(scale => {
 			let ref = scale.name;
-			let names = [ scale.name, ...scale.aliases];									// names: ['dominant diminished', 'half-whole diminished', 'messiaen's mode #2']
-			let keys = names.map(ref => ref.replace(/['# ]/g, char => replacement[char]));	// keys:  ['dominant-diminished', 'half-whole-diminished', 'messiaens-mode-2']
+			let names = [ scale.name, ...scale.aliases];													// names: ['dominant diminished', 'half-whole diminished', 'messiaen's mode #2']
+			let keys = names.map(ref => ref.replace(/['# ]/g, char => replacement[char]).toLowerCase());	// keys:  ['dominant-diminished', 'half-whole-diminished', 'messiaens-mode-2']
 			keys.forEach((key, i) => {
 				let display = toTitleCase(names[i]);
 				let aliasKeys = keys.filter(k => k !== key);

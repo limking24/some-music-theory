@@ -8,10 +8,9 @@
 				</option>
 			</select>
 		</div>
-
 		<div>
 			<label for="type">Scale</label>
-			<select id="type" :value="type" @change="changeType($event.target.value)" size="10">
+			<select id="type" :value="scaleType" @change="$emit('picked', $event.target.value)" size="10">
 				<option v-for="(type, key) in types" :key="key" :value="key" :class="{'alias-of-selected': type.aliasOfSelected}">
 					{{type.display}}
 				</option>
@@ -27,15 +26,15 @@ import { ScaleSupertype, ScaleType } from '@/models/scale-type-picker';
 import { Inject } from 'typescript-ioc';
 import { Optional } from 'typescript-optional';
 import { Vue } from 'vue-class-component';
-import { Emit, Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
 
 export default class ScaleTypePicker extends Vue {
 
 	@Prop({default: []})
 	excludeSupertypes!: ScaleSupertype[];
 
-	@Prop()
-	scaleType?: string;
+	@Prop({default: ''})
+	scaleType!: string;
 
 	@Inject
 	scaleDao!: ScaleDao;
@@ -45,8 +44,6 @@ export default class ScaleTypePicker extends Vue {
 	types: Record<string, ScaleType> = {};
 
 	supertype: number = -1;
-
-	type: string = '';
 
 	async mounted(): Promise<void> {
 		// Find the scale type to be selected from database, and load supertypes options synchronously.
@@ -60,7 +57,6 @@ export default class ScaleTypePicker extends Vue {
 		scale.ifPresent(data => {
 			if (data.supertype in this.supertypes) {
 				this.supertype = data.supertype;
-				this.type = this.scaleType!;
 			}
 		});
 		if (this.supertype === -1) {
@@ -90,7 +86,7 @@ export default class ScaleTypePicker extends Vue {
 							return options;
 						}, {} as Record<string, ScaleType>);
 		// Highlight aliases
-		this.toggleAliasHighlight(this.type);
+		this.toggleAliasHighlight(this.scaleType);
 		// Position the selected option (or the first option) to the top
 		this.$nextTick(() => {
 			let select = this.$el.querySelector('.scale-type-picker #type');
@@ -99,17 +95,15 @@ export default class ScaleTypePicker extends Vue {
 		});
 	}
 
-	@Emit('picked')
-	changeType(key: string): string {
-		this.toggleAliasHighlight(key); // Highlight aliases of the newly selected
-		this.toggleAliasHighlight(this.type); // Unhighlight aliases of the old one
-		this.type = key;
-		return key;
+	@Watch('scaleType')
+	onTypeChanged(newType: string, oldType: string): void {
+		this.toggleAliasHighlight(oldType);
+		this.toggleAliasHighlight(newType);
 	}
 
-	toggleAliasHighlight(key: string): void {
-		if (key in this.types) {
-			for (let alias of this.types[key].aliasKeys) {
+	toggleAliasHighlight(type: string): void {
+		if (type in this.types) {
+			for (let alias of this.types[type].aliasKeys) {
 				if (alias in this.types) {
 					this.types[alias].toggleAliasOfSelected();
 				}

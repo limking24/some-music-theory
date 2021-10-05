@@ -1,7 +1,7 @@
 <template>
 	<div id="nav">
 		<router-link to="/scale-notes-table">Scale Notes Table</router-link> |
-		<router-link to="/scale-triads">Scale Triads</router-link>
+		<router-link to="/scale-triads">Major & Minor Scale Triads</router-link>
 	</div>
 	<router-view id="view"/>
 </template>

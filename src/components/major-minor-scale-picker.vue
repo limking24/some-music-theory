@@ -21,8 +21,8 @@
 		</div>
 		<div>
 			<label for="tonic">Tonic</label>
-			<select :value="tonic" @change="changeTonic($event.target.value)" id="tonic" size="7">
-				<option v-for="(tonic, key) in tonics" :key="key" :value="key">
+			<select :value="`${scale.tonic} ${scale.subtype}`" @change="changeScaleKey($event.target.value)" id="tonic" size="7">
+				<option v-for="(tonic, key) in scaleKeys" :key="key" :value="key">
 					{{tonic.display}}
 				</option>
 			</select>
@@ -31,9 +31,9 @@
 </template>
 
 <script lang="ts">
-import { createTonics, MajorMinorScale, MajorSubtypes, MinorSubtypes, Tonic, Types } from '@/models/major-minor-scale';
+import { createScaleKeys, MajorMinorScale, MajorSubtypes, MinorSubtypes, Tonic, Types } from '@/models/major-minor-scale';
 import { Vue } from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Emit, Prop } from 'vue-property-decorator';
 
 export default class MajorMinorScalePicker extends Vue {
 
@@ -44,22 +44,14 @@ export default class MajorMinorScalePicker extends Vue {
 
 	subtypes = {} as Record<string, string>;
 
-	tonics = {} as Record<string, Tonic>;
+	scaleKeys = {} as Record<string, Tonic>;
 
 	type = '';
 
 	subtype = '';
 
-	tonic = '';
-
 	mounted(): void {
 		this.loadSubtype(this.scale.type, this.scale.subtype);
-		if (this.scale.subtype === this.subtype) {
-			let tonicKey = `${this.scale.subtype} ${this.scale.tonic}`;
-			if (tonicKey in this.tonics) {
-				this.tonic = tonicKey;
-			}
-		}
 	}
 
 	loadSubtype(type?: string, subtype?: string): void {
@@ -75,33 +67,35 @@ export default class MajorMinorScalePicker extends Vue {
 
 	loadTonics(subtype?: string): void {
 		this.subtype = (subtype! in this.subtypes) ? subtype! : Object.keys(this.subtypes)[0];
-		this.tonics = createTonics(this.subtype);
+		this.scaleKeys = createScaleKeys(this.subtype);
+		this.showTonicOptionAtCenter();
+	}
+
+	showTonicOptionAtCenter(): void {
+		let func = () => {
+			let scaleKey = `${this.scale.tonic} ${this.scale.subtype}`;
+			let index = Object.keys(this.scaleKeys).findIndex(key => key === scaleKey);
+			if (index === -1) {
+				index = 7;
+			}
+			let select = this.$el.querySelector('#tonic');
+			let option = select.options[index];
+			select.scrollTop = option.scrollHeight * (index - 3);
+		};
 		if (document.readyState === 'complete') {
-			this.$nextTick(this.scrollTonicOptionIntoView);
+			this.$nextTick(func);
 		} else {
-			window.addEventListener('load', this.scrollTonicOptionIntoView);
+			window.addEventListener('load', func);
 		}
 	}
 
-	scrollTonicOptionIntoView(): void {
-		let index = Object.keys(this.tonics).findIndex(key => key === this.tonic);
-		if (index === -1) {
-			index = 6;
-		}
-		let select = this.$el.querySelector('#tonic');
-		let option = select.options[index];
-		select.scrollTop = option.scrollHeight * (index - 3);
-	}
-
-	changeTonic(tonic: string): void {
-		if (tonic in this.tonics) {
-			this.tonic = tonic;
-			this.$emit('picked', {
-				type: this.type,
-				subtype: this.subtype,
-				tonic: this.tonics[tonic].value
-			} as MajorMinorScale);
-		}
+	@Emit('picked')
+	changeScaleKey(scaleKey: string): MajorMinorScale {
+		return {
+			type: this.type,
+			subtype: this.subtype,
+			tonic: this.scaleKeys[scaleKey].tonic
+		};
 	}
 
 }
