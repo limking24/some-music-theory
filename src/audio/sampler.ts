@@ -23,26 +23,26 @@ export class Sampler {
 
 	private _onStop?: onStop;
 
-	public constructor(@InjectValue('sampler.samples') samples: Record<string, string>) {
-		this._sampler = new Tone.Sampler({
-			urls: samples,
-			onload: () => {
-				// Stop the sampler when route changes
+	public constructor(@InjectValue('sampler.samples') samples: Record<string, string>, stopOnRouteChanged = true) {
+		let option: Partial<Tone.SamplerOptions> = { urls: samples };
+		if (stopOnRouteChanged) {
+			option['onload'] = () => {
 				router.beforeEach((to, from, next) => {
 					this.stop();
 					next();
 				});
-			}
-		}).toDestination();
+			};
+		}
+		this._sampler = new Tone.Sampler(option).toDestination();
 	}
 
 	public async play(notes: (string|string[])[], optional?: Optional): Promise<void> {
 		this._lock.acquire('sampler', async () => {
 			await Promise.all([Tone.start(), Tone.loaded()]);
-			this.reset();
+			let wasPlaying = this.reset();
 			this._onStop = optional?.onStop;
 			let duration = optional?.duration ? optional.duration : 0.5;
-			let delay = 0.1;
+			let delay = wasPlaying ? 0.5 : 0.1;
 			redenoteAll(notes).forEach(n => {
 				this._transport.scheduleOnce(time => this._sampler.triggerAttackRelease(n, duration, time), delay);
 				delay += duration;
@@ -61,7 +61,7 @@ export class Sampler {
 	/**
 	 * Stop the sampler and remove all scheduled events.
 	 */
-	private reset(): void {
+	private reset(): boolean {
 		if (this._transport.state !== 'stopped') {
 			this._transport.stop();
 			this._transport.cancel();
@@ -69,7 +69,9 @@ export class Sampler {
 				this._onStop();
 				this._onStop = undefined;
 			}
+			return true;
 		}
+		return false;
 	}
 
 }
