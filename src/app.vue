@@ -55,4 +55,22 @@ option {
 #view {
 	display: inline-block;
 }
+
+button {
+	background: rgb(230, 230, 230);
+	color: rgb(80, 80, 80);
+	border: none;
+	border-radius: 3px;
+	padding: 15px 10px;
+	min-width: 90px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+button:disabled,
+button[disabled] {
+	background: rgb(240, 240, 240);
+	color: rgb(190, 190, 190);
+	cursor: default;
+}
 </style>
