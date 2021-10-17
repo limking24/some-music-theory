@@ -9,7 +9,7 @@
 <script lang="ts">
 import ScaleNotesTable from '@/components/scale-notes-table.vue';
 import ScaleTypePicker from '@/components/scale-type-picker.vue';
-import { ScaleSupertype } from '@/models/scale-type-picker';
+import { ScaleSupertype } from '@/models/scale-supertype';
 import { Options, Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 

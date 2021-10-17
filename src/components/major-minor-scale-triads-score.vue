@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { DomBasedSamplerPlayButton } from '@/audio/dom-based-sampler-play-button';
-import { onStop, Sampler } from '@/audio/sampler';
+import { onStop, SamplerFacade } from '@/audio/sampler-facade';
 import { PlaySymbol } from '@/audio/sampler-play-button';
 import { ScaleDao } from '@/data-access/scale-dao';
 import { getScaleName, isValid, MajorMinorScale, subtypeToRef } from '@/models/major-minor-scale';
@@ -29,7 +29,7 @@ export default class MajorMinorScaleTriadsScore extends Vue {
 	scaleDao!: ScaleDao;
 
 	@Inject
-	sampler!: Sampler;
+	sampler!: SamplerFacade;
 
 	id = 'major-minor-scale-triads-score';
 
@@ -118,7 +118,7 @@ export default class MajorMinorScaleTriadsScore extends Vue {
 			});
 	}
 
-	play(sampler: Sampler, onStop: onStop, chordIndex: number): void {
+	play(sampler: SamplerFacade, onStop: onStop, chordIndex: number): void {
 		let triads = [this.triadNotes[chordIndex], this.triadNotes[chordIndex + 2], this.triadNotes[chordIndex + 4]];
 		sampler.play([...triads, triads], { onStop, duration: 0.6 });
 	}

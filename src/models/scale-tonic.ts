@@ -1,5 +1,3 @@
-import { Optional } from 'typescript-optional';
-
 export class ScaleTonic {
 
 	public static readonly All: Record<string, string> = {
@@ -26,18 +24,18 @@ export class ScaleTonic {
 		'b-sharp': 			 'B#'
 	};
 
+	public static readonly Enharmonic = ['E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#', undefined, undefined, undefined, 'Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C'];
+
 	public static get Entries(): [key: string, tonic: string][] {
 		return Object.entries(this.All);
 	}
 
-	public static tonicKeyOfIndex(index: number): Optional<string> {
-		let entry = this.Entries[index];
-		return entry ? Optional.of(entry[0]) : Optional.empty();
+	public static tonicKeyOfIndex(index: number): string {
+		return this.Entries[index][0];
 	}
 
-	public static tonicOfIndex(index: number): Optional<string> {
-		let entry = this.Entries[index];
-		return entry ? Optional.of(entry[1]) : Optional.empty();
+	public static tonicOfIndex(index: number): string {
+		return this.Entries[index][1];
 	}
 
 	public static indexOfTonicKey(key: string): number {
@@ -46,6 +44,14 @@ export class ScaleTonic {
 
 	public static indexOfTonic(tonic: string): number {
 		return this.Entries.findIndex(entry => entry[1] === tonic);
+	}
+
+	public static enharmonicOfTonicIndex(index: number): string | undefined {
+		return this.Enharmonic[index];
+	}
+
+	public static enharmonicOfTonic(tonic: string): string | undefined {
+		return this.Enharmonic[this.indexOfTonic(tonic)];
 	}
 
 }

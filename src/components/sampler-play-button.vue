@@ -1,21 +1,21 @@
 <template>
 	<!-- Bug in scale-notes-table when using v-if & v-else here -->
-	<span @click="isPlaying ? stop() : play()">{{symbol}}</span>
+	<span @click.stop="isPlaying ? stop() : play()">{{symbol}}</span>
 </template>
 
 <script lang="ts">
-import { Sampler } from '@/audio/sampler';
+import { SamplerFacade } from '@/audio/sampler-facade';
 import { PlaySymbol, SamplerPlayButton as SamplerPlayButtonInterface, StopSymbol } from '@/audio/sampler-play-button';
 import { Inject } from 'typescript-ioc';
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
-	emits: ['onPlay']
+	emits: ['play']
 })
 export default class SamplerPlayButton extends Vue implements SamplerPlayButtonInterface {
 
 	@Inject
-	sampler!: Sampler;
+	sampler!: SamplerFacade;
 
 	isPlaying = false;
 
@@ -25,7 +25,7 @@ export default class SamplerPlayButton extends Vue implements SamplerPlayButtonI
 
 	play(): void {
 		this.isPlaying = true;
-		this.$emit('onPlay', this.sampler, this.onSamplerStopped);
+		this.$emit('play', this.sampler, this.onSamplerStopped);
 	}
 
 	stop(): void {

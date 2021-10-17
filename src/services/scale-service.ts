@@ -14,7 +14,7 @@ export interface NoteRange {
 
 export abstract class ScaleService {
 
-	public abstract getNotesByTonics(key: string, tonics: string[]): Promise<Optional<string[][]>>;
+	public abstract getNotesByTonics(key: string): Promise<Optional<string[][]>>;
 
 	public abstract getNotesWithin(range: NoteRange): Promise<Optional<string[]>>;
 
@@ -27,10 +27,10 @@ export class TonalJsScaleService extends ScaleService {
 		super();
 	}
 
-	public async getNotesByTonics(key: string, tonics: string[]): Promise<Optional<string[][]>> {
+	public async getNotesByTonics(key: string): Promise<Optional<string[][]>> {
 		let ref = await this._refDao.getRef(key);
 		if (ref.isPresent()) {
-			return Optional.of(tonics.map(tonic => Scale
+			return Optional.of(['Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'].map(tonic => Scale
 													.get(`${tonic} ${ref.get()}`)
 													.notes));
 		}

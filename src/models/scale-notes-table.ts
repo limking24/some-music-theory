@@ -1,8 +1,6 @@
 import { ScaleTonicRange } from '@/data/scale-type';
-
-export const Tonic = ['Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'];
-
-export const EnharmonicEquivalent = ['E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#', '-', '-', '-', 'Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C'];
+import { Optional } from 'typescript-optional';
+import { ScaleTonic } from './scale-tonic';
 
 export class Row {
 
@@ -12,15 +10,17 @@ export class Row {
 						public highlight = false) {}
 
 	public get tonic(): string {
-		return Tonic[this.tonicIndex];
+		return ScaleTonic.tonicOfIndex(this.tonicIndex);
 	}
 
 	public get enharmonic(): string {
-		return EnharmonicEquivalent[this.tonicIndex];
+		return Optional
+				.ofNullable(ScaleTonic.enharmonicOfTonicIndex(this.tonicIndex))
+				.orElse('-');
 	}
 
 	public get enharmonicIndex(): number {
-		return Tonic.indexOf(this.enharmonic);
+		return ScaleTonic.indexOfTonic(this.enharmonic);
 	}
 
 	public get accidentals(): string {
@@ -33,6 +33,11 @@ export class Row {
 	public get dim(): boolean {
 		return this.tonicIndex < this.range.upper || 
 				this.tonicIndex > this.range.lower;
+	}
+
+	public get gradualDim(): boolean {
+		return this.tonicIndex + 1 == this.range.upper || 
+				this.tonicIndex - 1 == this.range.lower
 	}
 
 	public toggleHighlight(): void {

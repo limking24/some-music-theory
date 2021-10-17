@@ -22,7 +22,8 @@
 <script lang="ts">
 import { ScaleDao } from '@/data-access/scale-dao';
 import { ScaleType as Dto } from '@/data/scale-type';
-import { ScaleSupertype, ScaleType } from '@/models/scale-type-picker';
+import { ScaleSupertype } from '@/models/scale-supertype';
+import { ScaleType } from '@/models/scale-type-picker';
 import { Inject } from 'typescript-ioc';
 import { Optional } from 'typescript-optional';
 import { Vue } from 'vue-class-component';
@@ -70,7 +71,7 @@ export default class ScaleTypePicker extends Vue {
 		this.supertypes = (await this.scaleDao.supertypes())
 							.filter(supertype => !this.excludeSupertypes.includes(supertype))
 							.reduce((options, supertype) => {
-								let display = `${ScaleSupertype[supertype]} (${supertype})`;
+								let display = ScaleSupertype.toString(supertype);
 								if (display) {
 									options[supertype] = display;
 								}

@@ -1,5 +1,6 @@
 import { MajorMinorScale } from '@/models/major-minor-scale';
 import ScaleNotesTableSearch from '@/views/scale-notes-table-search.vue';
+import ScaleFinderInterface from '@/views/scale-finder-interface.vue';
 import MajorMinorScaleTriadsSearch from '@/views/major-minor-scale-triads-search.vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
@@ -8,6 +9,10 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/',
 		name: 'Home',
 		redirect: to => ({ path: '/scale-triads' })
+	},
+	{
+		path: '/scale-finder',
+		component: ScaleFinderInterface
 	},
 	{
 		path: '/scale-notes-table',

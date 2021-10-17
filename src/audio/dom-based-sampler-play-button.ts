@@ -1,11 +1,11 @@
-import { onStop, Sampler } from './sampler';
+import { onStop, SamplerFacade } from './sampler-facade';
 import { PlaySymbol, SamplerPlayButton, StopSymbol } from './sampler-play-button';
 
-export type onPlay = (sampler: Sampler, onStop: onStop) => void;
+export type onPlay = (sampler: SamplerFacade, onStop: onStop) => void;
 
 export class DomBasedSamplerPlayButton implements SamplerPlayButton {
 
-	public constructor(private _element: HTMLElement, private _sampler: Sampler, private _onPlay: onPlay) {
+	public constructor(private _element: HTMLElement, private _sampler: SamplerFacade, private _onPlay: onPlay) {
 		_element.textContent = PlaySymbol;
 		_element.style.cursor = 'pointer';
 		_element.addEventListener('click', () => {

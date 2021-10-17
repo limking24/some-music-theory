@@ -2,8 +2,9 @@ import { redenoteAll } from '@/functional/tonejs';
 import router from '@/router';
 import AsyncLock from 'async-lock';
 import * as Tone from 'tone';
+import { Sampler } from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
-import { InjectValue, Singleton } from 'typescript-ioc';
+import { Inject, Singleton } from 'typescript-ioc';
 
 export type onStop = () => void;
 
@@ -13,27 +14,21 @@ export interface Optional {
 }
 
 @Singleton
-export class Sampler {
+export class SamplerFacade {
 
 	private _lock = new AsyncLock();
 
 	private _transport = new Transport(Transport.getDefaults());
 
-	private _sampler: Tone.Sampler;
-
 	private _onStop?: onStop;
 
-	public constructor(@InjectValue('sampler.samples') samples: Record<string, string>, stopOnRouteChanged = true) {
-		let option: Partial<Tone.SamplerOptions> = { urls: samples };
+	public constructor(@Inject private _sampler: Sampler, stopOnRouteChanged = true) {
 		if (stopOnRouteChanged) {
-			option['onload'] = () => {
-				router.beforeEach((to, from, next) => {
-					this.stop();
-					next();
-				});
-			};
+			router.beforeEach((to, from, next) => {
+				this.stop();
+				next();
+			});
 		}
-		this._sampler = new Tone.Sampler(option).toDestination();
 	}
 
 	public async play(notes: (string|string[])[], optional?: Optional): Promise<void> {

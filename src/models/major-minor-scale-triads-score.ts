@@ -36,7 +36,7 @@ export function getTriads(ref: string, tonic: string, subtype: string): string {
 	 */
 	let refNoAccidentals = ['harmonic minor', 'melodic minor'].includes(ref) ? 'minor' : ref;
 	let mid = getTonicRangeUpperBound(subtype) + 7;
-	let tonicNoAccidentals = ScaleTonic.tonicOfIndex(mid).get();
+	let tonicNoAccidentals = ScaleTonic.tonicOfIndex(mid);
 	let [fromPosition] = [5, 6, 0, 1, 2, 3, 4].slice(tonic.charCodeAt(0) - tonicNoAccidentals.charCodeAt(0));
 	let toPosition = fromPosition;
 	let fromPitch = getStartingPitch(tonic);
@@ -114,5 +114,5 @@ export function getMajorKeySignature(subtype: string, tonic: string): string {
 	let index = ScaleTonic.indexOfTonic(tonic);
 	let upper = getTonicRangeUpperBound(subtype);
 	let ionianUpper = getTonicRangeUpperBound('ionian');
-	return ScaleTonic.tonicOfIndex(index - upper + ionianUpper).get();
+	return ScaleTonic.tonicOfIndex(index - upper + ionianUpper);
 }
