@@ -146,9 +146,8 @@ export default class ScaleFinder extends Vue {
 }
 
 .total-no-of-scales {
-	font-style: italic;
 	margin-left: 11px;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 
 .total-no-of-scales.none {

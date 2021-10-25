@@ -1,14 +1,15 @@
 import { MajorMinorScale } from '@/models/major-minor-scale';
-import ScaleNotesTableSearch from '@/views/scale-notes-table-search.vue';
-import ScaleFinderInterface from '@/views/scale-finder-interface.vue';
 import MajorMinorScaleTriadsSearch from '@/views/major-minor-scale-triads-search.vue';
+import NotFound from '@/views/not-found.vue';
+import ScaleFinderInterface from '@/views/scale-finder-interface.vue';
+import ScaleNotesTableSearch from '@/views/scale-notes-table-search.vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/',
-		name: 'Home',
-		redirect: to => ({ path: '/scale-triads' })
+		name: 'home',
+		component: {}
 	},
 	{
 		path: '/scale-finder',
@@ -16,23 +17,23 @@ const routes: Array<RouteRecordRaw> = [
 	},
 	{
 		path: '/scale-notes-table',
-		redirect: to => ({ path: '/scale-notes-table/major' })
-	},
-	{
-		path: '/scale-notes-table/:scaleType',
-		name: 'Scale Notes Table',
 		component: ScaleNotesTableSearch,
 		props: route => ({
 			scaleType: route.params.scaleType as string,
-		})
+		}),
+		children: [
+			{
+				path: '',
+				redirect: '/scale-notes-table/major'
+			},
+			{
+				path: ':scaleType',
+				component: ScaleNotesTableSearch
+			}
+		]
 	},
 	{
 		path: '/scale-triads',
-		redirect: to => ({ path: '/scale-triads/major/ionian/c' })
-	},
-	{
-		path: '/scale-triads/:type/:subtype/:tonic',
-		name: 'Major & Minor Scale Triads',
 		component: MajorMinorScaleTriadsSearch,
 		props: route => ({
 			scale: {
@@ -40,13 +41,27 @@ const routes: Array<RouteRecordRaw> = [
 				subtype: (route.params.subtype as string).toLowerCase(),
 				tonic: (route.params.tonic as string).toLowerCase()
 			} as MajorMinorScale
-		})
+		}),
+		children: [
+			{
+				path: '',
+				redirect: '/scale-triads/major/ionian/c'
+			},
+			{
+				path: ':type/:subtype/:tonic',
+				component: ScaleNotesTableSearch
+			}
+		]
+	},
+	{
+		path: "/:catchAll(.*)",
+		component: NotFound
 	}
 ]
 
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes
-})
+});
 
-export default router
+export default router;
