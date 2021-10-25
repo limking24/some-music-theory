@@ -2,8 +2,7 @@
 	<div v-if="table.scaleName">
 		<h2>{{table.scaleName}}</h2>
 		<div v-if="table.hasAliases" class="alias">
-			Alias<template v-if="table.numberOfAliases > 1">es</template>: 
-			{{table.aliases}}
+			{{alias}}
 		</div>
 		<table>
 			<thead>
@@ -48,6 +47,7 @@ import { Row, Table } from '@/models/scale-notes-table';
 import { ScaleService } from '@/services/scale-service';
 import { ScaleType } from '@tonaljs/scale-type';
 import { ScaleType as ScaleTypeUtil } from '@tonaljs/tonal';
+import pluralize from 'pluralize';
 import { Inject } from 'typescript-ioc';
 import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
@@ -127,6 +127,10 @@ export default class ScaleNotesTable extends Vue {
 	scaleService!: ScaleService;
 
 	table = {} as Table;
+
+	get alias(): string {
+		return `${pluralize('Alias', this.table.numberOfAliases)}: ${this.table.aliases}`;
+	}
 
 	@Watch('scaleType', {immediate: true})
 	async loadTable(key: string): Promise<void> {
