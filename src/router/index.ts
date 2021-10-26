@@ -1,4 +1,5 @@
 import { MajorMinorScale } from '@/models/major-minor-scale';
+import Home from '@/views/home.vue';
 import MajorMinorScaleTriadsSearch from '@/views/major-minor-scale-triads-search.vue';
 import NotFound from '@/views/not-found.vue';
 import ScaleFinderInterface from '@/views/scale-finder-interface.vue';
@@ -9,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/',
 		name: 'home',
-		component: {}
+		component: Home
 	},
 	{
 		path: '/scale-finder',
