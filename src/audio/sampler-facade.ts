@@ -1,5 +1,5 @@
-import { redenoteAll } from '@/functional/tonejs';
 import router from '@/router';
+import { Note } from '@tonaljs/tonal';
 import AsyncLock from 'async-lock';
 import * as Tone from 'tone';
 import { Sampler } from 'tone';
@@ -38,8 +38,9 @@ export class SamplerFacade {
 			this._onStop = optional?.onStop;
 			let duration = optional?.duration ? optional.duration : 0.5;
 			let delay = wasPlaying ? 0.5 : 0.1;
-			redenoteAll(notes).forEach(n => {
-				this._transport.scheduleOnce(time => this._sampler.triggerAttackRelease(n, duration, time), delay);
+			notes.forEach(n => {
+				let redenoted = (typeof n === 'string') ? Note.enharmonic(n) : n.map(note => Note.enharmonic(note));
+				this._transport.scheduleOnce(time => this._sampler.triggerAttackRelease(redenoted, duration, time), delay);
 				delay += duration;
 			});
 			this._transport.scheduleOnce(time => this.stop(), delay);
