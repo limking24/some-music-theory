@@ -1,8 +1,17 @@
 <template>
 	<template v-if="name">
-		<h2>{{name}}</h2>
+		<div class="scale-name">
+			<h2>{{name}}</h2>
+			<div class="help">
+				<div class="help-content">
+					<ul>
+						<li>Hover over a note to highlight it.</li>
+						<li>Click on ▶ to play the chord; ◼ to stop.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 		<div :id="id" />
-		<p>* Hover over a note to highlight it.</p>
 	</template>
 </template>
 
@@ -137,15 +146,27 @@ export default class MajorMinorScaleTriadsScore extends Vue {
 </script>
 
 <style>
-h2 {
-	margin: 50px 0 0;
+.scale-name {
+	display: inline-block;
+	margin-top: 50px;
+	position: relative;
+	width: auto;
 }
 
-p {
-	font-style: italic;
-	font-size: smaller;
-	color: rgb(115, 115, 115);
-	margin-top: 40px;
+.scale-name h2 {
+	display: inline-block;
+	margin: 0;
+}
+
+.scale-name .help {
+	position: absolute;
+	right: -10px;
+	text-shadow: 2px 1px 5px rgba(0, 0, 0, 0.215);
+	top: 2px;
+}
+
+.scale-name .help-content {
+	width: 330px;
 }
 
 #major-minor-scale-triads-score {
