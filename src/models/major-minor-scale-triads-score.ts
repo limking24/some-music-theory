@@ -3,16 +3,39 @@ import { Mode, Scale } from '@tonaljs/tonal';
 import { getTonicRangeUpperBound } from './major-minor-scale';
 import { ScaleTonic } from './scale-tonic';
 
+/**
+ * Starting pitch if tonic is A, B, C, or D: 3.
+ * Otherwise, 4.
+ */
 export function getStartingPitch(tonic: string): number {
 	return ['A', 'B', 'C', 'D'].includes(tonic.charAt(0)) ? 3 : 4;
 }
 
+/**
+ * Generate notes to be used by a sampler to demonstrate what a triad sounds like.
+ * 
+ * ```
+ * let notes = getTriadNotes('major', 'C') // ['A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5']
+ * let aMinor = [notes[0], notes[2], notes[4]]; // ['A3', 'C4', 'E4']
+ * sampler.play([...notes, notes]);
+ * ```
+ */
 export function getTriadNotes(ref: string, tonic: string): string[] {
 	let fromPitch = getStartingPitch(tonic);
 	let toPitch = fromPitch + 2;
 	return getNotesWithin({ ref, tonic, fromPosition: 5, fromPitch, toPosition: 5, toPitch });
 }
 
+/**
+ * Generate a string (Vexflow's input) containing all the triads to be displayed 
+ * in the sheet music. Because key signature is used, the notes in the string
+ * will not have accidentals except for Harmonic and Melodic Minor.
+ * 
+ * ```
+ * getTriads('melodic minor', 'D', 'melodic')
+ * // '(Bn3 D4 F4)/w, (C#4 E4 G4), (D4 F4 A4), (E4 G4 Bn4), (F4 A4 C#5), (G4 B4 D5), (A4 C5 E5), (B4 D5 F5), (C5 E5 G5), (D5 F5 A5), (E5 G5 Bn5)'
+ * ```
+ */
 export function getTriads(ref: string, tonic: string, subtype: string): string {
 	/*
 	 * Generate 15 notes in a scale to form 11 triads. Take C Major Ionian as an example,
@@ -73,7 +96,6 @@ export function getTriads(ref: string, tonic: string, subtype: string): string {
 		case 'harmonic minor':		addAccidental(triads, [[1, 0], [4, 2]], (index < 9) ? 'n' : (index < 16) ? '#' : '##');
 	}
 	let triadStrings = triads.map(triad => triad.join(' '));
-	// e.g. '(A3 C4 E4)/w, (B3 D4 F4), (C4 E4 G4), (D4 F4 A4), (E4 G4 B4), (F4 A4 C5), (G4 B4 D5), (A4 C5 E5), (B4 D5 F5), (C5 E5 G5), (D5 F5 A5)'
 	return `(${triadStrings[0]})/w, ${triadStrings.slice(1).map(triad => `(${triad})`).join(', ')}`;
 }
 
@@ -89,6 +111,12 @@ const TriadSuffixes: Record<string, string[]> = {
 	'melodic minor': ['m', 'm', 'aug', '', '', 'dim', 'dim']
 }
 
+/**
+ * ```
+ * getTriadsName('major', 'C')
+ * // ['Am', 'Bdim', 'C', 'Dm', 'Em', 'F', 'G', 'Am', 'Bdim', 'C', 'Dm']
+ * ```
+ */
 export function getTriadsName(ref: string, tonic: string): string[] {
 	let names: string[] = [];
 	switch (ref) {
