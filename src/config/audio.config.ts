@@ -1,3 +1,5 @@
+import { SamplerFacade } from '@/audio/sampler-facade';
+import router from '@/router';
 import { Sampler } from 'tone';
 
 const PianoSamples: Record<string, string> = {
@@ -16,7 +18,14 @@ const PianoSamples: Record<string, string> = {
 
 const PianoSampler = new Sampler(PianoSamples).toDestination();
 
+const PianoSamplerFacade = new SamplerFacade(PianoSampler);
+router.beforeEach((to, from, next) => {
+	PianoSamplerFacade.stop();
+	next();
+});
+
 export default [
 	{ bindName: 'sampler.samples', to: PianoSamples },
-	{ bind: Sampler, factory: () => PianoSampler }
+	{ bind: Sampler, factory: () => PianoSampler },
+	{ bind: SamplerFacade, factory: () => PianoSamplerFacade }
 ];

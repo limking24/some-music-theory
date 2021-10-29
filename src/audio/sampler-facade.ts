@@ -1,10 +1,8 @@
-import router from '@/router';
 import { Note } from '@tonaljs/tonal';
 import AsyncLock from 'async-lock';
 import * as Tone from 'tone';
 import { Sampler } from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
-import { Inject, Singleton } from 'typescript-ioc';
 
 export type onStop = () => void;
 
@@ -13,7 +11,6 @@ export interface Optional {
 	onStop?: onStop;
 }
 
-@Singleton
 export class SamplerFacade {
 
 	private _lock = new AsyncLock();
@@ -22,14 +19,7 @@ export class SamplerFacade {
 
 	private _onStop?: onStop;
 
-	public constructor(@Inject private _sampler: Sampler, stopOnRouteChanged = true) {
-		if (stopOnRouteChanged) {
-			router.beforeEach((to, from, next) => {
-				this.stop();
-				next();
-			});
-		}
-	}
+	public constructor(private _sampler: Sampler) {}
 
 	public async play(notes: (string|string[])[], optional?: Optional): Promise<void> {
 		this._lock.acquire('sampler', async () => {
