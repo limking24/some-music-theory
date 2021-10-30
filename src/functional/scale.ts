@@ -42,13 +42,13 @@ export function getNotesWithin(range: NoteRange): string[] {
  * ```
  * allTonicsNotes('major');
  * // [
- * //   ['Fb', 'Gb', 'Abb', 'Bbb', 'Cb', 'Db', 'Eb'],
+ * //   ['Fb', 'Gb', 'Ab', 'Bbb', 'Cb', 'Db', 'Eb'],
  * //   ...
- * //   ['F', 'G', 'Ab', 'Bb', 'C', 'D', 'E'],
- * //   ['C', 'D', 'Eb', 'F', 'G', 'A', 'B'], 
- * //   ['G', 'A', 'Bb', 'C', 'D', 'E', 'F#'],
+ * //   ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
+ * //   ['C', 'D', 'E', 'F', 'G', 'A', 'B'], 
+ * //   ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
  * //   ...
- * //   ['B#', 'C##', 'D#', 'E#', 'F##', 'G##', 'A##']
+ * //   ['B#', 'C##', 'D##', 'E#', 'F##', 'G##', 'A##']
  * // ]
  * ```
  */
