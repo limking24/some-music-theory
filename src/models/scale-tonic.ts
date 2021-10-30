@@ -1,3 +1,5 @@
+import { ScaleTonicRange } from '@/data/scale-type';
+
 export class ScaleTonic {
 
 	public static readonly All: Record<string, string> = {
@@ -52,6 +54,11 @@ export class ScaleTonic {
 
 	public static enharmonicOfTonic(tonic: string): string | undefined {
 		return this.Enharmonic[this.indexOfTonic(tonic)];
+	}
+
+	public static isWithin(range: ScaleTonicRange, tonic: string): boolean {
+		let index = this.indexOfTonic(tonic);
+		return range.upper <= index && index <= range.lower;
 	}
 
 }

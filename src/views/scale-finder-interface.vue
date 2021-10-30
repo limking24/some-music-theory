@@ -2,8 +2,8 @@
 	<div>
 		<h1>Scale Finder</h1>
 		<chroma-picker :button-label="'Find'" @picked="showResults" />
-		<!-- <scale-finder v-if="chroma.value" :chroma="chroma.value" /> -->
-		<scale-finder :chroma="chroma.value" />
+		<scale-finder v-if="chroma.value" :chroma="chroma.value" />
+		<p v-else class="please-select">Please select between 3 to 10 notes (inclusive) and then click Find.</p>
 	</div>
 </template>
 
@@ -39,12 +39,10 @@ export default class ScaleFinderInterface extends Vue {
 </script>
 
 <style scoped>
-td:first-child,
-td:nth-child(2) {
-	font-weight: bold;
-}
-
-td {
-	width: 50px;
+.please-select {
+	margin: 0;
+	padding-top: 25px;
+	text-align: center;
+	font-size: 103%;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div class="scale-detector">
+	<div class="scale-detector" :class="{hidden: loading}">
 		<div class="total-no-of-scales" :class="{'none': totalNoOfScales === 0}">{{noOfScales(totalNoOfScales)}} found.</div>
 		<table class="matched-scales" v-for="(group, supertype) in results" :key="supertype" :style="{order: Number(supertype)}">
 			<thead>
@@ -51,6 +51,9 @@
 
 <script lang="ts">
 import { onStop, SamplerFacade } from '@/audio/sampler-facade';
+import { ScaleDao } from '@/data-access/scale-dao';
+import { toKey } from '@/data/data';
+import { ScaleTonicRange } from '@/data/scale-type';
 import { asDemonstration } from '@/functional/scale';
 import { rotateRight } from '@/functional/string';
 import { Chroma } from '@/models/chroma';
@@ -59,6 +62,7 @@ import { ScaleSupertype } from '@/models/scale-supertype';
 import { ScaleTonic } from '@/models/scale-tonic';
 import { ScaleType } from '@tonaljs/tonal';
 import pluralize from 'pluralize';
+import { Inject } from 'typescript-ioc';
 import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import SamplerPlayButton from './sampler-play-button.vue';
@@ -70,19 +74,17 @@ import SamplerPlayButton from './sampler-play-button.vue';
 })
 export default class ScaleFinder extends Vue {
 
-	readonly Tonics = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+	readonly Tonics = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']; // Do not change order
 
 	@Prop({required: true})
 	chroma!: Chroma;
 
-	results: Record<number, MatchedScaleGroup> = {
-		5: new MatchedScaleGroup([new MatchedScale('Bb', 'A#', 'mixolydian pentatonic')]),
-		7: new MatchedScaleGroup([
-			new MatchedScale('C', 'B#', 'major'),
-			new MatchedScale('C', 'B#', 'major #5'),
-			new MatchedScale('A', undefined, 'aeolian')
-		])
-	};
+	@Inject
+	scaleDao!: ScaleDao;
+
+	results: Record<number, MatchedScaleGroup> = {};
+
+	loading = false;
 
 	get totalNoOfScales(): number {
 		return Object
@@ -102,33 +104,42 @@ export default class ScaleFinder extends Vue {
 		return ScaleSupertype.toString(Number(supertype));
 	}
 
-	@Watch('chroma', /*{immediate: true}*/)
-	showResults(chroma: Chroma): void {
+	@Watch('chroma', {immediate: true})
+	async showResults(chroma: Chroma): Promise<void> {
+		this.loading = true;
 		let regex = new RegExp(chroma.value.reduce((p, flag) => p + (flag ? '1' : '.'), ''));
 		let noOfNotes = chroma.noOfNotes;
-		this.results = ScaleType
-						.all()
-						.reduce((results, scale) => {
-							let supertype = scale.intervals.length;
-							if (noOfNotes <= supertype && supertype < ScaleSupertype.Chromatic) {
-								for (let x = 0; x < 12; x++) {
-									if (regex.test(rotateRight(scale.chroma, x))) {
-										if (!(supertype in results)) {
-											results[supertype] = new MatchedScaleGroup([]);
-										}
-										results[supertype].scales.push(new MatchedScale(
-											this.Tonics[x], 
-											ScaleTonic.enharmonicOfTonic(this.Tonics[x]),
-											scale.name
-										));
-									}
-								}
-							}
-							return results;
-						}, {} as Record<number, MatchedScaleGroup>);
+		let matched: Record<number, MatchedScaleGroup> = {};
+		for (let scale of ScaleType.all()) {
+			let supertype = scale.intervals.length;
+			if (noOfNotes <= supertype && supertype < ScaleSupertype.Chromatic) {
+				let range: ScaleTonicRange | undefined;
+				for (let x = 0; x < 12; x++) {
+					if (regex.test(rotateRight(scale.chroma, x))) {
+						if (!(supertype in matched)) {
+							matched[supertype] = new MatchedScaleGroup([]);
+						}
+						if (range === undefined) {
+							let key = toKey(scale.name);
+							range = (await this.scaleDao.get(key)).get().tonicRange;
+						}
+						let tonic = this.Tonics[x];
+						let tonicFirst = ScaleTonic.isWithin(range, tonic);
+						let alterative = ScaleTonic.enharmonicOfTonic(tonic);
+						matched[supertype].scales.push(new MatchedScale(
+							tonicFirst ? tonic : alterative!, 
+							tonicFirst ? alterative : tonic,
+							scale.name
+						));
+					}
+				}
+			}
+		}
 		Object
-			.values(this.results)
+			.values(matched)
 			.forEach(group => group.scales.sort((a, b) => a.name.localeCompare(b.name)));
+		this.results = matched;
+		this.loading = false;
 	}
 
 	play(sampler: SamplerFacade, onStop: onStop, notes: string[]): void {
