@@ -1,5 +1,6 @@
 export interface ScaleType {
 	readonly key: string;
+	readonly ref: string;
 	readonly display: string;
 	readonly aliasKeys: string[];
 	readonly supertype: number;

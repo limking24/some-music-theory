@@ -43,6 +43,7 @@ export default class App extends Vue {
 }
 
 body {
+	padding: 30px 0;
 	background: linear-gradient(
 		340deg, 
 		rgb(240, 240, 240) 0%, 

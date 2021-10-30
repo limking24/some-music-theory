@@ -84,26 +84,26 @@ export default class ScaleFinder extends Vue {
 		])
 	};
 
-	public get totalNoOfScales(): number {
+	get totalNoOfScales(): number {
 		return Object
 				.values(this.results)
 				.reduce((total, group) => group.scales.length + total, 0);
 	}
 
-	public noOfScales(number: number): string {
+	noOfScales(number: number): string {
 		return `${number} ${pluralize('scale', number)}`;
 	}
 
-	public pluralize(word: string, count: number): string {
+	pluralize(word: string, count: number): string {
 		return pluralize(word, count);
 	}
 
-	public displaySupertype(supertype: string): string {
+	displaySupertype(supertype: string): string {
 		return ScaleSupertype.toString(Number(supertype));
 	}
 
 	@Watch('chroma', /*{immediate: true}*/)
-	public showResults(chroma: Chroma): void {
+	showResults(chroma: Chroma): void {
 		let regex = new RegExp(chroma.value.reduce((p, flag) => p + (flag ? '1' : '.'), ''));
 		let noOfNotes = chroma.noOfNotes;
 		this.results = ScaleType

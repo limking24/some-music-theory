@@ -1,24 +1,23 @@
-import { ScaleTonicRange, ScaleType } from '@/data/scale-type';
-import { TonalJsScaleRef } from '@/data/tonaljs-scale-ref';
+import { ScaleTonicRange, ScaleType as ScaleTypeData } from '@/data/scale-type';
 import { toTitleCase } from '@/functional/string';
+import { ScaleType } from '@tonaljs/scale-type';
 import { ScaleType as ScaleTypeUtil } from '@tonaljs/tonal';
 
-export interface Data {
-	scaleTypes: ScaleType[];
-	tonalJsScaleRefs: TonalJsScaleRef[];
+// Object.assign(ScaleTypeUtil.get('whole tone').intervals, ['1P', '2M', '3M', '4A', '5A', '6A']);
+Object.assign(ScaleTypeUtil.get('augmented').intervals, ['1P', '3m', '3M', '5P', '5A', '7M']);
+Object.assign(ScaleTypeUtil.get('altered').intervals, ['1P', '2m', '3m', '4d', '5d', '6m', '7m']);
+patch(ScaleTypeUtil.get('whole tone pentatonic'), ['1P', '2M', '3M', '4A', '5A'], '101010101000');
+
+function patch(scale: ScaleType, intervals: string[], chroma: string): void {
+	Object.assign(scale.intervals, intervals);
+	Object.defineProperty(scale, 'chroma', { value: chroma, writable: false });
+	Object.defineProperty(scale, 'normalized', { value: chroma, writable: false });
 }
 
-interface TonalJsScaleRefToDataMap {
-	[key: string]: {
-		tonicRange: ScaleTonicRange;
-	};
-}
-
-export function create(): Data {
+export function create(): ScaleTypeData[] {
 	const replacement = { ' ': '-', '\'': '', '#': '' } as { [key: string]: string };
-	let scaleTypes = new Array<ScaleType>();
-	let tonalJsScaleRefs = new Array<TonalJsScaleRef>();
-	let refToDataMap = createRefToDatMap();
+	let scaleTypes = new Array<ScaleTypeData>();
+	let tonicRanges = createTonicRanges();
 	ScaleTypeUtil
 		.all()
 		.forEach(scale => {
@@ -29,108 +28,145 @@ export function create(): Data {
 				let display = toTitleCase(names[i]);
 				let aliasKeys = keys.filter(k => k !== key);
 				let supertype = scale.intervals.length;
-				let tonicRange = refToDataMap[ref].tonicRange;
-				scaleTypes.push({ key, display, aliasKeys, supertype, tonicRange });
-				tonalJsScaleRefs.push({ key, ref });
+				let tonicRange = tonicRanges[key];
+				scaleTypes.push({ key, ref, display, aliasKeys, supertype, tonicRange });
 			});
 		});
-	return { scaleTypes: scaleTypes, tonalJsScaleRefs };
+	return scaleTypes;
 }
 
-function createRefToDatMap(): TonalJsScaleRefToDataMap {
+function createTonicRanges(): Record<string, ScaleTonicRange> {
 	return {
-		'aeolian':						{ tonicRange: { upper: 5, lower: 17} },
-		'altered':						{ tonicRange: { upper: 3, lower: 15} },
-		'augmented heptatonic':			{ tonicRange: { upper: 1, lower: 12} },
-		'augmented':					{ tonicRange: { upper: 0, lower: 11} },
-		'balinese':						{ tonicRange: { upper: 5, lower: 16} },
-		'bebop locrian':				{ tonicRange: { upper: 7, lower: 18} },
-		'bebop major':					{ tonicRange: { upper: 1, lower: 12} },
-		'bebop minor':					{ tonicRange: { upper: 4, lower: 15} },
-		'bebop':						{ tonicRange: { upper: 3, lower: 14} },
-		'chromatic':					{ tonicRange: { upper: 5, lower: 16} },
-		'composite blues':				{ tonicRange: { upper: 5, lower: 16} },
-		'diminished':					{ tonicRange: { upper: 5, lower: 16} },
-		'dorian #4':					{ tonicRange: { upper: 3, lower: 14} },
-		'dorian b2':					{ tonicRange: { upper: 5, lower: 17} },
-		'dorian':						{ tonicRange: { upper: 4, lower: 16} },
-		'double harmonic lydian':		{ tonicRange: { upper: 4, lower: 15} },
-		'double harmonic major':		{ tonicRange: { upper: 4, lower: 16} },
-		'egyptian':						{ tonicRange: { upper: 4, lower: 16} },
-		'enigmatic':					{ tonicRange: { upper: 5, lower: 16} },
-		'flamenco':						{ tonicRange: { upper: 4, lower: 16} },
-		'flat six pentatonic':			{ tonicRange: { upper: 4, lower: 16} },
-		'flat three pentatonic':		{ tonicRange: { upper: 4, lower: 16} },
-		'half-whole diminished':		{ tonicRange: { upper: 4, lower: 15} },
-		'harmonic major':				{ tonicRange: { upper: 4, lower: 15} },
-		'harmonic minor':				{ tonicRange: { upper: 4, lower: 15} },
-		'hirajoshi':					{ tonicRange: { upper: 5, lower: 17} },
-		'hungarian major':				{ tonicRange: { upper: 1, lower: 13} },
-		'hungarian minor':				{ tonicRange: { upper: 3, lower: 15} },
-		'ichikosucho':					{ tonicRange: { upper: 4, lower: 15} },
-		'in-sen':						{ tonicRange: { upper: 6, lower: 18} },
-		'ionian pentatonic':			{ tonicRange: { upper: 2, lower: 14} },
-		'iwato':						{ tonicRange: { upper: 7, lower: 19} },
-		'kafi raga':					{ tonicRange: { upper: 3, lower: 15} },
-		'kumoijoshi':					{ tonicRange: { upper: 6, lower: 18} },
-		'leading whole tone':			{ tonicRange: { upper: 1, lower: 13} },
-		'locrian #2':					{ tonicRange: { upper: 6, lower: 18} },
-		'locrian 6':					{ tonicRange: { upper: 6, lower: 17} },
-		'locrian major':				{ tonicRange: { upper: 5, lower: 17} },
-		'locrian pentatonic':			{ tonicRange: { upper: 7, lower: 19} },
-		'locrian':						{ tonicRange: { upper: 7, lower: 19} },
-		'lydian #5P pentatonic':		{ tonicRange: { upper: 0, lower: 12} },
-		'lydian #9':					{ tonicRange: { upper: 0, lower: 11} },
-		'lydian augmented':				{ tonicRange: { upper: 0, lower: 12} },
-		'lydian diminished':			{ tonicRange: { upper: 3, lower: 14} },
-		'lydian dominant pentatonic':	{ tonicRange: { upper: 2, lower: 14} },
-		'lydian dominant':				{ tonicRange: { upper: 2, lower: 14} },
-		'lydian minor':					{ tonicRange: { upper: 3, lower: 15} },
-		'lydian pentatonic':			{ tonicRange: { upper: 1, lower: 13} },
-		'lydian':						{ tonicRange: { upper: 1, lower: 13} },
-		'major augmented':				{ tonicRange: { upper: 1, lower: 12} },
-		'major blues':					{ tonicRange: { upper: 3, lower: 15} },
-		'major pentatonic':				{ tonicRange: { upper: 2, lower: 14} },
-		'major':						{ tonicRange: { upper: 2, lower: 14} },
-		'malkos raga':					{ tonicRange: { upper: 6, lower: 18} },
-		'melodic minor':				{ tonicRange: { upper: 3, lower: 15} },
-		'messiaen\'s mode #3':			{ tonicRange: { upper: 3, lower: 15} },
-		'messiaen\'s mode #4':			{ tonicRange: { upper: 4, lower: 15} },
-		'messiaen\'s mode #5':			{ tonicRange: { upper: 3, lower: 14} },
-		'messiaen\'s mode #6':			{ tonicRange: { upper: 0, lower: 12} },
-		'messiaen\'s mode #7':			{ tonicRange: { upper: 4, lower: 15} },
-		'minor #7M pentatonic':			{ tonicRange: { upper: 3, lower: 15} },
-		'minor bebop':					{ tonicRange: { upper: 4, lower: 15} },
-		'minor blues':					{ tonicRange: { upper: 6, lower: 18} },
-		'minor hexatonic':				{ tonicRange: { upper: 3, lower: 15} },
-		'minor pentatonic':				{ tonicRange: { upper: 5, lower: 17} },
-		'minor six diminished':			{ tonicRange: { upper: 4, lower: 15} },
-		'minor six pentatonic':			{ tonicRange: { upper: 4, lower: 16} },
-		'mixolydian b6':				{ tonicRange: { upper: 4, lower: 16} },
-		'mixolydian pentatonic':		{ tonicRange: { upper: 3, lower: 15} },
-		'mixolydian':					{ tonicRange: { upper: 3, lower: 15} },
-		'mystery #1':					{ tonicRange: { upper: 6, lower: 17} },
-		'neopolitan major pentatonic':	{ tonicRange: { upper: 5, lower: 17} },
-		'neopolitan major':				{ tonicRange: { upper: 4, lower: 16} },
-		'oriental':						{ tonicRange: { upper: 5, lower: 17} },
-		'pelog':						{ tonicRange: { upper: 6, lower: 18} },
-		'persian':						{ tonicRange: { upper: 5, lower: 16} },
-		'phrygian dominant':			{ tonicRange: { upper: 5, lower: 16} },
-		'phrygian':						{ tonicRange: { upper: 6, lower: 18} },
-		'piongio':						{ tonicRange: { upper: 4, lower: 15} },
-		'prometheus neopolitan':		{ tonicRange: { upper: 3, lower: 15} },
-		'prometheus':					{ tonicRange: { upper: 2, lower: 14} },
-		'purvi raga':					{ tonicRange: { upper: 4, lower: 15} },
-		'ritusen':						{ tonicRange: { upper: 3, lower: 15} },
-		'romanian minor':				{ tonicRange: { upper: 6, lower: 17} },
-		'scriabin':						{ tonicRange: { upper: 5, lower: 16} },
-		'six tone symmetric':			{ tonicRange: { upper: 3, lower: 14} },
-		'spanish heptatonic':			{ tonicRange: { upper: 5, lower: 16} },
-		'super locrian pentatonic':		{ tonicRange: { upper: 8, lower: 20} },
-		'todi raga':					{ tonicRange: { upper: 4, lower: 15} },
-		'ultralocrian':					{ tonicRange: { upper: 9, lower: 20} },
-		'vietnamese 1':					{ tonicRange: { upper: 6, lower: 17} },
-		'whole tone pentatonic':		{ tonicRange: { upper: 6, lower: 17} },
-		'whole tone':					{ tonicRange: { upper: 1, lower: 13} }
+		'aeolian-b5':								{ upper: 6, lower: 17 },
+		'aeolian':									{ upper: 5, lower: 17 },
+		'altered-dorian':							{ upper: 4, lower: 15 },
+		'altered':									{ upper: 8, lower: 19 },
+		'arabian':									{ upper: 7, lower: 18 },
+		'augmented-heptatonic':						{ upper: 2, lower: 13 },
+		'augmented':								{ upper: 2, lower: 14 },
+		'balinese':									{ upper: 6, lower: 17 },
+		'bebop-locrian':							{ upper: 7, lower: 19 },
+		'bebop-major':								{ upper: 2, lower: 14 },
+		'bebop-minor':								{ upper: 4, lower: 16 },
+		'bebop':									{ upper: 2, lower: 14 },
+		'blues':									{ upper: 6, lower: 17 },
+		'chinese':									{ upper: 1, lower: 13 },
+		'chromatic':								{ upper: 0, lower: 20 },
+		'composite-blues':							{ upper: 5, lower: 16 },
+		'diminished-whole-tone':					{ upper: 8, lower: 19 },
+		'diminished':								{ upper: 5, lower: 16 },
+		'dominant-diminished':						{ upper: 4, lower: 15 },
+		'dominant':									{ upper: 3, lower: 15 },
+		'dorian-4':									{ upper: 4, lower: 15 },
+		'dorian-b2':								{ upper: 5, lower: 16 },
+		'dorian':									{ upper: 4, lower: 16 },
+		'double-harmonic-lydian':					{ upper: 2, lower: 13 },
+		'double-harmonic-major':					{ upper: 3, lower: 14 },
+		'egyptian':									{ upper: 4, lower: 16 },
+		'enigmatic':								{ upper: 7, lower: 18 },
+		'flamenco':									{ upper: 6, lower: 17 },
+		'flat-six-pentatonic':						{ upper: 2, lower: 14 },
+		'flat-three-pentatonic':					{ upper: 2, lower: 14 },
+		'gypsy':									{ upper: 3, lower: 14 },
+		'half-diminished':							{ upper: 6, lower: 18 },
+		'half-whole-diminished':					{ upper: 4, lower: 15 },
+		'harmonic-major':							{ upper: 3, lower: 14 },
+		'harmonic-minor':							{ upper: 5, lower: 16 },
+		'hindu':									{ upper: 4, lower: 16 },
+		'hirajoshi':								{ upper: 5, lower: 17 },
+		'hungarian-major':							{ upper: 1, lower: 13 },
+		'hungarian-minor':							{ upper: 3, lower: 15 },
+		'ichikosucho':								{ upper: 3, lower: 14 },
+		'in-sen':									{ upper: 6, lower: 18 },
+		'indian':									{ upper: 3, lower: 15 },
+		'ionian-5':									{ upper: 2, lower: 13 },
+		'ionian-augmented':							{ upper: 2, lower: 13 },
+		'ionian-pentatonic':						{ upper: 2, lower: 14 },
+		'ionian':									{ upper: 2, lower: 14 },
+		'iwato':									{ upper: 7, lower: 19 },
+		'kafi-raga':								{ upper: 3, lower: 15 },
+		'kumoi':									{ upper: 4, lower: 16 },
+		'kumoijoshi':								{ upper: 6, lower: 18 },
+		'leading-whole-tone':						{ upper: 1, lower: 13 },
+		'locrian-2':								{ upper: 7, lower: 18 },
+		'locrian-6':								{ upper: 7, lower: 18 },
+		'locrian-major':							{ upper: 7, lower: 18 },
+		'locrian-natural-6':						{ upper: 7, lower: 18 },
+		'locrian-pentatonic':						{ upper: 7, lower: 19 },
+		'locrian-sharp-6':							{ upper: 7, lower: 18 },
+		'locrian':									{ upper: 7, lower: 19 },
+		'lydian-5p-pentatonic':						{ upper: 1, lower: 12 },
+		'lydian-9':									{ upper: 1, lower: 12 },
+		'lydian-augmented':							{ upper: 1, lower: 12 },
+		'lydian-b7':								{ upper: 2, lower: 13 },
+		'lydian-diminished':						{ upper: 2, lower: 13 },
+		'lydian-dominant-pentatonic':				{ upper: 2, lower: 13 },
+		'lydian-dominant':							{ upper: 2, lower: 13 },
+		'lydian-minor':								{ upper: 2, lower: 13 },
+		'lydian-pentatonic':						{ upper: 1, lower: 13 },
+		'lydian':									{ upper: 1, lower: 13 },
+		'major-5':									{ upper: 2, lower: 13 },
+		'major-augmented':							{ upper: 2, lower: 13 },
+		'major-blues':								{ upper: 3, lower: 14 },
+		'major-pentatonic':							{ upper: 2, lower: 14 },
+		'major':									{ upper: 2, lower: 14 },
+		'malkos-raga':								{ upper: 6, lower: 18 },
+		'melodic-minor-fifth-mode':					{ upper: 5, lower: 16 },
+		'melodic-minor-second-mode':				{ upper: 5, lower: 17 },
+		'melodic-minor':							{ upper: 5, lower: 16 },
+		'messiaens-mode-1':							{ upper: 1, lower: 14 },
+		'messiaens-mode-2':							{ upper: 4, lower: 15 },
+		'messiaens-mode-3':							{ upper: 3, lower: 15 },
+		'messiaens-mode-4':							{ upper: 4, lower: 15 },
+		'messiaens-mode-5':							{ upper: 2, lower: 17 },
+		'messiaens-mode-6':							{ upper: 1, lower: 12 },
+		'messiaens-mode-7':							{ upper: 4, lower: 15 },
+		'minor-7m-pentatonic':						{ upper: 5, lower: 16 },
+		'minor-bebop':								{ upper: 5, lower: 16 },
+		'minor-blues':								{ upper: 6, lower: 17 },
+		'minor-hexatonic':							{ upper: 5, lower: 16 },
+		'minor-pentatonic':							{ upper: 5, lower: 17 },
+		'minor-seven-flat-five-pentatonic':			{ upper: 6, lower: 17 },
+		'minor-six-diminished':						{ upper: 4, lower: 15 },
+		'minor-six-pentatonic':						{ upper: 5, lower: 17 },
+		'minor':									{ upper: 5, lower: 17 },
+		'mixolydian-b6':							{ upper: 4, lower: 15 },
+		'mixolydian-pentatonic':					{ upper: 3, lower: 15 },
+		'mixolydian':								{ upper: 3, lower: 15 },
+		'mystery-1':								{ upper: 7, lower: 18 },
+		'neopolitan-major-pentatonic':				{ upper: 4, lower: 18 },
+		'neopolitan-major':							{ upper: 5, lower: 16 },
+		'oriental':									{ upper: 5, lower: 17 },
+		'overtone':									{ upper: 2, lower: 14 },
+		'pelog':									{ upper: 6, lower: 18 },
+		'pentatonic':								{ upper: 2, lower: 14 },
+		'persian':									{ upper: 6, lower: 18 },
+		'phrygian-6':								{ upper: 6, lower: 17 },
+		'phrygian-dominant':						{ upper: 6, lower: 17 },
+		'phrygian-major':							{ upper: 6, lower: 17 },
+		'phrygian':									{ upper: 6, lower: 18 },
+		'piongio':									{ upper: 2, lower: 17 },
+		'pomeroy':									{ upper: 8, lower: 19 },
+		'prometheus-neopolitan':					{ upper: 2, lower: 15 },
+		'prometheus':								{ upper: 2, lower: 14 },
+		'purvi-raga':								{ upper: 4, lower: 15 },
+		'ritusen':									{ upper: 3, lower: 15 },
+		'romanian-minor':							{ upper: 4, lower: 15 },
+		'scriabin':									{ upper: 3, lower: 14 },
+		'six-tone-symmetric':						{ upper: 2, lower: 15 },
+		'spanish-heptatonic':						{ upper: 6, lower: 17 },
+		'spanish':									{ upper: 6, lower: 17 },
+		'super-locrian-pentatonic':					{ upper: 8, lower: 19 },
+		'super-locrian':							{ upper: 8, lower: 19 },
+		'superlocrian-bb7':							{ upper: 8, lower: 19 },
+		'superlocrian-diminished':					{ upper: 8, lower: 19 },
+		'todi-raga':								{ upper: 6, lower: 17 },
+		'ukrainian-dorian':							{ upper: 4, lower: 15 },
+		'ultralocrian':								{ upper: 8, lower: 19 },
+		'vietnamese-1':								{ upper: 4, lower: 19 },
+		'vietnamese-2':								{ upper: 5, lower: 17 },
+		'whole-half-diminished':					{ upper: 5, lower: 16 },
+		'whole-tone-pentatonic':					{ upper: 1, lower: 12 },
+		'whole-tone':								{ upper: 2, lower: 14 }
 	};
 }

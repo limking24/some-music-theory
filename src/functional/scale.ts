@@ -1,3 +1,4 @@
+import { ScaleTonic } from '@/models/scale-tonic';
 import { Scale } from '@tonaljs/tonal';
 
 export interface NoteRange {
@@ -35,6 +36,24 @@ export function getNotesWithin(range: NoteRange): string[] {
 					.map(note => note ? note : '');
 		}
 	return [];
+}
+
+/**
+ * ```
+ * allTonicsNotes('major');
+ * // [
+ * //   ['Fb', 'Gb', 'Abb', 'Bbb', 'Cb', 'Db', 'Eb'],
+ * //   ...
+ * //   ['F', 'G', 'Ab', 'Bb', 'C', 'D', 'E'],
+ * //   ['C', 'D', 'Eb', 'F', 'G', 'A', 'B'], 
+ * //   ['G', 'A', 'Bb', 'C', 'D', 'E', 'F#'],
+ * //   ...
+ * //   ['B#', 'C##', 'D#', 'E#', 'F##', 'G##', 'A##']
+ * // ]
+ * ```
+ */
+export function allTonicsNotes(ref: String): string[][] {
+	return ScaleTonic.Entries.map(entry => Scale.get(`${entry[1]} ${ref}`).notes);
 }
 
 /**
