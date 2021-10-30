@@ -166,6 +166,7 @@ export default class MajorMinorScaleTriadsScore extends Vue {
 }
 
 .scale-name .help-content {
+	font-weight: normal;
 	width: 330px;
 }
 
