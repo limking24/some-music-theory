@@ -162,7 +162,6 @@ export default class MajorMinorScaleTriadsScore extends Vue {
 	font-weight: bold;
 	position: absolute;
 	right: -10px;
-	text-shadow: 2px 1px 5px rgba(0, 0, 0, 0.215);
 	top: 1px;
 }
 
