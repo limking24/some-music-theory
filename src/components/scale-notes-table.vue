@@ -23,7 +23,7 @@
 						dim: row.dim,
 						gradual: row.gradualDim
 					}">
-					<td>({{index}}) {{row.tonic}}</td>
+					<td>{{row.tonic}}</td>
 					<td>{{row.enharmonic}}</td>
 					<td>
 						<sampler-play-button @play="(sampler, onStop) => play(sampler, onStop, row.notes)"/>
