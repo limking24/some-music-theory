@@ -235,4 +235,36 @@ option {
 .help:hover .help-content {
 	visibility: visible;
 }
+
+.striped-table tbody tr:nth-child(even) {
+	background: rgb(245, 245, 245);
+}
+
+.striped-table tbody .highlight-hover,
+.striped-table tbody tr:hover {
+	background: rgb(190, 190, 190) !important;
+}
+
+.striped-table tbody .highlight-click,
+.striped-table tbody .highlight-hover,
+.striped-table tbody tr:hover {
+	transition: background-color 200ms ease;
+}
+
+.striped-table tbody .highlight-click:nth-child(odd) {
+	background: rgb(195, 245, 195) !important;
+}
+
+.striped-table tbody .highlight-click:nth-child(even) {
+	background: rgb(170, 235, 170) !important;
+}
+.striped-table tbody .highlight-click:nth-child(odd).highlight-hover,
+.striped-table tbody .highlight-click:nth-child(odd):hover {
+	background: rgb(160, 225, 160) !important;
+}
+
+.striped-table tbody .highlight-click:nth-child(even).highlight-hover,
+.striped-table tbody .highlight-click:nth-child(even):hover {
+	background: rgb(155, 225, 155) !important;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div class="scale-detector" :class="{hidden: loading}">
 		<div class="total-no-of-scales" :class="{'none': totalNoOfScales === 0}">{{noOfScales(totalNoOfScales)}} found.</div>
-		<table class="matched-scales" v-for="(group, supertype) in results" :key="supertype" :style="{order: Number(supertype)}">
+		<table class="matched-scales striped-table" v-for="(group, supertype) in results" :key="supertype" :style="{order: Number(supertype)}">
 			<thead>
 				<tr @click="group.toggleCollapsed()">
 					<td class="collapse-expand">[{{group.collapsed ? '+' : '−'}}]</td>
@@ -23,7 +23,10 @@
 				</tr>
 			</thead>
 			<tbody :class="{hidden: group.collapsed}">
-				<tr v-for="scale in group.scales" :key="scale" @click="scale.toggleHighlight()" :class="{highlight: scale.highlight}">
+				<tr v-for="scale in group.scales" 
+					:key="scale" 
+					@click="scale.toggleHighlight()" 
+					:class="{'highlight-click': scale.highlight}">
 					<td></td>
 					<td class="scale">
 						<span :class="{'tonic-option': scale.enharmonic}" @click.stop="scale.showAlternative()" >
@@ -216,22 +219,6 @@ thead td.supertype-no-of-scales {
 	font-size: 95%;
 	padding-right: 25px;
 	text-align: right;
-}
-
-tbody tr:nth-child(even) {
-	background: rgb(245, 245, 245);
-}
-
-tbody tr:hover {
-	background: rgb(230, 230, 230);
-}
-
-tbody tr.highlight:nth-child(odd) {
-	background: rgb(200, 200, 200);
-}
-
-tbody tr.highlight:nth-child(even) {
-	background: rgb(190, 190, 190);
 }
 
 tbody td {

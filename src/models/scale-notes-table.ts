@@ -7,7 +7,8 @@ export class Row {
 	public constructor(public readonly tonicIndex: number,
 						public readonly notes: string[],
 						public readonly range: ScaleTonicRange,
-						public highlight = false) {}
+						public hovered = false,
+						public clicked = false) {}
 
 	public get tonic(): string {
 		return ScaleTonic.tonicOfIndex(this.tonicIndex);
@@ -40,8 +41,12 @@ export class Row {
 				this.tonicIndex - 1 == this.range.lower
 	}
 
-	public toggleHighlight(): void {
-		this.highlight = !this.highlight;
+	public toggleHovered(): void {
+		this.hovered = !this.hovered;
+	}
+
+	public toggleClicked(): void {
+		this.clicked = !this.clicked;
 	}
 
 }
@@ -72,11 +77,11 @@ export class Table {
 	* 
 	* @param index row index of a particular scale
 	*/
-	public toggleHighlight(index: number): void {
-		this.rows[index].toggleHighlight();
+	public toggleHovered(index: number): void {
+		this.rows[index].toggleHovered();
 		let enharmonicIndex = this.rows[index].enharmonicIndex;
 		if (enharmonicIndex > -1) {
-			this.rows[enharmonicIndex].toggleHighlight();
+			this.rows[enharmonicIndex].toggleHovered();
 		}
 	}
 

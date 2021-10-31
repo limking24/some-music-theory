@@ -4,7 +4,7 @@
 		<div v-if="table.hasAliases" class="alias">
 			{{alias}}
 		</div>
-		<table>
+		<table class="striped-table">
 			<thead>
 				<tr>
 					<td>Tonic</td>
@@ -16,12 +16,14 @@
 			</thead>
 			<tbody>
 				<tr v-for="(row, index) in table.rows" :key="index"
-					@mouseover="table.toggleHighlight(index)"
-					@mouseout="table.toggleHighlight(index)"
+					@mouseover="table.toggleHovered(index)"
+					@mouseout="table.toggleHovered(index)"
+					@click="row.toggleClicked()"
 					:class="{
-						highlight: row.highlight,
-						dim: row.dim,
-						gradual: row.gradualDim
+						'highlight-hover': row.hovered,
+						'highlight-click': row.clicked,
+						'dim': row.dim,
+						'gradual': row.gradualDim
 					}">
 					<td>{{row.tonic}}</td>
 					<td>{{row.enharmonic}}</td>
@@ -99,10 +101,6 @@ h2 {
 	margin-bottom: 25px;
 }
 
-.highlight {
-	background: rgb(180, 180, 180) !important;
-}
-
 .dim {
 	opacity: 0.45;
 }
@@ -122,11 +120,6 @@ thead td {
 	font-weight: bold;
 	font-size: 120%;
 	border-bottom: 2px solid #2c3e50;
-}
-
-/* Even row */
-tbody tr:nth-child(even) {
-	background: rgb(245, 245, 245);
 }
 
 /* Tonic & Enharmonic columns */
