@@ -4,7 +4,7 @@ import MajorMinorScaleTriadsSearch from '@/views/major-minor-scale-triads-search
 import NotFound from '@/views/not-found.vue';
 import ScaleFinderInterface from '@/views/scale-finder-interface.vue';
 import ScaleNotesTableSearch from '@/views/scale-notes-table-search.vue';
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -61,7 +61,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-	history: createWebHistory(process.env.BASE_URL),
+	history: createWebHashHistory(process.env.BASE_URL),
 	routes
 });
 
