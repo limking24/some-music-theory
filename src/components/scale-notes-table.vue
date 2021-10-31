@@ -1,6 +1,16 @@
 <template>
 	<div v-if="table.scaleName">
-		<h2>{{table.scaleName}}</h2>
+		<div class="scale-name">
+			<h2>{{table.scaleName}}</h2>
+			<div class="help">
+				<div class="help-content">
+					<ul>
+						<li>Click on a row to highlight/unhighlight it.</li>
+						<li>Click on ▶ to play the scale notes; ◼ to stop.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 		<div v-if="table.hasAliases" class="alias">
 			{{alias}}
 		</div>
@@ -92,8 +102,28 @@ export default class ScaleNotesTable extends Vue {
 </script>
 
 <style scoped>
-h2 {
-	margin: 50px 0 5px;
+.scale-name {
+	display: inline-block;
+	margin-top: 50px;
+	position: relative;
+	width: auto;
+}
+
+.scale-name h2 {
+	display: inline-block;
+	margin: 0;
+}
+
+.scale-name .help {
+	font-weight: bold;
+	position: absolute;
+	right: -10px;
+	top: 1px;
+}
+
+.scale-name .help-content {
+	font-weight: normal;
+	width: 365px;
 }
 
 .alias {
