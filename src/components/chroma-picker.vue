@@ -116,6 +116,7 @@ export default class ChromaPicker extends Vue {
 	padding-bottom: 12px;
 	position: relative;
 	text-align: center;
+	transition: background-color 200ms ease-out;
 }
 
 .white.key {

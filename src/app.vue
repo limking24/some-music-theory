@@ -242,29 +242,29 @@ option {
 
 .striped-table tbody .highlight-hover,
 .striped-table tbody tr:hover {
-	background: rgb(190, 190, 190) !important;
+	background: rgb(190, 190, 190);
 }
 
 .striped-table tbody .highlight-click,
 .striped-table tbody .highlight-hover,
 .striped-table tbody tr:hover {
-	transition: background-color 200ms ease;
+	transition: background-color 200ms ease-out;
 }
 
 .striped-table tbody .highlight-click:nth-child(odd) {
-	background: rgb(195, 245, 195) !important;
+	background: rgb(195, 245, 195);
 }
 
 .striped-table tbody .highlight-click:nth-child(even) {
-	background: rgb(170, 235, 170) !important;
+	background: rgb(170, 235, 170);
 }
 .striped-table tbody .highlight-click:nth-child(odd).highlight-hover,
 .striped-table tbody .highlight-click:nth-child(odd):hover {
-	background: rgb(160, 225, 160) !important;
+	background: rgb(160, 225, 160);
 }
 
 .striped-table tbody .highlight-click:nth-child(even).highlight-hover,
 .striped-table tbody .highlight-click:nth-child(even):hover {
-	background: rgb(155, 225, 155) !important;
+	background: rgb(155, 225, 155);
 }
 </style>
