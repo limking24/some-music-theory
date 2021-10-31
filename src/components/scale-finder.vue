@@ -175,7 +175,7 @@ table {
 	border-collapse: collapse;
 	margin-top: 20px;
 	margin-bottom: 15px;
-	width: 850px;
+	width: 865px;
 }
 
 thead tr {
@@ -231,7 +231,7 @@ tbody td:last-child {
 
 tbody td.scale {
 	padding-left: 2px;
-	width: 230px;
+	width: 245px;
 }
 
 tbody td.play-button {
