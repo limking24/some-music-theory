@@ -240,7 +240,7 @@ option {
 	background: rgb(245, 245, 245);
 }
 
-.striped-table tbody .highlight-hover,
+.striped-table tbody tr.highlight-hover,
 .striped-table tbody tr:hover {
 	background: rgb(190, 190, 190);
 }
