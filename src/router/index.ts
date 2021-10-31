@@ -1,44 +1,68 @@
+import { MajorMinorScale } from '@/models/major-minor-scale';
+import Home from '@/views/home.vue';
+import MajorMinorScaleTriadsSearch from '@/views/major-minor-scale-triads-search.vue';
+import NotFound from '@/views/not-found.vue';
+import ScaleFinderInterface from '@/views/scale-finder-interface.vue';
 import ScaleNotesTableSearch from '@/views/scale-notes-table-search.vue';
-import ScaleTriadsSearch from '@/views/scale-triads-search.vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/',
-		name: 'Home',
-		redirect: to => ({ path: '/scale-triads' })
+		name: 'home',
+		component: Home
+	},
+	{
+		path: '/scale-finder',
+		component: ScaleFinderInterface
 	},
 	{
 		path: '/scale-notes-table',
-		redirect: to => ({ path: '/scale-notes-table/major' })
-	},
-	{
-		path: '/scale-notes-table/:scaleNameKey',
-		name: 'Scale Notes Table',
 		component: ScaleNotesTableSearch,
 		props: route => ({
-			scaleNameKey: decodeURIComponent(route.params.scaleNameKey as string),
-		})
+			scaleType: route.params.scaleType as string,
+		}),
+		children: [
+			{
+				path: '',
+				redirect: '/scale-notes-table/major'
+			},
+			{
+				path: ':scaleType',
+				component: ScaleNotesTableSearch
+			}
+		]
 	},
 	{
 		path: '/scale-triads',
-		redirect: to => ({ path: '/scale-triads/major/ionian/c' })
+		component: MajorMinorScaleTriadsSearch,
+		props: route => ({
+			scale: {
+				type: (route.params.type as string).toLowerCase(),
+				subtype: (route.params.subtype as string).toLowerCase(),
+				tonic: (route.params.tonic as string).toLowerCase()
+			} as MajorMinorScale
+		}),
+		children: [
+			{
+				path: '',
+				redirect: '/scale-triads/major/ionian/c'
+			},
+			{
+				path: ':type/:subtype/:tonic',
+				component: ScaleNotesTableSearch
+			}
+		]
 	},
 	{
-		path: '/scale-triads/:typeKey/:modeKey/:tonicKey',
-		name: 'Scale Triads',
-		component: ScaleTriadsSearch,
-		props: route => ({
-			typeKey: route.params.typeKey,
-			modeKey: route.params.modeKey,
-			tonicKey: route.params.tonicKey
-		})
+		path: "/:catchAll(.*)",
+		component: NotFound
 	}
 ]
 
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes
-})
+});
 
-export default router
+export default router;

@@ -1,31 +1,47 @@
 <template>
-	<div>
-		<h2>{{scaleName.display}}</h2>
-		<div v-if="aliases" class="alias">
-			Alias<template v-if="scaleName.aliasKeys.length > 1">es</template>: 
-			{{aliases}}
+	<div v-if="table.scaleName">
+		<div class="scale-name">
+			<h2>{{table.scaleName}}</h2>
+			<div class="help">
+				<div class="help-content">
+					<ul>
+						<li>Click on a row to highlight/unhighlight it.</li>
+						<li>Click on ▶ to play the scale notes; ◼ to stop.</li>
+					</ul>
+				</div>
+			</div>
 		</div>
-		<table>
+		<div v-if="table.hasAliases" class="alias">
+			{{alias}}
+		</div>
+		<table class="striped-table">
 			<thead>
 				<tr>
 					<td>Tonic</td>
 					<td>Enharmonic</td>
-					<td v-for="(note, index) in allScales[0].notes" :key="note">{{index + 1}}</td>
+					<td></td>
+					<td v-for="index in table.notesPerOctave" :key="index">{{index}}</td>
 					<td>Accidentals</td>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="(scale, index) in allScales" :key="scale"
-					@mouseover="toggleHighlight(index)"
-					@mouseout="toggleHighlight(index)"
+				<tr v-for="(row, index) in table.rows" :key="index"
+					@mouseover="table.toggleHovered(index)"
+					@mouseout="table.toggleHovered(index)"
+					@click="row.toggleClicked()"
 					:class="{
-						highlight: highlight[index],
-						dim: tonicRange.outOfRange(index)
+						'highlight-hover': row.hovered,
+						'highlight-click': row.clicked,
+						'dim': row.dim,
+						'gradual': row.gradualDim
 					}">
-					<td>{{scale.tonic}}</td>
-					<td>{{enharmonic[index]}}</td>
-					<td v-for="note in scale.notes" :key="note">{{note}}</td>
-					<td>{{accidentals(scale.notes)}}</td>
+					<td>{{row.tonic}}</td>
+					<td>{{row.enharmonic}}</td>
+					<td>
+						<sampler-play-button @play="(sampler, onStop) => play(sampler, onStop, row.notes)"/>
+					</td>
+					<td v-for="note in row.notes" :key="note">{{note}}</td>
+					<td>{{row.accidentals}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -33,71 +49,81 @@
 </template>
 
 <script lang="ts">
-import { TonicRange } from '@/models/scale';
-import { ScaleName, ScaleNameDictionary } from '@/models/scale-name';
-import { ScaleTonicRange, ScaleTonicRangeDictionary } from '@/models/scale-tonic-range';
-import { Scale as ScaleInfo } from '@tonaljs/scale';
-import { Scale as ScaleUtil } from '@tonaljs/tonal';
+import { onStop, SamplerFacade } from '@/audio/sampler-facade';
+import { ScaleDao } from '@/data-access/scale-dao';
+import { allTonicsNotes, asDemonstration } from '@/functional/scale';
+import { Row, Table } from '@/models/scale-notes-table';
+import pluralize from 'pluralize';
 import { Inject } from 'typescript-ioc';
-import { Vue } from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import SamplerPlayButton from './sampler-play-button.vue';
 
+@Options({
+	components: {
+		SamplerPlayButton
+	}
+})
 export default class ScaleNotesTable extends Vue {
 
-	@Inject
-	nameDictionary!: ScaleNameDictionary;
+	@Prop({require: true})
+	scaleType!: string;
 
 	@Inject
-	rangeDictionary!: ScaleTonicRangeDictionary;
+	scaleDao!: ScaleDao;
 
-	@Prop({required: true})
-	scaleName!: ScaleName;
+	table = {} as Table;
 
-	tonics = Object.values(TonicRange);
-
-	enharmonic = ['E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#', '-', '-', '-', 'Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C'];
-
-	highlight = new Array<boolean>(this.tonics.length);
-
-	get aliases(): string {
-		return this.nameDictionary
-					.aliasesOf(this.scaleName)
-					.map(alias => alias.display)
-					.join(', ');
+	get alias(): string {
+		return `${pluralize('Alias', this.table.numberOfAliases)}: ${this.table.aliases}`;
 	}
 
-	get tonicRange(): ScaleTonicRange {
-		return this.rangeDictionary.get(this.scaleName.ref);
-	}
-
-	get allScales(): ScaleInfo[] {
-		return this.tonics.map(tonic => ScaleUtil.get(tonic + ' ' + this.scaleName.ref));
-	}
-
-	accidentals(notes: string[]): string {
-		return notes
-				.map(note => note.slice(1))
-				.filter(accidental => accidental != '')
-				.join(',');
-	}
-
-	/**
-	 * Highlight or unhighlight the scale of a certain tonic and its enharmonic equivalent.
-	 */
-	toggleHighlight(index: number): void {
-		this.highlight[index] = !this.highlight[index];
-		let enharmonicIndex = this.tonics.indexOf(this.enharmonic[index]);
-		if (enharmonicIndex >= 0) {
-			this.highlight[enharmonicIndex] = !this.highlight[enharmonicIndex];
+	@Watch('scaleType', {immediate: true})
+	async loadTable(key: string): Promise<void> {
+		if (key) {
+			(await this.scaleDao.get(key)).ifPresent(async scale => {
+				let aliases = await this.scaleDao.displayOf(scale.aliasKeys);
+				let notesArray = allTonicsNotes(scale.ref);
+				this.table = new Table(
+					scale.display, 
+					aliases, 
+					scale.supertype, 
+					notesArray.map((notes, index) => new Row(index, notes, scale.tonicRange))
+				);
+			});
 		}
+	}
+
+	play(sampler: SamplerFacade, onStop: onStop, notes: string[]): void {
+		sampler.play(asDemonstration(notes), {onStop});
 	}
 
 }
 </script>
 
 <style scoped>
-h2 {
-	margin: 50px 0 5px;
+.scale-name {
+	display: inline-block;
+	margin-top: 50px;
+	position: relative;
+	width: auto;
+}
+
+.scale-name h2 {
+	display: inline-block;
+	margin: 0;
+}
+
+.scale-name .help {
+	font-weight: bold;
+	position: absolute;
+	right: -10px;
+	top: 1px;
+}
+
+.scale-name .help-content {
+	font-weight: normal;
+	width: 365px;
 }
 
 .alias {
@@ -105,12 +131,12 @@ h2 {
 	margin-bottom: 25px;
 }
 
-.highlight {
-	background: rgb(180, 180, 180) !important;
-}
-
 .dim {
 	opacity: 0.45;
+}
+
+.gradual.dim {
+	opacity: 0.68;
 }
 
 table {
@@ -124,11 +150,6 @@ thead td {
 	font-weight: bold;
 	font-size: 120%;
 	border-bottom: 2px solid #2c3e50;
-}
-
-/* Even row */
-tbody tr:nth-child(even) {
-	background: rgb(245, 245, 245);
 }
 
 /* Tonic & Enharmonic columns */
