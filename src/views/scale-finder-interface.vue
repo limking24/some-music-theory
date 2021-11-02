@@ -26,8 +26,6 @@ export default class ScaleFinderInterface extends Vue {
 	@Inject
 	sampler!: SamplerFacade;
 
-	notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
 	chroma: { value?: Chroma } = {};
 
 	showResults(chroma: Chroma): void {
