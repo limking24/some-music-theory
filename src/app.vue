@@ -10,27 +10,57 @@
 		<router-link to="/scale-triads">Major & Minor Scale Triads</router-link>
 	</div>
 	<router-view id="view" :class="{'visible': !toShowNav}"/>
+	<transition name="modal">
+		<modal v-if="firstTimer" @close="closeFirstTimerMessage">
+			<template v-slot:header>
+				Hello!
+			</template>
+			<template v-slot:body>
+				I've built this website for myself to facilitate songwriting.
+				I've only tested it on Chrome (desktop) currently, and plan to 
+				ensure cross-browser compatibility and make it mobile-friendly 
+				in the future.
+			</template>
+		</modal>
+	</transition>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import Modal from '@/components/modal.vue';
+import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { RouteLocation } from 'vue-router';
 
+@Options({
+	components: {
+		Modal
+	}
+})
 export default class App extends Vue {
 
 	atHome = false;
 
 	navButtonClicked = false;
 
-	public get toShowNav(): boolean {
+	firstTimer = false;
+
+	get toShowNav(): boolean {
 		return this.atHome || this.navButtonClicked;
+	}
+
+	mounted(): void {
+		this.firstTimer = localStorage.getItem('firstTimer') == null;
 	}
 
 	@Watch('$route', {immediate: true})
 	onRouteChanged(to: RouteLocation, from: RouteLocation): void {
 		this.navButtonClicked = false;
 		this.atHome = to.name === 'home';
+	}
+
+	closeFirstTimerMessage(): void {
+		localStorage.setItem('firstTimer', 'false');
+		this.firstTimer = false;
 	}
 
 }
